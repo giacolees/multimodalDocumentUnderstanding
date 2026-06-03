@@ -1,0 +1,32 @@
+# Part 2 – benchmarking settings
+
+models:
+  - backend: mistral
+    model_id: pixtral-12b-2409          # requires MISTRAL_API_KEY
+
+  - backend: google
+    model_id: gemini-2.0-flash          # requires GOOGLE_API_KEY
+
+  - backend: openrouter
+    model_id: google/gemini-2.0-flash-exp  # requires OPENROUTER_API_KEY
+    # site_url: https://your-app.example.com
+    # site_name: MyBenchmark
+
+  # llama.cpp – server mode (llama-server must be running)
+  # Start server: llama-server --model models/llava.gguf --mmproj models/mmproj.gguf --port 8080
+  # - backend: llama_cpp
+  #   mode: server
+  #   base_url: http://localhost:8080/v1
+  #   model_id: llava-v1.6-mistral-7b
+
+  # llama.cpp – direct mode (in-process via llama-cpp-python)
+  # - backend: llama_cpp
+  #   mode: direct
+  #   model_path: models/llava-v1.6-mistral-7b.Q4_K_M.gguf
+  #   clip_model_path: models/llava-v1.6-mistral-7b-mmproj.gguf
+  #   n_ctx: 4096
+  #   n_gpu_layers: -1
+
+evaluation:
+  metrics: [accuracy, precision, recall, f1]
+  breakdown_by_corruption_type: true

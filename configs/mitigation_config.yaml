@@ -1,0 +1,32 @@
+# Part 3 – mitigation strategies
+
+model:
+  backend: google          # mistral | google | openrouter | llama_cpp
+  model_id: gemini-2.0-flash
+
+strategies:
+  - few_shot
+  - chain_of_thought
+  - knowledge_injection
+  # Uncomment to include fine-tuning (requires GPU + unsloth):
+  # - finetuning
+
+few_shot:
+  k: 2          # number of examples to inject
+
+knowledge_injection:
+  extract_metadata_automatically: false   # set true to run OCR-based metadata extraction
+
+finetuning:
+  model_name: unsloth/Qwen2.5-VL-3B-Instruct
+  output_dir: results/finetuned_judge
+  load_in_4bit: true
+  lora_r: 16
+  lora_alpha: 16
+  train_split: 0.8
+  max_steps: 60
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0002
+  max_seq_length: 2048
+  seed: 42

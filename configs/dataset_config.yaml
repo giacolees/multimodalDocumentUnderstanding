@@ -1,0 +1,20 @@
+# Part 1 – dataset corruption settings
+
+dataset: docvqa          # docvqa | dude | mp_docvqa
+split: val
+
+loader:
+  window_size: 2         # for mp_docvqa only; number of pages per window
+
+corruption:
+  seed: 42
+  max_samples: 500       # -1 = use all
+  # target distribution across corruption types (must sum to 1.0)
+  distribution:
+    nlp_entity: 0.40
+    element: 0.35
+    layout: 0.25
+
+quality_check:
+  use_judge: true
+  judge_model: claude-opus-4-8
