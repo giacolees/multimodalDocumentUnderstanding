@@ -6,7 +6,7 @@ services:
     image: redis/redis-stack:latest
     ports:
       - "6379:6379"
-      - "8001:8001"
+      - "18001:8001"
     volumes:
       - redis-data:/data
     healthcheck:
