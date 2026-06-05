@@ -6,6 +6,11 @@ services:
     image: redis/redis-stack:latest
     ports:
       - "6399:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   # Stub GPU workers: echo server that always responds UNANSWERABLE
   gpu0-worker:
@@ -15,6 +20,8 @@ services:
       import json, http.server, socketserver
       class H(http.server.BaseHTTPRequestHandler):
           def do_POST(self):
+              length = int(self.headers.get('Content-Length', 0))
+              self.rfile.read(length)
               self.send_response(200)
               self.send_header('Content-Type','application/json')
               self.end_headers()
@@ -32,6 +39,8 @@ services:
       import json, http.server, socketserver
       class H(http.server.BaseHTTPRequestHandler):
           def do_POST(self):
+              length = int(self.headers.get('Content-Length', 0))
+              self.rfile.read(length)
               self.send_response(200)
               self.send_header('Content-Type','application/json')
               self.end_headers()

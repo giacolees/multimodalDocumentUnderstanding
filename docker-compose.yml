@@ -28,6 +28,12 @@ services:
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
     deploy:
       resources:
         reservations:
@@ -49,6 +55,12 @@ services:
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
     deploy:
       resources:
         reservations:
@@ -88,6 +100,11 @@ services:
       ENABLED_MODELS: ${ENABLED_MODELS:-gpu0,gpu1}
     volumes:
       - ./data:/app/data:ro
+    depends_on:
+      gpu0-worker:
+        condition: service_healthy
+      gpu1-worker:
+        condition: service_healthy
 
   document-svc:
     build:
