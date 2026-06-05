@@ -12,8 +12,9 @@ from pathlib import Path
 from typing import Optional
 
 
-def _image_to_b64(document_path: str) -> str:
-    return base64.standard_b64encode(Path(document_path).read_bytes()).decode()
+async def _image_to_b64(document_path: str) -> str:
+    data = await asyncio.to_thread(Path(document_path).read_bytes)
+    return base64.standard_b64encode(data).decode()
 
 
 def _parse_unanswerable(text: str) -> bool:
@@ -60,7 +61,7 @@ async def _infer_llama_cpp(model_id: str, document_path: str, prompt: str, max_t
     url = pool.next() if pool else os.getenv(f"{model_id.upper()}_URL", "http://localhost:8080")
     if url is None:
         raise RuntimeError("No healthy GPU workers available")
-    b64 = _image_to_b64(document_path)
+    b64 = await _image_to_b64(document_path)
     payload = {
         "messages": [{"role": "user", "content": [
             {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}},
@@ -79,7 +80,7 @@ async def _infer_llama_cpp(model_id: str, document_path: str, prompt: str, max_t
 async def _infer_mistral(document_path: str, prompt: str, max_tokens: int) -> dict:
     import httpx
     api_key = os.environ["MISTRAL_API_KEY"]
-    b64 = _image_to_b64(document_path)
+    b64 = await _image_to_b64(document_path)
     payload = {
         "model": os.getenv("MISTRAL_MODEL_ID", "pixtral-12b-2409"),
         "messages": [{"role": "user", "content": [
@@ -103,7 +104,7 @@ async def _infer_mistral(document_path: str, prompt: str, max_tokens: int) -> di
 async def _infer_google(document_path: str, prompt: str, max_tokens: int) -> dict:
     import httpx
     api_key = os.environ["GOOGLE_API_KEY"]
-    b64 = _image_to_b64(document_path)
+    b64 = await _image_to_b64(document_path)
     model_id = os.getenv("GOOGLE_MODEL_ID", "gemini-2.0-flash")
     payload = {
         "contents": [{"parts": [
@@ -123,7 +124,7 @@ async def _infer_google(document_path: str, prompt: str, max_tokens: int) -> dic
 async def _infer_openrouter(document_path: str, prompt: str, max_tokens: int) -> dict:
     import httpx
     api_key = os.environ["OPENROUTER_API_KEY"]
-    b64 = _image_to_b64(document_path)
+    b64 = await _image_to_b64(document_path)
     model_id = os.getenv("OPENROUTER_MODEL_ID", "google/gemini-2.0-flash-exp")
     payload = {
         "model": model_id,

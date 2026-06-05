@@ -21,10 +21,12 @@ class WorkerPool:
             return url
 
     def mark_unhealthy(self, url: str) -> None:
-        self._healthy[url] = False
+        with self._lock:
+            self._healthy[url] = False
 
     def mark_healthy(self, url: str) -> None:
-        self._healthy[url] = True
+        with self._lock:
+            self._healthy[url] = True
 
     def status(self) -> list[dict]:
         return [{"url": u, "healthy": self._healthy[u]} for u in self._urls]
