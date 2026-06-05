@@ -74,3 +74,24 @@ def test_rag_correct_unanswerable():
     assert resp.status_code == 200
     assert resp.json()["correct"] is True
     assert resp.json()["score"] == 1.0
+
+
+def test_rag_scorer_unanswerable_correct():
+    from rag_scorer import score_rag
+    result = score_rag("What year?", ["Revenue 2019"], "UNANSWERABLE", "unanswerable")
+    assert result["correct"] is True
+    assert result["score"] == 1.0
+
+
+def test_rag_scorer_unanswerable_incorrect():
+    from rag_scorer import score_rag
+    result = score_rag("What year?", ["Revenue 2019"], "The year is 2019", "unanswerable")
+    assert result["correct"] is False
+    assert result["score"] == 0.0
+
+
+def test_rag_scorer_answerable_correct():
+    from rag_scorer import score_rag
+    result = score_rag("What year?", ["Revenue 2019"], "The answer is 2019", "2019")
+    assert result["correct"] is True
+    assert result["score"] == 1.0

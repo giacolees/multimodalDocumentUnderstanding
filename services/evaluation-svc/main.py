@@ -2,8 +2,8 @@ import sys, os
 sys.path.insert(0, "/app")
 
 from typing import Optional
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, model_validator
 
 import judge as judge_module
 import rag_scorer
@@ -52,10 +52,13 @@ class RAGEvalResponse(BaseModel):
 
 @app.post("/evaluate/rag", response_model=RAGEvalResponse)
 def evaluate_rag(req: RAGEvalRequest):
-    result = rag_scorer.score_rag(
-        req.question, req.retrieved_context, req.model_answer, req.ground_truth
-    )
-    return RAGEvalResponse(**result)
+    try:
+        result = rag_scorer.score_rag(
+            req.question, req.retrieved_context, req.model_answer, req.ground_truth
+        )
+        return RAGEvalResponse(**result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # --- /evaluate/metrics ---
@@ -63,6 +66,12 @@ def evaluate_rag(req: RAGEvalRequest):
 class MetricsRequest(BaseModel):
     y_true: list[bool]
     y_pred: list[bool]
+
+    @model_validator(mode="after")
+    def lengths_must_match(self):
+        if len(self.y_true) != len(self.y_pred):
+            raise ValueError(f"y_true length ({len(self.y_true)}) must equal y_pred length ({len(self.y_pred)})")
+        return self
 
 
 class MetricsResponse(BaseModel):
@@ -78,9 +87,12 @@ class MetricsResponse(BaseModel):
 
 @app.post("/evaluate/metrics", response_model=MetricsResponse)
 def evaluate_metrics(req: MetricsRequest):
-    from src.benchmark.evaluation.metrics import compute_metrics
-    m = compute_metrics(req.y_true, req.y_pred)
-    return MetricsResponse(**m.__dict__)
+    try:
+        from src.benchmark.evaluation.metrics import compute_metrics
+        m = compute_metrics(req.y_true, req.y_pred)
+        return MetricsResponse(**m.__dict__)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/health")
