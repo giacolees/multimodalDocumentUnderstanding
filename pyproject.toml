@@ -28,6 +28,17 @@ dev = [
     "ipykernel>=6.0",
     "spacy>=3.7",
 ]
+services = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.29",
+    "httpx>=0.27",
+    "redis[hiredis]>=5.0",
+    "redisvl>=0.2",
+    "sentence-transformers>=3.0",
+    "fakeredis>=2.20",
+    "pytest-asyncio>=0.23",
+    "pytest>=8.0",
+]
 # GPU machine required; install unsloth separately per https://github.com/unslothai/unsloth
 finetune = [
     "trl>=0.12.0",

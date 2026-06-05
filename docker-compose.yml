@@ -1,0 +1,136 @@
+# docker-compose.yml
+name: docvqa-platform
+
+services:
+  redis-stack:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  gpu0-worker:
+    image: ghcr.io/ggerganov/llama.cpp:server-cuda
+    environment:
+      CUDA_VISIBLE_DEVICES: "0"
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./models:/models:ro
+    command: >
+      --model /models/${GPU0_MODEL_FILE:-model.gguf}
+      --host 0.0.0.0 --port 8080
+      --n-gpu-layers ${GPU_LAYERS:-99}
+      --ctx-size 4096
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+
+  gpu1-worker:
+    image: ghcr.io/ggerganov/llama.cpp:server-cuda
+    environment:
+      CUDA_VISIBLE_DEVICES: "1"
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./models:/models:ro
+    command: >
+      --model /models/${GPU1_MODEL_FILE:-model.gguf}
+      --host 0.0.0.0 --port 8080
+      --n-gpu-layers ${GPU_LAYERS:-99}
+      --ctx-size 4096
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+
+  evaluation-svc:
+    build:
+      context: .
+      dockerfile: services/evaluation-svc/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      JUDGE_MODEL: ${JUDGE_MODEL:-gemini-2.0-flash}
+      JUDGE_BASE_URL: ${JUDGE_BASE_URL:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    volumes:
+      - ./data:/app/data:ro
+    depends_on:
+      redis-stack:
+        condition: service_healthy
+
+  model-gateway:
+    build:
+      context: .
+      dockerfile: services/model-gateway/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      GPU0_URL: http://gpu0-worker:8080
+      GPU1_URL: http://gpu1-worker:8080
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ENABLED_MODELS: ${ENABLED_MODELS:-gpu0,gpu1}
+    volumes:
+      - ./data:/app/data:ro
+
+  document-svc:
+    build:
+      context: .
+      dockerfile: services/document-svc/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      REDIS_URL: redis://redis-stack:6379
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+    volumes:
+      - ./data:/app/data:ro
+    depends_on:
+      redis-stack:
+        condition: service_healthy
+
+  job-runner:
+    build:
+      context: .
+      dockerfile: services/job-runner/Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      REDIS_URL: redis://redis-stack:6379
+      MODEL_GATEWAY_URL: http://model-gateway:8001
+      DOCUMENT_SVC_URL: http://document-svc:8002
+      EVALUATION_SVC_URL: http://evaluation-svc:8003
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      redis-stack:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      JOB_RUNNER_URL: http://job-runner:8004
+    depends_on:
+      - job-runner
+
+volumes:
+  redis-data:

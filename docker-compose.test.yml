@@ -1,0 +1,90 @@
+# docker-compose.test.yml — uses same services but with fixture data and fake GPU workers
+name: docvqa-test
+
+services:
+  redis-stack:
+    image: redis/redis-stack:latest
+    ports:
+      - "6399:6379"
+
+  # Stub GPU workers: echo server that always responds UNANSWERABLE
+  gpu0-worker:
+    image: python:3.11-slim
+    command: >
+      python -c "
+      import json, http.server, socketserver
+      class H(http.server.BaseHTTPRequestHandler):
+          def do_POST(self):
+              self.send_response(200)
+              self.send_header('Content-Type','application/json')
+              self.end_headers()
+              self.wfile.write(json.dumps({'choices':[{'message':{'content':'UNANSWERABLE'}}]}).encode())
+          def log_message(self, *a): pass
+      with socketserver.TCPServer(('',8080),H) as s: s.serve_forever()
+      "
+    ports:
+      - "8091:8080"
+
+  gpu1-worker:
+    image: python:3.11-slim
+    command: >
+      python -c "
+      import json, http.server, socketserver
+      class H(http.server.BaseHTTPRequestHandler):
+          def do_POST(self):
+              self.send_response(200)
+              self.send_header('Content-Type','application/json')
+              self.end_headers()
+              self.wfile.write(json.dumps({'choices':[{'message':{'content':'UNANSWERABLE'}}]}).encode())
+          def log_message(self, *a): pass
+      with socketserver.TCPServer(('',8080),H) as s: s.serve_forever()
+      "
+    ports:
+      - "8092:8080"
+
+  evaluation-svc:
+    build:
+      context: .
+      dockerfile: services/evaluation-svc/Dockerfile
+    environment:
+      JUDGE_MODEL: gemini-2.0-flash
+      GEMINI_API_KEY: test-key
+    volumes:
+      - ./data:/app/data:ro
+
+  model-gateway:
+    build:
+      context: .
+      dockerfile: services/model-gateway/Dockerfile
+    environment:
+      GPU0_URL: http://gpu0-worker:8080
+      GPU1_URL: http://gpu1-worker:8080
+      ENABLED_MODELS: gpu0,gpu1
+
+  document-svc:
+    build:
+      context: .
+      dockerfile: services/document-svc/Dockerfile
+    environment:
+      REDIS_URL: redis://redis-stack:6379
+
+  job-runner:
+    build:
+      context: .
+      dockerfile: services/job-runner/Dockerfile
+    environment:
+      REDIS_URL: redis://redis-stack:6379
+      MODEL_GATEWAY_URL: http://model-gateway:8001
+      DOCUMENT_SVC_URL: http://document-svc:8002
+      EVALUATION_SVC_URL: http://evaluation-svc:8003
+    volumes:
+      - ./data:/app/data
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      JOB_RUNNER_URL: http://job-runner:8004
