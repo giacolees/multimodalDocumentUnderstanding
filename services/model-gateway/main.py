@@ -10,34 +10,24 @@ import clients
 
 app = FastAPI(title="model-gateway", version="1.0")
 
-# Initialise GPU pool from env at startup
-_GPU_URLS = {
-    "gpu0": os.getenv("GPU0_URL", "http://gpu0-worker:8080"),
-    "gpu1": os.getenv("GPU1_URL", "http://gpu1-worker:8080"),
-}
-_gpu_pool = WorkerPool(list(_GPU_URLS.values()))
+# llama.cpp pool — comma-separated URLs from env
+_LLAMA_URLS_RAW = os.getenv("LLAMA_URLS", "")
+_llama_pool = WorkerPool([u.strip() for u in _LLAMA_URLS_RAW.split(",") if u.strip()])
 
-_ENABLED = set(os.getenv("ENABLED_MODELS", "gpu0,gpu1").split(","))
-_ALL_MODELS = ["gpu0", "gpu1", "mistral", "google", "openrouter"]
+# vLLM pool — comma-separated URLs from env
+_VLLM_URLS_RAW = os.getenv("VLLM_URLS", "")
+_vllm_pool = WorkerPool([u.strip() for u in _VLLM_URLS_RAW.split(",") if u.strip()])
 
+_ENABLED = set(os.getenv("ENABLED_MODELS", "llama,vllm").split(","))
+_ALL_MODELS = ["llama", "vllm", "mistral", "google", "openrouter"]
 
-# --- Schemas ---
 
 class InferRequest(BaseModel):
-    model_id: Optional[str] = None   # None = fan-out to all enabled models
+    model_id: Optional[str] = None
     document_path: str
     prompt: str
     max_tokens: int = 256
 
-
-class InferResult(BaseModel):
-    model_id: str
-    raw_response: str
-    predicted_unanswerable: bool
-    latency_ms: int
-
-
-# --- Routes ---
 
 @app.post("/infer")
 async def infer(req: InferRequest):
@@ -47,7 +37,10 @@ async def infer(req: InferRequest):
     targets = [req.model_id] if req.model_id else [m for m in _ALL_MODELS if m in _ENABLED]
 
     tasks = [
-        clients.async_infer(mid, req.document_path, req.prompt, req.max_tokens, _gpu_pool)
+        clients.async_infer(
+            mid, req.document_path, req.prompt, req.max_tokens,
+            llama_pool=_llama_pool, vllm_pool=_vllm_pool,
+        )
         for mid in targets
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -59,7 +52,6 @@ async def infer(req: InferRequest):
         else:
             out.append(res)
 
-    # Single model → return dict; fan-out → return list
     return out[0] if req.model_id else out
 
 
@@ -69,7 +61,11 @@ def list_models():
         {
             "model_id": m,
             "enabled": m in _ENABLED,
-            "pool_status": _gpu_pool.status() if m in ("gpu0", "gpu1") else None,
+            "pool_status": (
+                _llama_pool.status() if m == "llama"
+                else _vllm_pool.status() if m == "vllm"
+                else None
+            ),
         }
         for m in _ALL_MODELS
     ]
@@ -79,21 +75,26 @@ def list_models():
 async def model_health(model_id: str):
     if model_id not in _ALL_MODELS:
         raise HTTPException(status_code=404, detail="Unknown model")
-    if model_id not in ("gpu0", "gpu1"):
+    if model_id not in ("llama", "vllm"):
         return {"model_id": model_id, "healthy": True, "note": "API-based model"}
-    url = _GPU_URLS[model_id]
-    try:
-        import httpx
-        async with httpx.AsyncClient(timeout=3.0) as client:
-            resp = await client.get(f"{url}/health")
-        healthy = resp.status_code == 200
-    except Exception:
-        healthy = False
-    if healthy:
-        _gpu_pool.mark_healthy(url)
-    else:
-        _gpu_pool.mark_unhealthy(url)
-    return {"model_id": model_id, "healthy": healthy, "url": url}
+
+    pool = _llama_pool if model_id == "llama" else _vllm_pool
+    import httpx
+    results = []
+    for entry in pool.status():
+        url = entry["url"]
+        try:
+            async with httpx.AsyncClient(timeout=3.0) as c:
+                resp = await c.get(f"{url}/health")
+            healthy = resp.status_code == 200
+        except Exception:
+            healthy = False
+        if healthy:
+            pool.mark_healthy(url)
+        else:
+            pool.mark_unhealthy(url)
+        results.append({"url": url, "healthy": healthy})
+    return {"model_id": model_id, "workers": results}
 
 
 @app.get("/health")
