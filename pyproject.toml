@@ -38,6 +38,12 @@ services = [
     "fakeredis>=2.20",
     "pytest-asyncio>=0.23",
     "pytest>=8.0",
+    "opentelemetry-sdk>=1.20",
+    "opentelemetry-instrumentation-fastapi>=0.41b0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.20",
+    "opentelemetry-instrumentation-httpx>=0.41b0",
+    "prometheus-fastapi-instrumentator>=6.1",
+    "prometheus-client>=0.19",
 ]
 # GPU machine required; install unsloth separately per https://github.com/unslothai/unsloth
 finetune = [
