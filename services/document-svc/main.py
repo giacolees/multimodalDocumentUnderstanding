@@ -6,10 +6,9 @@ import redis as sync_redis
 
 import indexer
 import search as search_module
+from shared.observability import setup_tracing, setup_metrics, get_logger
 
 app = FastAPI(title="document-svc", version="1.0")
-
-from shared.observability import setup_tracing, setup_metrics, get_logger
 setup_tracing("document-svc")
 setup_metrics(app)
 logger = get_logger("document-svc")

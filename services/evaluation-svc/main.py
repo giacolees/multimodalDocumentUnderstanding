@@ -7,10 +7,9 @@ from pydantic import BaseModel, model_validator
 
 import judge as judge_module
 import rag_scorer
+from shared.observability import setup_tracing, setup_metrics, get_logger
 
 app = FastAPI(title="evaluation-svc", version="1.0")
-
-from shared.observability import setup_tracing, setup_metrics, get_logger
 setup_tracing("evaluation-svc")
 setup_metrics(app)
 logger = get_logger("evaluation-svc")
