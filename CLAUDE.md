@@ -119,3 +119,57 @@ All three stages are driven by YAML files in `configs/`. Edit `configs/dataset_c
 1. Subclass `BaseVisionModel` in `src/benchmark/models/`.
 2. Implement `predict_unanswerable()` and `name()`.
 3. Register the backend string in `load_model()` inside `src/benchmark/run_benchmark.py`.
+
+## Microservices layer (services/)
+
+Five FastAPI services wrap the `src/` pipeline. `src/` code is NOT rewritten — services import and wrap it.
+
+| Service          | Port | Responsibility                                                       |
+|------------------|------|----------------------------------------------------------------------|
+| `api-gateway`    | 8000 | Client entry point — validates + proxies /jobs/* to job-runner       |
+| `model-gateway`  | 8001 | Unified inference API — GPU workers + cloud APIs, round-robin pool   |
+| `document-svc`   | 8002 | Chunking, embedding, Redis hybrid search (vector + BM25) for RAG     |
+| `evaluation-svc` | 8003 | LLM-as-a-judge, RAG scorer, metrics                                  |
+| `job-runner`     | 8004 | Async job dispatch (corrupt/benchmark/mitigation/index job types)    |
+| `gpu0-worker`    | 8081 | llama.cpp server, CUDA_VISIBLE_DEVICES=0                             |
+| `gpu1-worker`    | 8082 | llama.cpp server, CUDA_VISIBLE_DEVICES=1                             |
+| `redis-stack`    | 6379 | Job state hashes (`job:{id}`) + vector index (`doc:{id}:chunk:{n}`) |
+
+### Running the stack
+
+```bash
+docker compose up -d                               # production (needs models/ dir with GGUF files)
+docker compose -f docker-compose.test.yml up -d   # testing (stub GPU workers, no GGUF needed)
+docker compose config --quiet                      # validate compose YAML syntax (fast, no build)
+```
+
+### Testing services
+
+Each service has `services/<name>/tests/`. Do NOT run all services together — they share flat module names (`main.py`, `state.py`, etc.) that conflict in one pytest process.
+
+```bash
+# Run per service (required):
+PYTHONPATH=. uv run pytest services/evaluation-svc/tests/ -v
+PYTHONPATH=. uv run pytest services/model-gateway/tests/ -v
+PYTHONPATH=. uv run pytest services/document-svc/tests/ -v
+PYTHONPATH=. uv run pytest services/job-runner/tests/ -v
+PYTHONPATH=. uv run pytest services/api-gateway/tests/ -v
+
+# Integration smoke tests (requires live docker-compose stack):
+uv run pytest tests/integration/ -v --timeout=120
+```
+
+`uv run pytest` (no args) only discovers `tests/` — see `[tool.pytest.ini_options]` in `pyproject.toml`.
+
+### Services dependencies
+
+```bash
+uv sync --extra services   # installs fastapi, uvicorn, httpx, redis, redisvl, sentence-transformers, fakeredis
+```
+
+### Known gotchas
+
+- **redisvl + redis 8.x**: `redis 8.0` dropped `redis.commands.search.indexDefinition`; `redisvl` imports it at module load. Fix: lazy-import redisvl inside function bodies (already done in `document-svc`).
+- **Docker build context**: all Dockerfiles assume repo root as build context. Use `docker compose build`, not `docker build .` from within a service directory.
+- **Redis Stack**: requires `redis/redis-stack:latest` (not plain `redis`) for RediSearch + vector support.
+- **GPU workers**: model-gateway `depends_on` gpu workers with `condition: service_healthy`. llama.cpp takes 30–90 s to load a model — don't expect immediate inference on cold start.
