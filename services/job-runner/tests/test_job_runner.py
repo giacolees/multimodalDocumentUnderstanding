@@ -47,3 +47,53 @@ def test_list_jobs_returns_all(r):
     job_ids = [j.get("job_id") for j in jobs]
     assert id1 in job_ids
     assert id2 in job_ids
+
+
+# --- job dispatch tests ---
+
+import fakeredis
+import main as runner_main
+from fastapi.testclient import TestClient
+
+
+@pytest.fixture
+def fake_redis_fixture():
+    return fakeredis.FakeRedis(decode_responses=True)
+
+
+@pytest.fixture
+def runner_client(fake_redis_fixture, monkeypatch):
+    monkeypatch.setattr(runner_main, "_get_redis", lambda: fake_redis_fixture)
+    return TestClient(runner_main.app)
+
+
+def test_dispatch_benchmark_returns_job_id(runner_client):
+    resp = runner_client.post("/jobs/dispatch", json={
+        "type": "benchmark",
+        "config": {
+            "corrupted_dataset": "data/corrupted/docvqa_corrupted.json",
+            "model_ids": ["gpu0"],
+        }
+    })
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "job_id" in data
+    assert data["status"] == "pending"
+
+
+def test_dispatch_unknown_type_returns_400(runner_client):
+    resp = runner_client.post("/jobs/dispatch", json={
+        "type": "unknown_type",
+        "config": {},
+    })
+    assert resp.status_code == 400
+
+
+def test_get_job_returns_state(runner_client, fake_redis_fixture):
+    job_id = state.create_job(fake_redis_fixture, "benchmark")
+    state.update_job(fake_redis_fixture, job_id, status="running", progress=5, total=100)
+    resp = runner_client.get(f"/jobs/{job_id}")
+    assert resp.status_code == 200
+    d = resp.json()
+    assert d["status"] == "running"
+    assert d["progress"] == "5"
