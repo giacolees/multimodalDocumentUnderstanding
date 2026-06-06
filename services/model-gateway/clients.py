@@ -91,7 +91,7 @@ async def _infer_mistral(document_path: str, prompt: str, max_tokens: int) -> di
 
 async def _infer_google(document_path: str, prompt: str, max_tokens: int) -> dict:
     import httpx
-    api_key = os.environ["GOOGLE_API_KEY"]
+    api_key = os.environ["GEMINI_API_KEY"]
     b64 = await _image_to_b64(document_path)
     model_id = os.getenv("GOOGLE_MODEL_ID", "gemini-2.0-flash")
     payload = {

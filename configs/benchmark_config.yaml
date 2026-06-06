@@ -1,23 +1,24 @@
 # Part 2 – benchmarking settings
 
 models:
-  - backend: mistral
-    model_id: pixtral-12b-2409          # requires MISTRAL_API_KEY
+  # - backend: mistral
+  #   model_id: pixtral-12b-2409          # requires MISTRAL_API_KEY
 
-  - backend: google
-    model_id: gemini-2.0-flash          # requires GOOGLE_API_KEY
+  # - backend: google
+  #   model_id: gemini-2.0-flash          # requires GEMINI_API_KEY
 
-  - backend: openrouter
-    model_id: google/gemini-2.0-flash-exp  # requires OPENROUTER_API_KEY
-    # site_url: https://your-app.example.com
-    # site_name: MyBenchmark
+  # - backend: openrouter
+  #   model_id: google/gemini-2.0-flash-exp  # requires OPENROUTER_API_KEY
+  #   site_url: https://your-app.example.com
+  #   site_name: MyBenchmark
 
   # llama.cpp – server mode (llama-server must be running)
-  # Start server: llama-server --model models/llava.gguf --mmproj models/mmproj.gguf --port 8080
-  # - backend: llama_cpp
-  #   mode: server
-  #   base_url: http://localhost:8080/v1
-  #   model_id: llava-v1.6-mistral-7b
+  # Start: llama-server -hf LiquidAI/LFM2.5-VL-450M-GGUF:Q4_0
+  # NOTE: LFM2.5-8B-A1B is text-only; image content is sent but ignored by the server.
+  - backend: llama_cpp
+    mode: server
+    base_url: http://localhost:8080/v1
+    model_id: LiquidAI/LFM2.5-VL-450M-GGUF:Q4_0
 
   # llama.cpp – direct mode (in-process via llama-cpp-python)
   # - backend: llama_cpp

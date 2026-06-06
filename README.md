@@ -2,8 +2,6 @@
 
 Vision LLM benchmark for **unanswerable question detection** from document images. The system corrupts a DocVQA-style dataset to produce questions that cannot be answered from the document, then benchmarks Vision LLMs on their ability to identify those questions as unanswerable.
 
-> **Deadline:** 20 June 2026 — deliverable is a zip with Python scripts + max-5-page report.
-
 ---
 
 ## Table of Contents
@@ -111,7 +109,7 @@ Required keys (depending on which models you run):
 |---|---|
 | `GEMINI_API_KEY` | LLM judge + Google model backend |
 | `MISTRAL_API_KEY` | Mistral/Pixtral model backend |
-| `GOOGLE_API_KEY` | Gemini model backend |
+| `GEMINI_API_KEY` | Gemini model backend |
 | `OPENROUTER_API_KEY` | OpenRouter model backend |
 | `HF_TOKEN` | vLLM gated HuggingFace models |
 
@@ -257,7 +255,7 @@ Each Vision LLM receives a document image (base64 PNG) and the corrupted questio
 | Backend | Key | Notes |
 |---|---|---|
 | `mistral` | `MISTRAL_API_KEY` | Pixtral-12B via Mistral API |
-| `google` | `GOOGLE_API_KEY` | Gemini 2.0 Flash |
+| `google` | `GEMINI_API_KEY` | Gemini 2.0 Flash |
 | `openrouter` | `OPENROUTER_API_KEY` | Any multimodal model via OpenRouter |
 | `llama_cpp` | — | Local GGUF model via llama-server or in-process |
 | `llama` / `vllm` | — | Microservices pool (see below) |
@@ -468,7 +466,7 @@ Configure which strategies to run and the model used for prompting.
 |---|---|---|
 | `GEMINI_API_KEY` | — | Google Gemini / LLM judge |
 | `MISTRAL_API_KEY` | — | Mistral API |
-| `GOOGLE_API_KEY` | — | Google AI API |
+| `GEMINI_API_KEY` | — | Google AI API |
 | `OPENROUTER_API_KEY` | — | OpenRouter API |
 | `HF_TOKEN` | — | HuggingFace (gated vLLM models) |
 | `LLAMA_URLS` | `http://llama-worker-0:8080,...` | Comma-separated llama.cpp worker URLs |

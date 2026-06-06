@@ -3,7 +3,7 @@
 Uses the Gemini REST API directly (no extra SDK dependency).
 Vision-capable models: gemini-2.0-flash, gemini-1.5-pro, gemini-1.5-flash.
 
-Required env var: GOOGLE_API_KEY
+Required env var: GEMINI_API_KEY
 
 Config example (benchmark_config.yaml):
   - backend: google
@@ -50,9 +50,9 @@ def _parse_unanswerable(text: str) -> tuple[bool, float]:
 
 class GoogleModel(BaseVisionModel):
     def __init__(self, model_id: str = "gemini-2.0-flash") -> None:
-        api_key = os.environ.get("GOOGLE_API_KEY")
+        api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
-            raise EnvironmentError("GOOGLE_API_KEY environment variable is not set.")
+            raise EnvironmentError("GEMINI_API_KEY environment variable is not set.")
         self._model_id = model_id
         self._api_key = api_key
 

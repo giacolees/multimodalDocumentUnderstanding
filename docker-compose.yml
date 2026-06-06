@@ -157,7 +157,7 @@ services:
       LLAMA_URLS: http://llama-worker-0:8080,http://llama-worker-1:8080
       VLLM_URLS: http://vllm-worker-0:8000,http://vllm-worker-1:8000
       MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       ENABLED_MODELS: ${ENABLED_MODELS:-llama,vllm}
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
