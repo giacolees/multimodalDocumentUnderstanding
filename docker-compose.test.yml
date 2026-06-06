@@ -13,7 +13,7 @@ services:
       retries: 5
 
   # Stub GPU workers: echo server that always responds UNANSWERABLE
-  gpu0-worker:
+  llama-worker-0:
     image: python:3.11-slim
     command: >
       python -c "
@@ -32,7 +32,7 @@ services:
     ports:
       - "8091:8080"
 
-  gpu1-worker:
+  llama-worker-1:
     image: python:3.11-slim
     command: >
       python -c "
@@ -51,6 +51,27 @@ services:
     ports:
       - "8092:8080"
 
+  vllm-worker-0:
+    image: python:3.11-slim
+    command: >
+      python -c "
+      import json, http.server, socketserver
+      class H(http.server.BaseHTTPRequestHandler):
+          def do_GET(self):
+              self.send_response(200); self.end_headers(); self.wfile.write(b'ok')
+          def do_POST(self):
+              length = int(self.headers.get('Content-Length', 0))
+              self.rfile.read(length)
+              self.send_response(200)
+              self.send_header('Content-Type','application/json')
+              self.end_headers()
+              self.wfile.write(json.dumps({'choices':[{'message':{'content':'UNANSWERABLE'}}]}).encode())
+          def log_message(self, *a): pass
+      with socketserver.TCPServer(('',8000),H) as s: s.serve_forever()
+      "
+    ports:
+      - "8085:8000"
+
   evaluation-svc:
     build:
       context: .
@@ -66,9 +87,9 @@ services:
       context: .
       dockerfile: services/model-gateway/Dockerfile
     environment:
-      GPU0_URL: http://gpu0-worker:8080
-      GPU1_URL: http://gpu1-worker:8080
-      ENABLED_MODELS: gpu0,gpu1
+      LLAMA_URLS: http://llama-worker-0:8080,http://llama-worker-1:8080
+      VLLM_URLS: http://vllm-worker-0:8000
+      ENABLED_MODELS: llama,vllm
 
   document-svc:
     build:
