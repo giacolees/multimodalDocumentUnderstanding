@@ -1,5 +1,6 @@
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))   # services/model-gateway/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))  # services/ (for shared.*)
 
 import pytest
 from unittest.mock import patch, MagicMock
