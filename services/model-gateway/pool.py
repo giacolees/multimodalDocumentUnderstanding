@@ -29,4 +29,5 @@ class WorkerPool:
             self._healthy[url] = True
 
     def status(self) -> list[dict]:
-        return [{"url": u, "healthy": self._healthy[u]} for u in self._urls]
+        with self._lock:
+            return [{"url": u, "healthy": self._healthy[u]} for u in self._urls]

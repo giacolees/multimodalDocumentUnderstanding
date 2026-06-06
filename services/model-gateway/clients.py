@@ -42,9 +42,13 @@ async def _infer_local(document_path: str, prompt: str, max_tokens: int, pool) -
         "max_tokens": max_tokens,
         "temperature": 0.0,
     }
-    async with httpx.AsyncClient(timeout=180.0) as client:
-        resp = await client.post(f"{url}/v1/chat/completions", json=payload)
-        resp.raise_for_status()
+    try:
+        async with httpx.AsyncClient(timeout=180.0) as client:
+            resp = await client.post(f"{url}/v1/chat/completions", json=payload)
+            resp.raise_for_status()
+    except Exception:
+        pool.mark_unhealthy(url)
+        raise
     return {"raw_response": resp.json()["choices"][0]["message"]["content"]}
 
 
