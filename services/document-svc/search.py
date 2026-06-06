@@ -8,8 +8,34 @@ _INDEX_NAME = "doc_chunks"
 _RRF_K = 60  # RRF constant
 
 
-def _rrf_score(ranks: list[int]) -> float:
-    return sum(1.0 / (_RRF_K + r) for r in ranks)
+def _rrf_score_weighted(vector_ranks: list[int], bm25_ranks: list[int], alpha: float) -> float:
+    """Weighted RRF: alpha weights vector contribution, (1-alpha) weights BM25."""
+    vector_score = sum(1.0 / (_RRF_K + r) for r in vector_ranks) * alpha
+    bm25_score = sum(1.0 / (_RRF_K + r) for r in bm25_ranks) * (1 - alpha)
+    return vector_score + bm25_score
+
+
+def _bm25_search(redis_client, query_text: str, top_k: int) -> list[dict]:
+    """Full-text BM25 search via RediSearch FT.SEARCH."""
+    try:
+        from redis.commands.search.query import Query as RedisQuery
+        q = (
+            RedisQuery(query_text)
+            .return_fields("doc_id", "text", "page_index")
+            .paging(0, top_k)
+        )
+        results = redis_client.ft("doc_chunks").search(q)
+        return [
+            {
+                "id": doc.id,
+                "doc_id": getattr(doc, "doc_id", ""),
+                "text": getattr(doc, "text", ""),
+                "page_index": getattr(doc, "page_index", 0),
+            }
+            for doc in results.docs
+        ]
+    except Exception:
+        return []
 
 
 def hybrid_search(
@@ -24,7 +50,7 @@ def hybrid_search(
     """
     import numpy as np
     from redisvl.index import SearchIndex
-    from redisvl.query import VectorQuery, FilterQuery
+    from redisvl.query import VectorQuery
     from redisvl.schema import IndexSchema
     from sentence_transformers import SentenceTransformer
 
@@ -56,26 +82,24 @@ def hybrid_search(
         )
         vector_results = index.query(vq)
 
-    # BM25 full-text search (RediSearch @text field)
+    # BM25 full-text search via FT.SEARCH (proper BM25 scoring)
     bm25_results: list[dict] = []
     if alpha < 1.0:
-        fq = FilterQuery(
-            filter_expression=f"@text:({query})",
-            return_fields=["doc_id", "doc_path", "page_index", "text"],
-            num_results=top_k * 2,
-        )
-        bm25_results = index.query(fq)
+        bm25_results = _bm25_search(redis, query, top_k * 2)
 
-    # Build id → ranks map for RRF
-    scores: dict[str, list[int]] = {}
+    # Build per-source rank maps (each starting at 1 independently)
+    vector_rank_map: dict[str, list[int]] = {}
     for rank, r in enumerate(vector_results):
         key = r.get("id", r.get("doc_id", "") + str(rank))
-        scores.setdefault(key, []).append(rank + 1)
+        vector_rank_map.setdefault(key, []).append(rank + 1)
 
-    bm25_offset = len(vector_results) + 1
+    bm25_rank_map: dict[str, list[int]] = {}
     for rank, r in enumerate(bm25_results):
         key = r.get("id", r.get("doc_id", "") + str(rank))
-        scores.setdefault(key, []).append(rank + bm25_offset)
+        bm25_rank_map.setdefault(key, []).append(rank + 1)  # independent rank from 1
+
+    # Merge all result keys
+    all_keys = set(vector_rank_map) | set(bm25_rank_map)
 
     # Score and merge all results
     all_results_by_id: dict[str, dict] = {}
@@ -84,8 +108,12 @@ def hybrid_search(
         all_results_by_id[key] = r
 
     ranked = sorted(
-        all_results_by_id.items(),
-        key=lambda kv: _rrf_score(scores.get(kv[0], [999])),
+        [(k, all_results_by_id[k]) for k in all_keys if k in all_results_by_id],
+        key=lambda kv: _rrf_score_weighted(
+            vector_rank_map.get(kv[0], []),
+            bm25_rank_map.get(kv[0], []),
+            alpha,
+        ),
         reverse=True,
     )
 
@@ -94,7 +122,11 @@ def hybrid_search(
             "doc_id": r.get("doc_id", ""),
             "page_index": int(r.get("page_index", 0)),
             "text": r.get("text", ""),
-            "score": round(_rrf_score(scores.get(key, [999])), 4),
+            "score": round(_rrf_score_weighted(
+                vector_rank_map.get(key, []),
+                bm25_rank_map.get(key, []),
+                alpha,
+            ), 4),
         }
         for key, r in ranked[:top_k]
     ]
