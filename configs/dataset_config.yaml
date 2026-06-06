@@ -17,4 +17,8 @@ corruption:
 
 quality_check:
   use_judge: true
-  judge_model: claude-opus-4-8
+  judge_model: Smoffyy/Qwen3.5-4B-Instruct-Pure-GGUF:Q4_K_M
+  judge_base_url: http://localhost:8080/v1   # set for llama-server; omit for cloud models
+  confidence_threshold: 0.60   # unanswerable verdicts below this are dropped
+  max_retries: 2               # output-validation retries before raising UnexpectedModelBehavior
+  max_tokens: 2048             # increase for thinking/reasoning models (e.g. Qwen3) that burn tokens before output
