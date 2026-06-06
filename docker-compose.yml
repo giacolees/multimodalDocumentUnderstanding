@@ -15,7 +15,7 @@ services:
       timeout: 3s
       retries: 5
 
-  gpu0-worker:
+  llama-worker-0:
     image: ghcr.io/ggerganov/llama.cpp:server-cuda
     environment:
       CUDA_VISIBLE_DEVICES: "0"
@@ -24,7 +24,7 @@ services:
     volumes:
       - ./models:/models:ro
     command: >
-      --model /models/${GPU0_MODEL_FILE:-model.gguf}
+      --model /models/${LLAMA0_MODEL_FILE:-model.gguf}
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
@@ -42,7 +42,7 @@ services:
               device_ids: ["0"]
               capabilities: [gpu]
 
-  gpu1-worker:
+  llama-worker-1:
     image: ghcr.io/ggerganov/llama.cpp:server-cuda
     environment:
       CUDA_VISIBLE_DEVICES: "1"
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./models:/models:ro
     command: >
-      --model /models/${GPU1_MODEL_FILE:-model.gguf}
+      --model /models/${LLAMA1_MODEL_FILE:-model.gguf}
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
@@ -61,6 +61,68 @@ services:
       timeout: 5s
       retries: 12
       start_period: 60s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+
+  vllm-worker-0:
+    image: vllm/vllm-openai:latest
+    runtime: nvidia
+    environment:
+      CUDA_VISIBLE_DEVICES: "0"
+      HF_HOME: /models/hf_cache
+      HF_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8083:8000"
+    volumes:
+      - ./models:/models
+    command: >
+      --model ${VLLM_MODEL:-Qwen/Qwen2-VL-7B-Instruct}
+      --host 0.0.0.0 --port 8000
+      --dtype auto
+      --max-model-len ${VLLM_MAX_LEN:-4096}
+      --limit-mm-per-prompt image=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+
+  vllm-worker-1:
+    image: vllm/vllm-openai:latest
+    runtime: nvidia
+    environment:
+      CUDA_VISIBLE_DEVICES: "1"
+      HF_HOME: /models/hf_cache
+      HF_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8084:8000"
+    volumes:
+      - ./models:/models
+    command: >
+      --model ${VLLM_MODEL_1:-${VLLM_MODEL:-Qwen/Qwen2-VL-7B-Instruct}}
+      --host 0.0.0.0 --port 8000
+      --dtype auto
+      --max-model-len ${VLLM_MAX_LEN:-4096}
+      --limit-mm-per-prompt image=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
     deploy:
       resources:
         reservations:
@@ -92,18 +154,18 @@ services:
     ports:
       - "8001:8001"
     environment:
-      GPU0_URL: http://gpu0-worker:8080
-      GPU1_URL: http://gpu1-worker:8080
+      LLAMA_URLS: http://llama-worker-0:8080,http://llama-worker-1:8080
+      VLLM_URLS: http://vllm-worker-0:8000,http://vllm-worker-1:8000
       MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      ENABLED_MODELS: ${ENABLED_MODELS:-gpu0,gpu1}
+      ENABLED_MODELS: ${ENABLED_MODELS:-llama,vllm}
     volumes:
       - ./data:/app/data:ro
     depends_on:
-      gpu0-worker:
+      llama-worker-0:
         condition: service_healthy
-      gpu1-worker:
+      llama-worker-1:
         condition: service_healthy
 
   document-svc:
