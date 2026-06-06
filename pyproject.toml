@@ -57,3 +57,15 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
+
+[tool.pytest.ini_options]
+# Default discovery: only tests/ (integration tests).
+# Run per-service tests explicitly:
+#   PYTHONPATH=. uv run pytest services/evaluation-svc/tests/
+#   PYTHONPATH=. uv run pytest services/model-gateway/tests/
+#   PYTHONPATH=. uv run pytest services/document-svc/tests/
+#   PYTHONPATH=. uv run pytest services/job-runner/tests/
+#   PYTHONPATH=. uv run pytest services/api-gateway/tests/
+# Running all services/ together causes module-name conflicts (each has main.py).
+testpaths = ["tests"]
+asyncio_mode = "strict"
