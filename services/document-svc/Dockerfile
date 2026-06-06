@@ -8,8 +8,16 @@ RUN pip install --no-cache-dir \
     "redis[hiredis]>=5.0" \
     "redisvl>=0.2" \
     "sentence-transformers>=3.0" \
-    "pillow>=10.0"
+    "pillow>=10.0" \
+    "opentelemetry-sdk>=1.20" \
+    "opentelemetry-instrumentation-fastapi>=0.41b0" \
+    "opentelemetry-exporter-otlp-proto-grpc>=1.20" \
+    "opentelemetry-instrumentation-httpx>=0.41b0" \
+    "prometheus-fastapi-instrumentator>=6.1" \
+    "prometheus-client>=0.19"
 
+RUN mkdir -p /app/shared && touch /app/shared/__init__.py
+COPY services/shared/observability.py /app/shared/observability.py
 COPY services/document-svc/main.py /app/main.py
 COPY services/document-svc/indexer.py /app/indexer.py
 COPY services/document-svc/search.py /app/search.py

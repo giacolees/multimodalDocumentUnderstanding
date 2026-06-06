@@ -15,7 +15,13 @@ RUN pip install --no-cache-dir \
     "datasets>=2.18.0" \
     "pandas>=2.0" \
     "pdf2image>=1.17" \
-    "pypdf>=4.0"
+    "pypdf>=4.0" \
+    "opentelemetry-sdk>=1.20" \
+    "opentelemetry-instrumentation-fastapi>=0.41b0" \
+    "opentelemetry-exporter-otlp-proto-grpc>=1.20" \
+    "opentelemetry-instrumentation-httpx>=0.41b0" \
+    "prometheus-fastapi-instrumentator>=6.1" \
+    "prometheus-client>=0.19"
 
 RUN pip install --no-cache-dir spacy>=3.7 && \
     python -m spacy download en_core_web_sm
@@ -25,6 +31,8 @@ COPY configs/ /app/configs/
 COPY pyproject.toml /app/
 RUN pip install --no-cache-dir -e . --no-deps
 
+RUN mkdir -p /app/shared && touch /app/shared/__init__.py
+COPY services/shared/observability.py /app/shared/observability.py
 COPY services/job-runner/main.py /app/main.py
 COPY services/job-runner/state.py /app/state.py
 COPY services/job-runner/jobs/ /app/jobs/
