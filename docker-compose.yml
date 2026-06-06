@@ -139,6 +139,8 @@ services:
       JUDGE_MODEL: ${JUDGE_MODEL:-gemini-2.0-flash}
       JUDGE_BASE_URL: ${JUDGE_BASE_URL:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data:ro
     depends_on:
@@ -158,6 +160,8 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       ENABLED_MODELS: ${ENABLED_MODELS:-llama,vllm}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data:ro
     depends_on:
@@ -179,6 +183,8 @@ services:
     environment:
       REDIS_URL: redis://redis-stack:6379
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data:ro
     depends_on:
@@ -196,6 +202,8 @@ services:
       MODEL_GATEWAY_URL: http://model-gateway:8001
       DOCUMENT_SVC_URL: http://document-svc:8002
       EVALUATION_SVC_URL: http://evaluation-svc:8003
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data
     depends_on:
@@ -210,7 +218,30 @@ services:
       - "8000:8000"
     environment:
       JOB_RUNNER_URL: http://job-runner:8004
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
+      - job-runner
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+      - model-gateway
+      - document-svc
+      - evaluation-svc
       - job-runner
 
 volumes:
