@@ -10,6 +10,8 @@ wheels/
 # Virtual environments
 .venv
 data/*
+!data/corrupted/
+!data/corrupted/docvqa_corrupted.json
 *.pdf
 .gitignore
 .env

@@ -1,0 +1,15 @@
+[
+  {
+    "sample_id": "test-001",
+    "document_path": "data/raw/docvqa/val/documents/test.png",
+    "original_question": "What year is shown?",
+    "corrupted_question": "What year is shown in 1492?",
+    "original_answer": "2019",
+    "corruption_type": "nlp_entity",
+    "corruption_detail": "year:2019->1492",
+    "page_index": 0,
+    "metadata": {},
+    "judge_verified": true,
+    "judge_reason": "Date not in document."
+  }
+]
