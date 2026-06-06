@@ -46,8 +46,11 @@ async def dispatch_job(req: DispatchRequest, background_tasks: BackgroundTasks):
         r2 = _get_redis()
         try:
             await handler(r2, job_id, req.config)
-        except Exception:
-            pass  # handler already writes failed status
+        except Exception as exc:
+            # Guarantee the job is marked failed even if the handler crashed before doing so
+            current = state.get_job(r2, job_id)
+            if current and current.get("status") not in ("done", "failed", "cancelled"):
+                state.update_job(r2, job_id, status="failed", error=str(exc))
 
     background_tasks.add_task(_run)
     job_data = state.get_job(r, job_id)

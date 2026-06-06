@@ -51,7 +51,6 @@ def test_list_jobs_returns_all(r):
 
 # --- job dispatch tests ---
 
-import fakeredis
 import main as runner_main
 from fastapi.testclient import TestClient
 

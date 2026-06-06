@@ -77,7 +77,7 @@ async def run_benchmark_job(redis, job_id: str, config: dict) -> None:
                         "raw_response": model_result.get("raw_response", ""),
                         "latency_ms": model_result.get("latency_ms", -1),
                     })
-            completed += len(chunk_results)
+            completed += sum(1 for r in chunk_results if not isinstance(r, Exception))
             state.update_job(redis, job_id, progress=completed)
 
     out_path = Path(output_dir) / f"{job_id}_benchmark.json"
