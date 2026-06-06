@@ -12,6 +12,31 @@ import logging
 import os
 
 
+_LOG_SKIP = {
+    "args", "asctime", "created", "exc_info", "exc_text",
+    "filename", "funcName", "levelname", "levelno", "lineno",
+    "message", "module", "msecs", "msg", "name", "pathname",
+    "process", "processName", "relativeCreated", "stack_info",
+    "thread", "threadName",
+}
+
+
+class _JsonFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        payload = {
+            "time": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+        for key, val in record.__dict__.items():
+            if key not in _LOG_SKIP:
+                payload[key] = val
+        if record.exc_info:
+            payload["exc_info"] = self.formatException(record.exc_info)
+        return json.dumps(payload)
+
+
 def setup_tracing(service_name: str) -> None:
     """Configure OTel SDK to export traces to Jaeger via OTLP gRPC.
 
@@ -45,41 +70,21 @@ def setup_tracing(service_name: str) -> None:
 def setup_metrics(app) -> None:
     """Attach prometheus-fastapi-instrumentator to the FastAPI app.
 
-    Exposes GET /metrics in Prometheus text format.
+    Exposes GET /metrics in Prometheus text format. Idempotent — safe to call
+    multiple times on the same app instance.
     """
+    if any(getattr(r, "path", None) == "/metrics" for r in getattr(app, "routes", [])):
+        return
     from prometheus_fastapi_instrumentator import Instrumentator
     Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
 
 def get_logger(name: str) -> logging.Logger:
     """Return a logger that emits structured JSON records to stderr."""
-
-    class _JsonFormatter(logging.Formatter):
-        def format(self, record: logging.LogRecord) -> str:
-            payload = {
-                "time": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
-                "level": record.levelname,
-                "logger": record.name,
-                "message": record.getMessage(),
-            }
-            _skip = {
-                "args", "asctime", "created", "exc_info", "exc_text",
-                "filename", "funcName", "levelname", "levelno", "lineno",
-                "message", "module", "msecs", "msg", "name", "pathname",
-                "process", "processName", "relativeCreated", "stack_info",
-                "thread", "threadName",
-            }
-            for key, val in record.__dict__.items():
-                if key not in _skip:
-                    payload[key] = val
-            if record.exc_info:
-                payload["exc_info"] = self.formatException(record.exc_info)
-            return json.dumps(payload)
-
     logger = logging.getLogger(name)
+    logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
     if not logger.handlers:
         handler = logging.StreamHandler()
         handler.setFormatter(_JsonFormatter())
         logger.addHandler(handler)
-        logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
     return logger
