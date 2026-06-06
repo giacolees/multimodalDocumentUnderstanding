@@ -71,7 +71,6 @@ services:
 
   vllm-worker-0:
     image: vllm/vllm-openai:latest
-    runtime: nvidia
     environment:
       CUDA_VISIBLE_DEVICES: "0"
       HF_HOME: /models/hf_cache
@@ -102,7 +101,6 @@ services:
 
   vllm-worker-1:
     image: vllm/vllm-openai:latest
-    runtime: nvidia
     environment:
       CUDA_VISIBLE_DEVICES: "1"
       HF_HOME: /models/hf_cache
@@ -112,7 +110,7 @@ services:
     volumes:
       - ./models:/models
     command: >
-      --model ${VLLM_MODEL_1:-${VLLM_MODEL:-Qwen/Qwen2-VL-7B-Instruct}}
+      --model ${VLLM_MODEL_1:-Qwen/Qwen2-VL-7B-Instruct}
       --host 0.0.0.0 --port 8000
       --dtype auto
       --max-model-len ${VLLM_MAX_LEN:-4096}
@@ -166,6 +164,10 @@ services:
       llama-worker-0:
         condition: service_healthy
       llama-worker-1:
+        condition: service_healthy
+      vllm-worker-0:
+        condition: service_healthy
+      vllm-worker-1:
         condition: service_healthy
 
   document-svc:
