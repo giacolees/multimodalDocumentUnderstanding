@@ -8,12 +8,16 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 import state
+from shared.observability import setup_tracing, setup_metrics, get_logger
 from jobs.corrupt import run_corrupt_job
 from jobs.benchmark import run_benchmark_job
 from jobs.mitigation import run_mitigation_job
 from jobs.index import run_index_job
 
 app = FastAPI(title="job-runner", version="1.0")
+setup_tracing("job-runner")
+setup_metrics(app)
+logger = get_logger("job-runner")
 
 _REDIS_URL = os.getenv("REDIS_URL", "redis://redis-stack:6379")
 _JOB_HANDLERS = {
@@ -36,21 +40,31 @@ class DispatchRequest(BaseModel):
 @app.post("/jobs/dispatch")
 async def dispatch_job(req: DispatchRequest, background_tasks: BackgroundTasks):
     if req.type not in _JOB_HANDLERS:
-        raise HTTPException(status_code=400, detail=f"Unknown job type: {req.type}. Valid: {list(_JOB_HANDLERS)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown job type: {req.type}. Valid: {list(_JOB_HANDLERS)}",
+        )
 
     r = _get_redis()
     job_id = state.create_job(r, req.type)
     handler = _JOB_HANDLERS[req.type]
+    logger.info("Job dispatched", extra={"job_id": job_id, "job_type": req.type})
 
     async def _run():
-        r2 = _get_redis()
-        try:
-            await handler(r2, job_id, req.config)
-        except Exception as exc:
-            # Guarantee the job is marked failed even if the handler crashed before doing so
-            current = state.get_job(r2, job_id)
-            if current and current.get("status") not in ("done", "failed", "cancelled"):
-                state.update_job(r2, job_id, status="failed", error=str(exc))
+        from opentelemetry import trace
+        tracer = trace.get_tracer("job-runner")
+        with tracer.start_as_current_span(
+            f"job.{req.type}",
+            attributes={"job.id": job_id, "job.type": req.type},
+        ):
+            r2 = _get_redis()
+            try:
+                await handler(r2, job_id, req.config)
+            except Exception as exc:
+                current = state.get_job(r2, job_id)
+                if current and current.get("status") not in ("done", "failed", "cancelled"):
+                    state.update_job(r2, job_id, status="failed", error=str(exc))
+                logger.error("Job failed", extra={"job_id": job_id, "error": str(exc)})
 
     background_tasks.add_task(_run)
     job_data = state.get_job(r, job_id)
@@ -79,12 +93,12 @@ def cancel_job(job_id: str):
     if data is None:
         raise HTTPException(status_code=404, detail="Job not found")
     state.update_job(r, job_id, status="cancelled")
+    logger.info("Job cancelled", extra={"job_id": job_id})
     return {"job_id": job_id, "status": "cancelled"}
 
 
 @app.get("/jobs/{job_id}/logs")
 def stream_logs(job_id: str):
-    """SSE endpoint: streams job progress until done/failed/cancelled."""
     r = _get_redis()
 
     def event_generator():

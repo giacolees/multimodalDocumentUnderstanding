@@ -1,5 +1,6 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))  # services/ (for shared.*)
 
 import pytest
 import fakeredis
@@ -96,3 +97,36 @@ def test_get_job_returns_state(runner_client, fake_redis_fixture):
     d = resp.json()
     assert d["status"] == "running"
     assert d["progress"] == "5"
+
+
+def test_jobs_counter_registered():
+    """jobs_total counter must be registered in prometheus REGISTRY."""
+    from prometheus_client import REGISTRY
+    names = [m.name for m in REGISTRY.collect()]
+    # prometheus_client 0.20+ strips _total suffix from Counter.name
+    assert "jobs_total" in names or "jobs" in names
+
+
+def test_jobs_counter_increments_on_done(r):
+    from prometheus_client import REGISTRY
+
+    job_id = state.create_job(r, "benchmark")
+
+    before = {
+        frozenset(s.labels.items()): s.value
+        for m in REGISTRY.collect() if m.name in ("jobs_total", "jobs")
+        for s in m.samples if s.name.endswith("_total")
+    }
+
+    state.update_job(r, job_id, status="done")
+
+    after = {
+        frozenset(s.labels.items()): s.value
+        for m in REGISTRY.collect() if m.name in ("jobs_total", "jobs")
+        for s in m.samples if s.name.endswith("_total")
+    }
+
+    key = frozenset({"job_type": "benchmark", "status": "done"}.items())
+    after_val = after.get(key, 0)
+    before_val = before.get(key, 0)
+    assert after_val > before_val
