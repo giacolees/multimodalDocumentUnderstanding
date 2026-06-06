@@ -10,6 +10,20 @@ import os
 import time
 from pathlib import Path
 
+from prometheus_client import Counter, Histogram
+
+_INFER_LATENCY = Histogram(
+    "inference_latency_seconds",
+    "Inference round-trip latency per model",
+    labelnames=["model_id"],
+    buckets=[0.5, 1, 2, 5, 10, 30, 60, 120, 180],
+)
+_INFER_ERRORS = Counter(
+    "inference_errors_total",
+    "Inference failures by model and error type",
+    labelnames=["model_id", "error_type"],
+)
+
 
 async def _image_to_b64(document_path: str) -> str:
     data = await asyncio.to_thread(Path(document_path).read_bytes)
@@ -126,25 +140,29 @@ async def async_infer(
     vllm_pool=None,
 ) -> dict:
     t0 = time.monotonic()
+    try:
+        if model_id == "llama":
+            result = await _infer_local(document_path, prompt, max_tokens, llama_pool)
+        elif model_id == "vllm":
+            result = await _infer_local(document_path, prompt, max_tokens, vllm_pool)
+        elif model_id == "mistral":
+            result = await _infer_mistral(document_path, prompt, max_tokens)
+        elif model_id == "google":
+            result = await _infer_google(document_path, prompt, max_tokens)
+        elif model_id == "openrouter":
+            result = await _infer_openrouter(document_path, prompt, max_tokens)
+        else:
+            raise ValueError(f"Unknown model_id: {model_id}")
+    except Exception as e:
+        _INFER_ERRORS.labels(model_id=model_id, error_type=type(e).__name__).inc()
+        raise
 
-    if model_id == "llama":
-        result = await _infer_local(document_path, prompt, max_tokens, llama_pool)
-    elif model_id == "vllm":
-        result = await _infer_local(document_path, prompt, max_tokens, vllm_pool)
-    elif model_id == "mistral":
-        result = await _infer_mistral(document_path, prompt, max_tokens)
-    elif model_id == "google":
-        result = await _infer_google(document_path, prompt, max_tokens)
-    elif model_id == "openrouter":
-        result = await _infer_openrouter(document_path, prompt, max_tokens)
-    else:
-        raise ValueError(f"Unknown model_id: {model_id}")
-
-    latency_ms = int((time.monotonic() - t0) * 1000)
+    latency_s = time.monotonic() - t0
+    _INFER_LATENCY.labels(model_id=model_id).observe(latency_s)
     raw = result["raw_response"]
     return {
         "model_id": model_id,
         "raw_response": raw,
         "predicted_unanswerable": _parse_unanswerable(raw),
-        "latency_ms": latency_ms,
+        "latency_ms": int(latency_s * 1000),
     }

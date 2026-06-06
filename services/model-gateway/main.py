@@ -1,25 +1,62 @@
 import asyncio
 import os
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
+from prometheus_client import Gauge
 from pydantic import BaseModel
 
 from pool import WorkerPool
+from shared.observability import setup_tracing, setup_metrics, get_logger
 import clients
 
-app = FastAPI(title="model-gateway", version="1.0")
+try:
+    _POOL_HEALTHY = Gauge(
+        "pool_healthy_workers",
+        "Number of healthy workers in each local pool",
+        labelnames=["pool"],
+    )
+except ValueError:
+    from prometheus_client import REGISTRY as _REG
+    _POOL_HEALTHY = next(
+        c for c in _REG._names_to_collectors.values()
+        if getattr(c, "_name", None) == "pool_healthy_workers"
+    )
 
-# llama.cpp pool — comma-separated URLs from env
 _LLAMA_URLS_RAW = os.getenv("LLAMA_URLS", "")
 _llama_pool = WorkerPool([u.strip() for u in _LLAMA_URLS_RAW.split(",") if u.strip()])
 
-# vLLM pool — comma-separated URLs from env
 _VLLM_URLS_RAW = os.getenv("VLLM_URLS", "")
 _vllm_pool = WorkerPool([u.strip() for u in _VLLM_URLS_RAW.split(",") if u.strip()])
 
 _ENABLED = set(os.getenv("ENABLED_MODELS", "llama,vllm").split(","))
 _ALL_MODELS = ["llama", "vllm", "mistral", "google", "openrouter"]
+
+
+async def _poll_pool_health() -> None:
+    """Background task: update pool health gauges every 30 s."""
+    while True:
+        _POOL_HEALTHY.labels(pool="llama").set(
+            sum(1 for w in _llama_pool.status() if w["healthy"])
+        )
+        _POOL_HEALTHY.labels(pool="vllm").set(
+            sum(1 for w in _vllm_pool.status() if w["healthy"])
+        )
+        await asyncio.sleep(30)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(_poll_pool_health())
+    yield
+    task.cancel()
+
+
+app = FastAPI(title="model-gateway", version="1.0", lifespan=lifespan)
+setup_tracing("model-gateway")
+setup_metrics(app)
+logger = get_logger("model-gateway")
 
 
 class InferRequest(BaseModel):

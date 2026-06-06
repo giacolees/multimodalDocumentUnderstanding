@@ -90,3 +90,17 @@ def test_pool_round_robin():
     assert pool.next() == "http://worker-a:8080"
     assert pool.next() == "http://worker-b:8080"
     assert pool.next() == "http://worker-a:8080"
+
+
+def test_infer_latency_metric_registered():
+    """_INFER_LATENCY histogram must be registered in prometheus_client REGISTRY."""
+    from prometheus_client import REGISTRY
+    metric_names = [m.name for m in REGISTRY.collect()]
+    assert "inference_latency_seconds" in metric_names
+
+
+def test_infer_error_metric_registered():
+    from prometheus_client import REGISTRY
+    # prometheus_client strips _total from .name; check the base name
+    metric_names = [m.name for m in REGISTRY.collect()]
+    assert "inference_errors" in metric_names
