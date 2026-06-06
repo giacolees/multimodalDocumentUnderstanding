@@ -164,15 +164,9 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data:ro
-    depends_on:
-      llama-worker-0:
-        condition: service_healthy
-      llama-worker-1:
-        condition: service_healthy
-      vllm-worker-0:
-        condition: service_healthy
-      vllm-worker-1:
-        condition: service_healthy
+    # GPU worker depends_on omitted — start workers explicitly when needed:
+    #   docker compose up -d llama-worker-0 llama-worker-1
+    #   docker compose up -d vllm-worker-0 vllm-worker-1
 
   document-svc:
     build:
