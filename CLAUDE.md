@@ -124,16 +124,20 @@ All three stages are driven by YAML files in `configs/`. Edit `configs/dataset_c
 
 Five FastAPI services wrap the `src/` pipeline. `src/` code is NOT rewritten — services import and wrap it.
 
-| Service          | Port | Responsibility                                                       |
-|------------------|------|----------------------------------------------------------------------|
-| `api-gateway`    | 8000 | Client entry point — validates + proxies /jobs/* to job-runner       |
-| `model-gateway`  | 8001 | Unified inference API — GPU workers + cloud APIs, round-robin pool   |
-| `document-svc`   | 8002 | Chunking, embedding, Redis hybrid search (vector + BM25) for RAG     |
-| `evaluation-svc` | 8003 | LLM-as-a-judge, RAG scorer, metrics                                  |
-| `job-runner`     | 8004 | Async job dispatch (corrupt/benchmark/mitigation/index job types)    |
-| `gpu0-worker`    | 8081 | llama.cpp server, CUDA_VISIBLE_DEVICES=0                             |
-| `gpu1-worker`    | 8082 | llama.cpp server, CUDA_VISIBLE_DEVICES=1                             |
-| `redis-stack`    | 6379 | Job state hashes (`job:{id}`) + vector index (`doc:{id}:chunk:{n}`) |
+| Service | Port | Responsibility |
+| --- | --- | --- |
+| `api-gateway` | 8000 | Client entry point — validates + proxies /jobs/* to job-runner |
+| `model-gateway` | 8001 | Unified inference API — GPU workers + cloud APIs, round-robin pool |
+| `document-svc` | 8002 | Chunking, embedding, Redis hybrid search (vector + BM25) for RAG |
+| `evaluation-svc` | 8003 | LLM-as-a-judge, RAG scorer, metrics |
+| `job-runner` | 8004 | Async job dispatch (corrupt/benchmark/mitigation/index job types) |
+| `llama-worker-0` | 8081 | llama.cpp server, CUDA_VISIBLE_DEVICES=0 (GGUF models) |
+| `llama-worker-1` | 8082 | llama.cpp server, CUDA_VISIBLE_DEVICES=1 (GGUF models) |
+| `vllm-worker-0` | 8083 | vLLM server, CUDA_VISIBLE_DEVICES=0 (HF safetensor models) |
+| `vllm-worker-1` | 8084 | vLLM server, CUDA_VISIBLE_DEVICES=1 (HF safetensor models) |
+| `redis-stack` | 6379 | Job state hashes + vector index for RAG |
+| `jaeger` | 16686/4317 | Distributed trace backend (UI / OTLP gRPC) |
+| `prometheus` | 9090 | Metrics scraper (scrapes all 5 app services every 15s) |
 
 ### Running the stack
 
@@ -164,12 +168,33 @@ uv run pytest tests/integration/ -v --timeout=120
 ### Services dependencies
 
 ```bash
-uv sync --extra services   # installs fastapi, uvicorn, httpx, redis, redisvl, sentence-transformers, fakeredis
+uv sync --extra services   # installs fastapi, uvicorn, httpx, redis, redisvl, sentence-transformers, fakeredis, opentelemetry-*, prometheus-*
 ```
+
+### Observability
+
+- Jaeger UI: `http://localhost:16686` — distributed traces across all 5 services
+- Prometheus: `http://localhost:9090` — inference latency, pool health, job counters
+- Structured JSON logs to stdout — query with `docker compose logs <svc>`
+- Shared module: `services/shared/observability.py` — `setup_tracing(name)`, `setup_metrics(app)`, `get_logger(name)`
+- Key metrics: `inference_latency_seconds` (histogram, label: model_id), `pool_healthy_workers` (gauge, label: pool), `jobs_total` (counter, labels: job_type/status)
+
+### model-gateway pool config
+
+- `model_id: "llama"` → round-robins across `LLAMA_URLS` (comma-separated llama.cpp worker URLs)
+- `model_id: "vllm"` → round-robins across `VLLM_URLS` (comma-separated vLLM worker URLs)
+- `model_id: null` → fan-out to all models listed in `ENABLED_MODELS`
+- vLLM uses HuggingFace safetensor format — set `VLLM_MODEL` to HF model ID; `HF_TOKEN` needed for gated models
 
 ### Known gotchas
 
 - **redisvl + redis 8.x**: `redis 8.0` dropped `redis.commands.search.indexDefinition`; `redisvl` imports it at module load. Fix: lazy-import redisvl inside function bodies (already done in `document-svc`).
 - **Docker build context**: all Dockerfiles assume repo root as build context. Use `docker compose build`, not `docker build .` from within a service directory.
 - **Redis Stack**: requires `redis/redis-stack:latest` (not plain `redis`) for RediSearch + vector support.
-- **GPU workers**: model-gateway `depends_on` gpu workers with `condition: service_healthy`. llama.cpp takes 30–90 s to load a model — don't expect immediate inference on cold start.
+- **GPU workers**: model-gateway `depends_on` llama and vllm workers with `condition: service_healthy`. llama.cpp takes 30–90 s to load a model — don't expect immediate inference on cold start.
+- **Nested Docker Compose var interpolation broken**: `${VAR1:-${VAR2:-default}}` is treated as a literal string. Use flat defaults or resolve in `.env`.
+- **`runtime: nvidia` + `deploy.resources` are redundant**: for GPU containers, use only `deploy.resources.reservations.devices`.
+- **pytest `sys.path` for shared module**: service test files need TWO inserts — `sys.path.insert(0, "..")` for the service dir AND `sys.path.insert(0, "../..")` for `services/` (required for `from shared.observability import ...`).
+- **prometheus_client 0.20+ strips `_total` from Counter `.name`**: `Counter("foo_total", ...)` has `.name = "foo"` in `REGISTRY.collect()` — the `_total` suffix only appears in sample names.
+- **prometheus_client `Duplicated timeseries` on module reload**: wrap module-level metric definitions in `try/except ValueError` when tests use `importlib.reload()`.
+- **OTel `DEADLINE_EXCEEDED` in tests**: harmless — `BatchSpanProcessor` silently drops spans when Jaeger is unreachable; `setup_tracing` is already wrapped in try/except.
