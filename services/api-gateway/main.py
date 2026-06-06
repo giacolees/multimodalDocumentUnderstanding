@@ -8,18 +8,19 @@ from pydantic import BaseModel
 
 app = FastAPI(title="api-gateway", version="1.0")
 
+from shared.observability import setup_tracing, setup_metrics, get_logger
+setup_tracing("api-gateway")
+setup_metrics(app)
+logger = get_logger("api-gateway")
+
 _JOB_RUNNER_URL = os.getenv("JOB_RUNNER_URL", "http://job-runner:8004")
 
-
-# --- Schemas (validated here before proxying) ---
 
 class JobRequest(BaseModel):
     type: Literal["corrupt", "benchmark", "mitigation", "index"]
     dataset: Optional[str] = None
     config: dict = {}
 
-
-# --- Routes ---
 
 @app.post("/jobs")
 def submit_job(req: JobRequest):

@@ -1,11 +1,21 @@
-import sys, os
+import sys, os, importlib.util
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
 
 import pytest
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 
-from main import app
+# Load main.py under a unique module name to avoid sys.modules['main'] collisions
+# when all three service test suites run in the same pytest process.
+_spec = importlib.util.spec_from_file_location(
+    "document_svc_main",
+    os.path.join(os.path.dirname(__file__), "..", "main.py"),
+)
+_mod = importlib.util.module_from_spec(_spec)
+sys.modules["document_svc_main"] = _mod
+_spec.loader.exec_module(_mod)
+app = _mod.app
 
 client = TestClient(app)
 

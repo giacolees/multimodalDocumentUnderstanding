@@ -10,8 +10,11 @@ import rag_scorer
 
 app = FastAPI(title="evaluation-svc", version="1.0")
 
+from shared.observability import setup_tracing, setup_metrics, get_logger
+setup_tracing("evaluation-svc")
+setup_metrics(app)
+logger = get_logger("evaluation-svc")
 
-# --- /evaluate/answerability ---
 
 class AnswerabilityRequest(BaseModel):
     question: str
@@ -32,10 +35,9 @@ def evaluate_answerability(req: AnswerabilityRequest):
         result = judge_module.run_judge(req.question, req.document_path, req.confidence_threshold)
         return AnswerabilityResponse(**result)
     except Exception as e:
+        logger.warning("Judge call failed", extra={"error": str(e)})
         return AnswerabilityResponse(verdict=None, confidence=0.0, reason=str(e))
 
-
-# --- /evaluate/rag ---
 
 class RAGEvalRequest(BaseModel):
     question: str
@@ -61,8 +63,6 @@ def evaluate_rag(req: RAGEvalRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- /evaluate/metrics ---
-
 class MetricsRequest(BaseModel):
     y_true: list[bool]
     y_pred: list[bool]
@@ -70,7 +70,9 @@ class MetricsRequest(BaseModel):
     @model_validator(mode="after")
     def lengths_must_match(self):
         if len(self.y_true) != len(self.y_pred):
-            raise ValueError(f"y_true length ({len(self.y_true)}) must equal y_pred length ({len(self.y_pred)})")
+            raise ValueError(
+                f"y_true length ({len(self.y_true)}) must equal y_pred length ({len(self.y_pred)})"
+            )
         return self
 
 

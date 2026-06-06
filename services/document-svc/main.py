@@ -2,21 +2,24 @@ import os
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import redis as sync_redis
 
 import indexer
 import search as search_module
 
 app = FastAPI(title="document-svc", version="1.0")
 
+from shared.observability import setup_tracing, setup_metrics, get_logger
+setup_tracing("document-svc")
+setup_metrics(app)
+logger = get_logger("document-svc")
+
 _REDIS_URL = os.getenv("REDIS_URL", "redis://redis-stack:6379")
 
 
-def _get_redis():
-    import redis as sync_redis
+def _get_redis() -> sync_redis.Redis:
     return sync_redis.from_url(_REDIS_URL)
 
-
-# --- /documents/index ---
 
 class IndexRequest(BaseModel):
     dataset: str
@@ -26,6 +29,7 @@ class IndexRequest(BaseModel):
 @app.post("/documents/index")
 def index_documents(req: IndexRequest):
     result = indexer.index_dataset(req.dataset, req.data_dir, _REDIS_URL)
+    logger.info("Indexed dataset", extra={"dataset": req.dataset, "chunks": result.get("chunks_indexed")})
     return result
 
 
@@ -41,8 +45,6 @@ def clear_index():
         pass
     return {"deleted_keys": len(keys)}
 
-
-# --- /search ---
 
 class SearchRequest(BaseModel):
     query: str
@@ -68,8 +70,6 @@ def search(req: SearchRequest):
         raise HTTPException(status_code=500, detail=str(e))
     return SearchResponse(chunks=chunks)
 
-
-# --- /documents/{doc_id} ---
 
 @app.get("/documents/{doc_id}")
 def get_document(doc_id: str):
