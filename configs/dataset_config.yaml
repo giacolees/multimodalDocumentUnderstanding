@@ -17,8 +17,8 @@ corruption:
 
 quality_check:
   use_judge: true
-  judge_model: Smoffyy/Qwen3.5-4B-Instruct-Pure-GGUF:Q4_K_M
-  judge_base_url: http://localhost:8080/v1   # set for llama-server; omit for cloud models
+  judge_model: nvidia/nemotron-nano-12b-v2-vl:free   # vision-capable free model on OpenRouter
+  judge_base_url: https://openrouter.ai/api/v1    # omit to use Gemini cloud directly
   confidence_threshold: 0.60   # unanswerable verdicts below this are dropped
   max_retries: 2               # output-validation retries before raising UnexpectedModelBehavior
-  max_tokens: 2048             # increase for thinking/reasoning models (e.g. Qwen3) that burn tokens before output
+  max_tokens: 2048

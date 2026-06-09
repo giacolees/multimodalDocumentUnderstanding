@@ -8,7 +8,7 @@ Supports two backends:
     (OpenAI-compatible endpoint; start with `llama-server -hf <model>`)
 """
 
-import json
+import os
 import re
 from pathlib import Path
 from typing import Annotated, Literal, Optional
@@ -23,13 +23,8 @@ from pydantic_ai.output import TextOutput
 # ---------------------------------------------------------------------------
 
 class JudgeResult(BaseModel):
-    reasoning: str          # chain-of-thought before reaching the verdict
     verdict: Literal["unanswerable", "answerable"]
     confidence: Annotated[float, Field(ge=0.0, le=1.0)]
-    reason: str             # one-sentence justification
-    # Populated only when verdict="answerable": a minimal rewrite the judge
-    # believes would make the question unanswerable from this document.
-    suggested_question: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -47,39 +42,38 @@ Think step-by-step before reaching your verdict:
   2. What exactly does the question ask for?
   3. Is that specific information present in the document?
 
-Fill in every field of the structured response:
-  reasoning          – your step-by-step analysis (steps 1–3 above)
-  verdict            – "unanswerable" or "answerable"
-  confidence         – float 0.0–1.0; use ≥0.85 only when certain, 0.5–0.7 for borderline
-  reason             – one concise sentence explaining your decision
-  suggested_question – if verdict is "answerable", provide the minimal rewrite
-                       of the question that makes it unanswerable (swap an
-                       entity, date, or value that is absent from the document).
-                       Must be fluent and plausible. Set to null otherwise.
+Respond ONLY with a valid JSON object. No prose, no markdown fences. Required fields:
+  verdict    – "unanswerable" or "answerable"
+  confidence – float 0.0–1.0; use ≥0.85 only when certain, 0.5–0.7 for borderline
 
-Respond ONLY with a valid JSON object. No prose, no markdown fences. Example shape:
-{"reasoning": "...", "verdict": "unanswerable", "confidence": 0.9, "reason": "...", "suggested_question": null}\
+Examples:
+  Question: "What was the total revenue in 1987?" — document shows 1992 figures only.
+  → {"verdict": "unanswerable", "confidence": 0.9}
+
+  Question: "What was the total revenue in 1992?" — document shows the 1992 revenue clearly.
+  → {"verdict": "answerable", "confidence": 0.85}\
 """
 
 # ---------------------------------------------------------------------------
-# Text-mode parser used for llama.cpp backend
+# Helpers
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Text-mode parser used for llama.cpp / OpenRouter backend
 # ---------------------------------------------------------------------------
 
 def _parse_judge_result(text: str) -> JudgeResult:
-    """Extract and validate a JudgeResult from a free-text model response.
-
-    Strips markdown fences and any <think> block that reasoning models emit
-    before the JSON, then validates with pydantic.
-    """
-    # Remove thinking blocks (Qwen3 / DeepSeek-R1 style)
+    """Extract verdict and confidence from free-form model text via regex."""
+    # Strip thinking blocks and markdown
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
-    # Strip markdown code fences
-    text = re.sub(r"```(?:json)?", "", text).strip()
-    # Grab the first {...} blob
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if not match:
-        raise ValueError(f"No JSON object found in model output: {text!r}")
-    return JudgeResult.model_validate(json.loads(match.group()))
+
+    verdict_match = re.search(r"\b(unanswerable|answerable)\b", text, re.IGNORECASE)
+    verdict = verdict_match.group(1).lower() if verdict_match else "answerable"
+
+    conf_match = re.search(r'"?confidence"?\s*[=:]\s*([0-9]*\.?[0-9]+)', text, re.IGNORECASE)
+    confidence = float(conf_match.group(1)) if conf_match else 0.5
+
+    return JudgeResult(verdict=verdict, confidence=min(max(confidence, 0.0), 1.0))
 
 
 # ---------------------------------------------------------------------------
@@ -126,7 +120,10 @@ class LLMJudge:
             from pydantic_ai.providers.openai import OpenAIProvider  # type: ignore[import-untyped]
             pydantic_model = OpenAIModel(
                 self._model,
-                provider=OpenAIProvider(base_url=self._base_url, api_key="none"),
+                provider=OpenAIProvider(
+                    base_url=self._base_url,
+                    api_key=os.getenv("JUDGE_API_KEY") or os.getenv("OPENROUTER_API_KEY") or "sk-no-key",
+                ),
             )
             output_type = TextOutput(_parse_judge_result)
         else:
@@ -158,9 +155,6 @@ class LLMJudge:
             model_settings={"max_tokens": self._max_tokens},
         )
         jr = result.output
-        # Enforce invariant: no suggestion when already unanswerable
-        if jr.verdict == "unanswerable":
-            jr.suggested_question = None
         # Demote low-confidence unanswerable verdicts so borderline samples are dropped
         if jr.verdict == "unanswerable" and jr.confidence < self.confidence_threshold:
             jr.verdict = "answerable"

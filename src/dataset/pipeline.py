@@ -4,7 +4,7 @@ Orchestrated with LangChain LCEL: each processing phase is a RunnableLambda
 and samples flow through the composed chain via .invoke().
 
 Usage:
-    python -m src.part1_dataset.pipeline \
+    python -m src.dataset.pipeline \
         --dataset docvqa \
         --data_dir data/raw/docvqa \
         --output_dir data/corrupted \
@@ -13,11 +13,14 @@ Usage:
 
 import argparse
 import json
+import logging
 import random
 from pathlib import Path
 from typing import Optional
 
 import yaml
+
+log = logging.getLogger(__name__)
 from langchain_core.runnables import RunnableLambda
 
 from .loaders.docvqa_loader import DocVQALoader
@@ -52,16 +55,17 @@ def _corrupt(state: dict) -> dict:
     for corruptor in state["corruptors"]:
         result = corruptor.corrupt(sample.question)
         if result is not None:
+            log.info("[%s] corrupted via %s: %r", sample.sample_id, type(corruptor).__name__, result.corrupted_question)
             return {**state, "corrupted": result}
+    log.info("[%s] no corruptor matched — dropped", sample.sample_id)
     return {**state, "corrupted": None}
 
 
 # ---------------------------------------------------------------------------
-# Step 2 – judge verification (with one suggestion retry)
+# Step 2 – judge verification
 # ---------------------------------------------------------------------------
 
 def _judge(state: dict) -> dict:
-    """Verify the corrupted question; try the judge's suggestion on failure."""
     corrupted = state.get("corrupted")
     judge: Optional[LLMJudge] = state.get("judge")
 
@@ -72,42 +76,26 @@ def _judge(state: dict) -> dict:
     cdetail = corrupted.corruption_detail
 
     if judge is None:
-        # Judge disabled — pass through without verification
         return {**state, "judge_fields": {
             "corrupted_question": corrupted.corrupted_question,
             "corruption_type": ctype,
             "corruption_detail": cdetail,
             "judge_verified": None,
-            "judge_reason": None,
-            "judge_suggested": None,
         }}
 
     result: JudgeResult = judge.evaluate(corrupted.corrupted_question, state["sample"].document_path)
+    log.info("[%s] judge → verdict=%s confidence=%.2f", state["sample"].sample_id, result.verdict, result.confidence)
 
-    if result.verdict == "unanswerable":
-        return {**state, "judge_fields": {
-            "corrupted_question": corrupted.corrupted_question,
-            "corruption_type": ctype,
-            "corruption_detail": cdetail,
-            "judge_verified": True,
-            "judge_reason": result.reason,
-            "judge_suggested": False,
-        }}
+    if result.verdict != "unanswerable":
+        log.info("[%s] dropped (judge: answerable)", state["sample"].sample_id)
+        return {**state, "judge_fields": None}
 
-    # Judge rejected — try its suggestion once
-    if result.suggested_question:
-        retry: JudgeResult = judge.evaluate(result.suggested_question, state["sample"].document_path)
-        if retry.verdict == "unanswerable":
-            return {**state, "judge_fields": {
-                "corrupted_question": result.suggested_question,
-                "corruption_type": ctype,
-                "corruption_detail": f"{cdetail} [judge-revised]",
-                "judge_verified": True,
-                "judge_reason": retry.reason,
-                "judge_suggested": True,
-            }}
-
-    return {**state, "judge_fields": None}
+    return {**state, "judge_fields": {
+        "corrupted_question": corrupted.corrupted_question,
+        "corruption_type": ctype,
+        "corruption_detail": cdetail,
+        "judge_verified": True,
+    }}
 
 
 # ---------------------------------------------------------------------------
@@ -154,25 +142,66 @@ def run_pipeline(
     seed: int = 42,
 ) -> list[dict]:
     rng = random.Random(seed)
+    import inspect
     loader_cls = LOADERS[dataset]
-    loader = loader_cls(data_dir, **config.get("loader", {}))
+    loader_kwargs = {
+        k: v for k, v in config.get("loader", {}).items()
+        if k in inspect.signature(loader_cls.__init__).parameters
+    }
+    loader = loader_cls(data_dir, **loader_kwargs)
 
-    corruptors = [C(seed=seed) for C in CORRUPTORS]
-    judge = LLMJudge() if use_judge else None
+    dist_cfg = config.get("corruption", {}).get("distribution", {})
+    corruptor_map = {
+        "nlp_entity": NLPEntityCorruptor,
+        "element": ElementCorruptor,
+        "layout": LayoutCorruptor,
+    }
+    dist_keys = [k for k in corruptor_map if k in dist_cfg]
+    dist_weights = [dist_cfg[k] for k in dist_keys]
+    corruptors = {k: corruptor_map[k](seed=seed) for k in dist_keys}
+    qc = config.get("quality_check", {})
+    judge = LLMJudge(
+        model=qc.get("judge_model", "gemini-2.0-flash"),
+        confidence_threshold=qc.get("confidence_threshold", 0.5),
+        base_url=qc.get("judge_base_url") or None,
+        max_retries=qc.get("max_retries", 3),
+        max_tokens=qc.get("max_tokens", 2048),
+    ) if use_judge else None
+
+    log.info("Starting corruption pipeline: dataset=%s max_samples=%s judge=%s",
+             dataset, config.get("corruption", {}).get("max_samples", "all"), "enabled" if judge else "disabled")
+
+    all_samples = list(loader.load())
+    max_samples = config.get("corruption", {}).get("max_samples", -1)
+    if max_samples and max_samples > 0:
+        all_samples = all_samples[:max_samples]
+    log.info("Loaded %d samples", len(all_samples))
+
+    output_path = Path(output_dir) / f"{dataset}_corrupted.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     results = []
-    for sample in loader.load():
-        shuffled = rng.sample(corruptors, len(corruptors))
+    for i, sample in enumerate(all_samples):
+        # Pick corruptor type by configured distribution; fall back to others on no match
+        preferred = rng.choices(dist_keys, weights=dist_weights, k=1)[0]
+        ordered = [preferred] + [k for k in dist_keys if k != preferred]
+        shuffled = [corruptors[k] for k in ordered]
         state = {"sample": sample, "corruptors": shuffled, "judge": judge}
         record: Optional[dict] = _process_sample.invoke(state)
         if record is not None:
             results.append(record)
+            log.info("[%s] ✓ kept [%s] %r → %r (total: %d)",
+                     sample.sample_id,
+                     record.get("corruption_type", "?"),
+                     record.get("original_question"),
+                     record.get("corrupted_question"),
+                     len(results))
+            with open(output_path, "w") as f:
+                json.dump(results, f, indent=2)
+        if (i + 1) % 50 == 0:
+            log.info("Progress: %d/%d processed, %d kept", i + 1, len(all_samples), len(results))
 
-    output_path = Path(output_dir) / f"{dataset}_corrupted.json"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w") as f:
-        json.dump(results, f, indent=2)
-    print(f"Saved {len(results)} corrupted samples → {output_path}")
+    log.info("Done: %d/%d samples kept → %s", len(results), len(all_samples), output_path)
     return results
 
 
@@ -185,6 +214,8 @@ def main():
     parser.add_argument("--no_judge", action="store_true")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     with open(args.config) as f:
         config = yaml.safe_load(f)

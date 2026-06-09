@@ -1,7 +1,7 @@
 """Part 2: run benchmarking experiments.
 
 Usage:
-    python -m src.part2_benchmark.run_benchmark \
+    python -m src.benchmark.run_benchmark \
         --corrupted_dataset data/corrupted/docvqa_corrupted.json \
         --config configs/benchmark_config.yaml \
         --output_dir results/benchmark
