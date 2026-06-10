@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Master AI assignment: build a benchmark to test Vision LLMs on *unanswerable question detection* from document images. Three sequential phases: (1) corrupt a DocVQA-style dataset to produce unanswerable questions, (2) benchmark Vision LLMs on that dataset, (3) test in-context learning mitigations.
 
-Deadline: **20 June 2026** — deliverable is a zip with Python scripts + max-5-page report.
+Deliverable is a zip with Python scripts + max-5-page report.
 
 ## Environment
 

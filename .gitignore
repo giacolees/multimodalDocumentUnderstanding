@@ -16,3 +16,4 @@ data/*
 .gitignore
 .env
 CLAUDE.md
+models/

@@ -17,6 +17,7 @@ from .models.mistral_model import MistralModel
 from .models.openrouter_model import OpenRouterModel
 from .models.google_model import GoogleModel
 from .models.llama_cpp_model import LlamaCppModel
+from .models.vllm_model import VllmModel
 from .evaluation.metrics import compute_metrics, BenchmarkMetrics
 
 
@@ -50,6 +51,13 @@ def load_model(model_cfg: dict):
             base_url=model_cfg.get("base_url", "http://localhost:8080/v1"),
             model_id=model_cfg.get("model_id", "local"),
         )
+    if backend == "vllm":
+        return VllmModel(
+            base_url=model_cfg.get("base_url", "http://localhost:8083/v1"),
+            model_id=model_cfg.get("model_id", "google/gemma-4-12b-it"),
+            api_key=model_cfg.get("api_key", "local"),
+            max_tokens=model_cfg.get("max_tokens", 256),
+        )
     raise ValueError(f"Unknown backend: {backend}")
 
 
@@ -62,38 +70,64 @@ def run_benchmark(
     with open(corrupted_dataset_path) as f:
         dataset = json.load(f)
 
-    results_by_model: dict[str, list[dict]] = {}
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
 
     for model_cfg in config["models"]:
         model = load_model(model_cfg)
-        preds, labels = [], []
-        records = []
+        model_name = model.name()
+        safe_name = model_name.replace("/", "_")
+        results_path = out / f"{safe_name}_benchmark_result.json"
 
-        for item in dataset:
+        existing: dict = {}
+        if results_path.exists():
+            with open(results_path) as f:
+                existing = json.load(f)
+
+        existing_records: list[dict] = existing.get("records", [])
+        done_ids = {r["sample_id"] for r in existing_records}
+        remaining = [item for item in dataset if item["sample_id"] not in done_ids]
+
+        if not remaining:
+            print(f"\n[{model_name}] all {len(dataset)} samples already done, skipping")
+            continue
+
+        if done_ids:
+            print(f"\n[{model_name}] resuming: {len(done_ids)} done, {len(remaining)} remaining")
+
+        records = list(existing_records)
+        for item in remaining:
+            # mixed benchmark datasets use "question" + "is_unanswerable";
+            # legacy corrupted-only datasets use "corrupted_question" with implied True
+            question = item["question"] if "question" in item else item["corrupted_question"]
+            label: bool = item.get("is_unanswerable", True)
             result = model.predict_unanswerable(
                 document_path=item["document_path"],
-                question=item["corrupted_question"],
+                question=question,
                 prompt_template=prompt_template,
             )
             result.sample_id = item["sample_id"]
-            preds.append(result.predicted_unanswerable)
-            labels.append(True)  # all corrupted samples are unanswerable
             records.append({
                 "sample_id": item["sample_id"],
                 "predicted_unanswerable": result.predicted_unanswerable,
+                "label_unanswerable": label,
                 "raw_response": result.raw_response,
                 "corruption_type": item["corruption_type"],
             })
+            # save after every sample so a crash loses at most one result
+            preds = [r["predicted_unanswerable"] for r in records]
+            labels = [r["label_unanswerable"] for r in records]
+            metrics = compute_metrics(labels, preds)
+            with open(results_path, "w") as f:
+                json.dump({"records": records, "metrics": metrics.__dict__}, f, indent=2)
 
+        preds = [r["predicted_unanswerable"] for r in records]
+        labels = [r["label_unanswerable"] for r in records]
         metrics = compute_metrics(labels, preds)
-        print(f"\n[{model.name()}] {metrics}")
-        results_by_model[model.name()] = {"records": records, "metrics": metrics.__dict__}
-
-    out = Path(output_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    with open(out / "benchmark_results.json", "w") as f:
-        json.dump(results_by_model, f, indent=2)
-    print(f"\nResults saved → {out / 'benchmark_results.json'}")
+        print(f"\n[{model_name}] {metrics}")
+        with open(results_path, "w") as f:
+            json.dump({"records": records, "metrics": metrics.__dict__}, f, indent=2)
+        print(f"Results saved → {results_path}")
 
 
 def main():

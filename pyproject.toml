@@ -13,6 +13,7 @@ dependencies = [
     "pypdf>=4.0",
     "pydantic-ai>=1.0.0",
     "langchain-core>=0.3.0",
+    "matplotlib>=3.10.9",
 ]
 
 [project.optional-dependencies]
@@ -53,9 +54,12 @@ finetune = [
 
 [project.scripts]
 download-data   = "src.dataset.download:main"
-corrupt-dataset = "src.dataset.pipeline:main"
+corrupt-dataset     = "src.dataset.pipeline:main"
+corrupt-all-datasets = "src.dataset.pipeline:main_all"
+prepare-benchmark = "src.dataset.prepare_benchmark:main"
 run-benchmark   = "src.benchmark.run_benchmark:main"
 run-mitigation  = "src.mitigation.run_mitigation:main"
+load-env        = "src.env:main"
 
 [build-system]
 requires = ["hatchling"]

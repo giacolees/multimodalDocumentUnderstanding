@@ -1,6 +1,6 @@
-# Part 1 – dataset corruption settings
+# dataset corruption settings
 
-dataset: docvqa          # docvqa | dude | mp_docvqa
+dataset: docvqa       # docvqa | dude | mp_docvqa
 split: val
 
 loader:
@@ -8,7 +8,7 @@ loader:
 
 corruption:
   seed: 42
-  max_samples: 500       # -1 = use all
+  max_samples: -1       # -1 = use all
   # target distribution across corruption types (must sum to 1.0)
   distribution:
     nlp_entity: 0.40
@@ -17,8 +17,8 @@ corruption:
 
 quality_check:
   use_judge: true
-  judge_model: nvidia/nemotron-nano-12b-v2-vl:free   # vision-capable free model on OpenRouter
-  judge_base_url: https://openrouter.ai/api/v1    # omit to use Gemini cloud directly
+  judge_model: google/gemma-4-E2B-it
+  judge_base_url: http://localhost:8083/v1    # local vllm-worker-1
   confidence_threshold: 0.60   # unanswerable verdicts below this are dropped
   max_retries: 2               # output-validation retries before raising UnexpectedModelBehavior
   max_tokens: 2048

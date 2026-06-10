@@ -230,5 +230,60 @@ def main():
     )
 
 
+# ---------------------------------------------------------------------------
+# Parallel runner – all datasets at once
+# ---------------------------------------------------------------------------
+
+def _run_dataset_worker(args: tuple) -> tuple[str, int]:
+    """Top-level function so ProcessPoolExecutor can pickle it."""
+    dataset, data_dir, output_dir, config_path, use_judge, seed = args
+    logging.basicConfig(
+        level=logging.INFO,
+        format=f"%(asctime)s %(levelname)s [{dataset}] %(message)s",
+    )
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+    records = run_pipeline(dataset, data_dir, output_dir, config, use_judge, seed)
+    return dataset, len(records)
+
+
+def main_all():
+    """Run corruption pipeline for every dataset found in --base_dir in parallel."""
+    parser = argparse.ArgumentParser(
+        description="Corrupt all datasets under data/raw/ in parallel."
+    )
+    parser.add_argument("--base_dir", default="data/raw")
+    parser.add_argument("--output_dir", default="data/corrupted")
+    parser.add_argument("--config", default="configs/dataset_config.yaml")
+    parser.add_argument("--no_judge", action="store_true")
+    parser.add_argument("--seed", type=int, default=42)
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+    base = Path(args.base_dir)
+    jobs = [
+        (ds, str(base / ds), args.output_dir, args.config, not args.no_judge, args.seed)
+        for ds in LOADERS
+        if (base / ds).exists()
+    ]
+    if not jobs:
+        log.error("No dataset directories found under %s", args.base_dir)
+        return
+
+    log.info("Launching %d pipelines in parallel: %s", len(jobs), [j[0] for j in jobs])
+
+    from concurrent.futures import ProcessPoolExecutor, as_completed
+    with ProcessPoolExecutor(max_workers=len(jobs)) as pool:
+        futures = {pool.submit(_run_dataset_worker, job): job[0] for job in jobs}
+        for future in as_completed(futures):
+            dataset = futures[future]
+            try:
+                _, count = future.result()
+                log.info("✓ %s finished: %d records", dataset, count)
+            except Exception as exc:
+                log.error("✗ %s failed: %s", dataset, exc)
+
+
 if __name__ == "__main__":
     main()

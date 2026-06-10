@@ -7,8 +7,12 @@ models:
   # - backend: google
   #   model_id: gemini-2.0-flash          # requires GEMINI_API_KEY
 
-  - backend: openrouter
-    model_id: nvidia/nemotron-nano-12b-v2-vl:free  # requires OPENROUTER_API_KEY
+  - backend: vllm
+    base_url: http://localhost:8083/v1
+    model_id: google/gemma-4-E2B-it   # set VLLM_MODEL=google/gemma-4-26b-a4b-it; needs VLLM_TP_SIZE=2 for dual-GPU
+
+  # - backend: openrouter
+  #   model_id: google/gemma-4-26b-a4b-it:free  # requires OPENROUTER_API_KEY
 
   # llama.cpp – server mode (llama-server must be running)
   # Start: llama-server -hf LiquidAI/LFM2.5-VL-450M-GGUF:Q4_0
