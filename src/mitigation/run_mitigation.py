@@ -65,7 +65,6 @@ def run_mitigation(
 
     requested = strategies or config.get("strategies", list(_PROMPT_STRATEGIES.keys()))
     results = {}
-    dataset_name = Path(corrupted_dataset_path).stem
     model_cfg = config.get("model", {})
     model_id = model_cfg.get("model_id", "unknown")
     mlflow.set_experiment("mitigation")
@@ -102,7 +101,7 @@ def run_mitigation(
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             safe_model = model_id.replace("/", "_")
-            with mlflow.start_run(run_name=f"{strategy_name}_{model_id}_{timestamp}"):
+            with mlflow.start_run(run_name=f"{strategy_name}_{safe_model}_{timestamp}"):
                 mlflow.log_params({
                     "strategy": strategy_name,
                     "model_id": model_id,
@@ -164,6 +163,14 @@ def _load_model(model_cfg: dict):
     if backend == "llama_cpp":
         from ..benchmark.models.llama_cpp_model import LlamaCppModel
         return LlamaCppModel(model_id=model_id)
+    if backend == "vllm":
+        from ..benchmark.models.vllm_model import VllmModel
+        return VllmModel(
+            base_url=model_cfg.get("base_url", "http://localhost:8083/v1"),
+            model_id=model_id,
+            api_key=model_cfg.get("api_key", "local"),
+            max_tokens=model_cfg.get("max_tokens", 256),
+        )
     raise ValueError(f"Unknown benchmark model backend: '{backend}'")
 
 
