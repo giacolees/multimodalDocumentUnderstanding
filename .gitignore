@@ -18,3 +18,4 @@ data/*
 CLAUDE.md
 models/
 mlruns/
+mlartifacts/
