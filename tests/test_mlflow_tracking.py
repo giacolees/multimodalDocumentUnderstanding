@@ -112,3 +112,52 @@ def test_run_pipeline_creates_mlflow_run(tmp_path):
     # top-level metrics present
     assert "total_samples" in run.data.metrics
     assert "nlp_entity_count" in run.data.metrics
+
+
+def test_run_benchmark_creates_mlflow_run(tmp_path):
+    """run_benchmark() must create one MLflow run per model with expected metrics."""
+    import json
+    import unittest.mock as mock
+    mlflow.set_tracking_uri(f"sqlite:///{tmp_path}/mlruns.db")
+
+    dataset = [
+        {
+            "sample_id": "s1",
+            "document_path": "doc.png",
+            "question": "What year?",
+            "is_unanswerable": True,
+            "corruption_type": "nlp_entity",
+        }
+    ]
+    dataset_path = tmp_path / "dataset.json"
+    dataset_path.write_text(json.dumps(dataset))
+
+    config = {
+        "models": [{"backend": "vllm", "model_id": "test/model"}],
+        "evaluation": {"metrics": ["accuracy", "f1"]},
+    }
+
+    from src.benchmark.models.base_model import PredictionResult
+    mock_model = mock.MagicMock()
+    mock_model.name.return_value = "test/model"
+    mock_model.predict_unanswerable.return_value = PredictionResult(
+        sample_id="s1", predicted_unanswerable=True, confidence=-1.0, raw_response="UNANSWERABLE"
+    )
+
+    with mock.patch("src.benchmark.run_benchmark.load_model", return_value=mock_model):
+        from src.benchmark.run_benchmark import run_benchmark
+        run_benchmark(
+            corrupted_dataset_path=str(dataset_path),
+            config=config,
+            output_dir=str(tmp_path / "results"),
+        )
+
+    runs = mlflow.search_runs(experiment_names=["benchmark"], output_format="list")
+    assert len(runs) == 1
+    run = runs[0]
+    assert run.data.params["model_id"] == "test/model"
+    assert run.data.params["backend"] == "vllm"
+    assert "f1" in run.data.metrics
+    assert "mcc" in run.data.metrics
+    assert "specificity" in run.data.metrics
+    assert "f1_nlp_entity" in run.data.metrics
