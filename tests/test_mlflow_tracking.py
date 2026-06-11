@@ -53,7 +53,6 @@ def test_plot_confusion_matrix_returns_figure():
     assert isinstance(fig, Figure)
 
 
-import tempfile
 import mlflow
 
 
@@ -106,3 +105,10 @@ def test_run_pipeline_creates_mlflow_run(tmp_path):
     run = runs[0]
     assert run.data.params["dataset"] == "fake"
     assert "total_kept" in run.data.metrics
+    # all params present
+    assert run.data.params["max_samples"] == "2"
+    assert run.data.params["corruption_types"] == "nlp_entity"
+    assert "use_judge" in run.data.params
+    # top-level metrics present
+    assert "total_samples" in run.data.metrics
+    assert "nlp_entity_count" in run.data.metrics

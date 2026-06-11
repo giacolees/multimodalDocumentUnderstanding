@@ -290,7 +290,7 @@ def main_all():
         if (base / ds).exists()
     ]
     if not jobs:
-        log.error("No dataset directories found under %s", args.base_dir)
+        log.error("No dataset directories found under %s", base)
         return
 
     log.info("Launching %d pipelines in parallel: %s", len(jobs), [j[0] for j in jobs])
