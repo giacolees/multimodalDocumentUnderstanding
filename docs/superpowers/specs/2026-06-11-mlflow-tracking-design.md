@@ -51,8 +51,14 @@ One MLflow run per model (inner loop over `config["models"]`).
 **Metrics:**
 - `accuracy`, `precision`, `recall`, `f1`
 - `tp`, `fp`, `tn`, `fn`
+- `specificity` — TN / (TN + FP), how well the model avoids false alarms
+- `balanced_accuracy` — mean of recall and specificity, robust when class distribution is skewed
+- `mcc` — Matthews Correlation Coefficient, single score that accounts for all four confusion matrix cells
+- Per-corruption-type breakdown: `f1_nlp_entity`, `f1_element`, `f1_layout`
 
-**Artifact:** per-model result JSON (`results/benchmark_*/...`)
+**Artifacts:**
+- Per-model result JSON (`results/benchmark_*/...`)
+- Confusion matrix PNG (`confusion_matrix_{model_id}.png`) logged via `mlflow.log_figure()`
 
 ### Part 3 — `src/mitigation/run_mitigation.py`
 
@@ -67,7 +73,13 @@ One MLflow run per strategy × model combination.
 **Metrics:**
 - `accuracy`, `precision`, `recall`, `f1`
 - `tp`, `fp`, `tn`, `fn`
-- `delta_f1` — improvement over baseline F1 for the same model
+- `specificity`, `balanced_accuracy`, `mcc`
+- Per-corruption-type breakdown: `f1_nlp_entity`, `f1_element`, `f1_layout`
+- `delta_f1`, `delta_mcc` — improvement over baseline for the same model
+
+**Artifact:**
+- Per-strategy result JSON
+- Confusion matrix PNG
 
 **Artifact:** per-strategy result JSON
 
