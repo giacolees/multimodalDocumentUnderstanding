@@ -14,11 +14,16 @@ To run only the fine-tuning strategy (requires GPU + unsloth):
 
 import argparse
 import json
+from datetime import datetime
 from pathlib import Path
 
 import yaml
+import mlflow
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
-from ..benchmark.evaluation.metrics import compute_metrics
+from ..benchmark.evaluation.metrics import compute_metrics, compute_per_type_metrics, plot_confusion_matrix
 from .strategies.few_shot import build_few_shot_prompt
 from .strategies.chain_of_thought import build_cot_prompt
 from .strategies.knowledge_injection import DocumentMetadata, build_knowledge_injection_prompt
@@ -52,13 +57,23 @@ def run_mitigation(
     with open(corrupted_dataset_path) as f:
         dataset: list[dict] = json.load(f)
 
+    baseline_metrics: dict = {}
+    if Path(baseline_results_path).exists():
+        with open(baseline_results_path) as f:
+            baseline_data = json.load(f)
+        baseline_metrics = baseline_data.get("metrics", {})
+
     requested = strategies or config.get("strategies", list(_PROMPT_STRATEGIES.keys()))
     results = {}
+    dataset_name = Path(corrupted_dataset_path).stem
+    model_cfg = config.get("model", {})
+    model_id = model_cfg.get("model_id", "unknown")
+    mlflow.set_experiment("mitigation")
 
     # --- Prompt-based strategies ---
     prompt_strategies = [s for s in requested if s in _PROMPT_STRATEGIES]
     if prompt_strategies:
-        model = _load_model(config["model"])
+        model = _load_model(model_cfg)
         for strategy_name in prompt_strategies:
             prompt_fn = _PROMPT_STRATEGIES[strategy_name]
             preds, labels, records = [], [], []
@@ -76,12 +91,47 @@ def run_mitigation(
                     "sample_id": item["sample_id"],
                     "strategy": strategy_name,
                     "predicted_unanswerable": result.predicted_unanswerable,
+                    "label_unanswerable": True,
                     "raw_response": result.raw_response,
+                    "corruption_type": item.get("corruption_type", "unknown"),
                 })
 
             metrics = compute_metrics(labels, preds)
             print(f"\n[{strategy_name}] {metrics}")
             results[strategy_name] = {"records": records, "metrics": metrics.__dict__}
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            safe_model = model_id.replace("/", "_")
+            with mlflow.start_run(run_name=f"{strategy_name}_{model_id}_{timestamp}"):
+                mlflow.log_params({
+                    "strategy": strategy_name,
+                    "model_id": model_id,
+                    "dataset_path": corrupted_dataset_path,
+                    "num_samples": len(dataset),
+                })
+                delta_f1 = metrics.f1 - baseline_metrics.get("f1", 0.0)
+                delta_mcc = metrics.mcc - baseline_metrics.get("mcc", 0.0)
+                mlflow.log_metrics({
+                    "accuracy": metrics.accuracy,
+                    "precision": metrics.precision,
+                    "recall": metrics.recall,
+                    "f1": metrics.f1,
+                    "tp": float(metrics.tp),
+                    "fp": float(metrics.fp),
+                    "tn": float(metrics.tn),
+                    "fn": float(metrics.fn),
+                    "specificity": metrics.specificity,
+                    "balanced_accuracy": metrics.balanced_accuracy,
+                    "mcc": metrics.mcc,
+                    "delta_f1": delta_f1,
+                    "delta_mcc": delta_mcc,
+                })
+                per_type = compute_per_type_metrics(records)
+                for ctype, tm in per_type.items():
+                    mlflow.log_metric(f"f1_{ctype}", tm.f1)
+                fig = plot_confusion_matrix(metrics, title=f"{strategy_name} — {model_id}")
+                mlflow.log_figure(fig, f"confusion_matrix_{strategy_name}_{safe_model}.png")
+                plt.close(fig)
 
     # --- Fine-tuning strategy ---
     if "finetuning" in requested:

@@ -161,3 +161,58 @@ def test_run_benchmark_creates_mlflow_run(tmp_path):
     assert "mcc" in run.data.metrics
     assert "specificity" in run.data.metrics
     assert "f1_nlp_entity" in run.data.metrics
+
+
+def test_run_mitigation_creates_mlflow_run(tmp_path):
+    """run_mitigation() must create one run per strategy with delta metrics."""
+    import json
+    import unittest.mock as mock
+    mlflow.set_tracking_uri(f"sqlite:///{tmp_path}/mlruns.db")
+
+    dataset = [
+        {
+            "sample_id": "s1",
+            "document_path": "doc.png",
+            "corrupted_question": "What year was it not?",
+            "corruption_type": "nlp_entity",
+        }
+    ]
+    dataset_path = tmp_path / "dataset.json"
+    dataset_path.write_text(json.dumps(dataset))
+
+    baseline = {"metrics": {"accuracy": 0.5, "precision": 0.5, "recall": 0.5, "f1": 0.5, "mcc": 0.0}}
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(json.dumps(baseline))
+
+    config = {
+        "strategies": ["few_shot"],
+        "model": {"backend": "vllm", "model_id": "test/model"},
+    }
+
+    from src.benchmark.models.base_model import PredictionResult
+    mock_model = mock.MagicMock()
+    mock_model.name.return_value = "test/model"
+    mock_model.predict_unanswerable.return_value = PredictionResult(
+        sample_id="s1", predicted_unanswerable=True, raw_response="UNANSWERABLE", confidence=-1.0
+    )
+
+    with mock.patch("src.mitigation.run_mitigation._load_model", return_value=mock_model):
+        from src.mitigation.run_mitigation import run_mitigation
+        run_mitigation(
+            corrupted_dataset_path=str(dataset_path),
+            baseline_results_path=str(baseline_path),
+            config=config,
+            output_dir=str(tmp_path / "results"),
+            strategies=["few_shot"],
+        )
+
+    runs = mlflow.search_runs(experiment_names=["mitigation"], output_format="list")
+    assert len(runs) == 1
+    run = runs[0]
+    assert run.data.params["strategy"] == "few_shot"
+    assert run.data.params["model_id"] == "test/model"
+    assert "f1" in run.data.metrics
+    assert "mcc" in run.data.metrics
+    assert "delta_f1" in run.data.metrics
+    assert "delta_mcc" in run.data.metrics
+    assert "f1_nlp_entity" in run.data.metrics
