@@ -4,20 +4,20 @@ Orchestrated with LangChain LCEL: each processing phase is a RunnableLambda
 and samples flow through the composed chain via .invoke().
 
 Usage:
-    python -m src.dataset.pipeline \
-        --dataset docvqa \
-        --data_dir data/raw/docvqa \
-        --output_dir data/corrupted \
-        --config configs/dataset_config.yaml
+    python -m src.dataset.pipeline --config configs/dataset_config.yaml
+
+dataset, data_dir, and output_dir are set in the config file.
 """
 
 import argparse
 import json
 import logging
 import random
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import mlflow
 import yaml
 
 log = logging.getLogger(__name__)
@@ -202,17 +202,37 @@ def run_pipeline(
             log.info("Progress: %d/%d processed, %d kept", i + 1, len(all_samples), len(results))
 
     log.info("Done: %d/%d samples kept → %s", len(results), len(all_samples), output_path)
+
+    # --- MLflow tracking ---
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    mlflow.set_experiment("dataset-corruption")
+    with mlflow.start_run(run_name=f"{dataset}_{timestamp}"):
+        mlflow.log_params({
+            "dataset": dataset,
+            "max_samples": config.get("corruption", {}).get("max_samples", -1),
+            "window_size": config.get("loader", {}).get("window_size", 1),
+            "corruption_types": ",".join(dist_keys),
+            "use_judge": use_judge,
+        })
+        type_counts: dict[str, int] = {}
+        for r in results:
+            ct = r.get("corruption_type", "unknown")
+            type_counts[ct] = type_counts.get(ct, 0) + 1
+        mlflow.log_metrics({
+            "total_samples": len(all_samples),
+            "total_kept": len(results),
+            **{f"{ct}_count": cnt for ct, cnt in type_counts.items()},
+        })
+        if output_path.exists():
+            mlflow.log_artifact(str(output_path))
+
     return results
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=list(LOADERS), required=True)
-    parser.add_argument("--data_dir", required=True)
-    parser.add_argument("--output_dir", default="data/corrupted")
     parser.add_argument("--config", default="configs/dataset_config.yaml")
     parser.add_argument("--no_judge", action="store_true")
-    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -221,12 +241,12 @@ def main():
         config = yaml.safe_load(f)
 
     run_pipeline(
-        dataset=args.dataset,
-        data_dir=args.data_dir,
-        output_dir=args.output_dir,
+        dataset=config["dataset"],
+        data_dir=config["data_dir"],
+        output_dir=config["output_dir"],
         config=config,
         use_judge=not args.no_judge,
-        seed=args.seed,
+        seed=config["corruption"]["seed"],
     )
 
 
@@ -248,22 +268,24 @@ def _run_dataset_worker(args: tuple) -> tuple[str, int]:
 
 
 def main_all():
-    """Run corruption pipeline for every dataset found in --base_dir in parallel."""
+    """Run corruption pipeline for every dataset found under data_dir's parent in parallel."""
     parser = argparse.ArgumentParser(
         description="Corrupt all datasets under data/raw/ in parallel."
     )
-    parser.add_argument("--base_dir", default="data/raw")
-    parser.add_argument("--output_dir", default="data/corrupted")
     parser.add_argument("--config", default="configs/dataset_config.yaml")
     parser.add_argument("--no_judge", action="store_true")
-    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    base = Path(args.base_dir)
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
+
+    base = Path(config["data_dir"]).parent
+    output_dir = config["output_dir"]
+    seed = config["corruption"]["seed"]
     jobs = [
-        (ds, str(base / ds), args.output_dir, args.config, not args.no_judge, args.seed)
+        (ds, str(base / ds), output_dir, args.config, not args.no_judge, seed)
         for ds in LOADERS
         if (base / ds).exists()
     ]

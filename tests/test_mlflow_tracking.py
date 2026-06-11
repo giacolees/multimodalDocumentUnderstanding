@@ -51,3 +51,58 @@ def test_plot_confusion_matrix_returns_figure():
     m = compute_metrics([True, True, False, False], [True, False, True, False])
     fig = plot_confusion_matrix(m, title="Test")
     assert isinstance(fig, Figure)
+
+
+import tempfile
+import mlflow
+
+
+def test_run_pipeline_creates_mlflow_run(tmp_path):
+    """pipeline.run_pipeline() must create an MLflow run with expected params."""
+    mlflow.set_tracking_uri(f"sqlite:///{tmp_path}/mlflow.db")
+
+    # Minimal config matching dataset_config.yaml structure
+    config = {
+        "corruption": {"max_samples": 2, "seed": 0, "distribution": {"nlp_entity": 1.0}},
+        "loader": {},
+        "quality_check": {},
+    }
+
+    # Patch loader and corruptors so no real data or model is needed
+    import unittest.mock as mock
+    from src.dataset.loaders.base_loader import QASample
+
+    fake_sample = QASample(
+        sample_id="s1",
+        document_path="doc.png",
+        question="What year?",
+        answer="2020",
+        page_index=0,
+        metadata={},
+    )
+
+    with mock.patch("src.dataset.pipeline.LOADERS", {"fake": mock.MagicMock(return_value=mock.MagicMock(load=lambda: [fake_sample]))}), \
+         mock.patch("src.dataset.pipeline.NLPEntityCorruptor") as MockNLP, \
+         mock.patch("src.dataset.pipeline.LLMJudge"):
+        from src.dataset.corruption.base_corruptor import CorruptedSample
+        from src.dataset.corruption.base_corruptor import CorruptionType
+        MockNLP.return_value.corrupt.return_value = CorruptedSample(
+            original_question="What year?",
+            corrupted_question="What year was it not?",
+            corruption_type=CorruptionType.NLP_ENTITY,
+            corruption_detail="year:2020→1999",
+        )
+        from src.dataset.pipeline import run_pipeline
+        run_pipeline(
+            dataset="fake",
+            data_dir=str(tmp_path),
+            output_dir=str(tmp_path / "out"),
+            config=config,
+            use_judge=False,
+        )
+
+    runs = mlflow.search_runs(experiment_names=["dataset-corruption"], output_format="list")
+    assert len(runs) == 1
+    run = runs[0]
+    assert run.data.params["dataset"] == "fake"
+    assert "total_kept" in run.data.metrics
