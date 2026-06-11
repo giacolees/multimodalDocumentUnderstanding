@@ -3467,6 +3467,7 @@ dependencies = [
     { name = "langchain-core" },
     { name = "matplotlib" },
     { name = "mlflow" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pdf2image" },
     { name = "pillow" },
@@ -3511,6 +3512,12 @@ services = [
     { name = "uvicorn", extra = ["standard"] },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "datasets", specifier = ">=2.18.0" },
@@ -3525,6 +3532,7 @@ requires-dist = [
     { name = "langchain-core", specifier = ">=0.3.0" },
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "mlflow", specifier = ">=2.13" },
+    { name = "numpy", specifier = ">=1.24" },
     { name = "opentelemetry-exporter-otlp-proto-grpc", marker = "extra == 'services'", specifier = ">=1.20" },
     { name = "opentelemetry-instrumentation-fastapi", marker = "extra == 'services'", specifier = ">=0.41b0" },
     { name = "opentelemetry-instrumentation-httpx", marker = "extra == 'services'", specifier = ">=0.41b0" },
@@ -3549,6 +3557,12 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'services'", specifier = ">=0.29" },
 ]
 provides-extras = ["nlp", "notebooks", "dev", "services", "finetune"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=9.0.3" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+]
 
 [[package]]
 name = "multiprocess"

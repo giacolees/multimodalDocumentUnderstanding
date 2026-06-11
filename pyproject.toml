@@ -14,6 +14,7 @@ dependencies = [
     "pydantic-ai>=1.0.0",
     "langchain-core>=0.3.0",
     "matplotlib>=3.10.9",
+    "numpy>=1.24",
     "mlflow>=2.13",
 ]
 
@@ -80,3 +81,9 @@ packages = ["src"]
 # Running all services/ together causes module-name conflicts (each has main.py).
 testpaths = ["tests"]
 asyncio_mode = "strict"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0",
+]
