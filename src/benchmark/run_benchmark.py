@@ -86,6 +86,19 @@ def run_benchmark(
         results_path = out / f"{safe_name}_benchmark_result.json"
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+        existing: dict = {}
+        if results_path.exists():
+            with open(results_path) as f:
+                existing = json.load(f)
+
+        existing_records: list[dict] = existing.get("records", [])
+        done_ids = {r["sample_id"] for r in existing_records}
+        remaining = [item for item in dataset if item["sample_id"] not in done_ids]
+
+        if not remaining:
+            print(f"\n[{model_name}] all {len(dataset)} samples already done, skipping")
+            continue
+
         with mlflow.start_run(run_name=f"{safe_name}_{dataset_name}_{timestamp}"):
             mlflow.log_params({
                 "model_id": model_name,
@@ -93,19 +106,6 @@ def run_benchmark(
                 "dataset_path": corrupted_dataset_path,
                 "num_samples": len(dataset),
             })
-
-            existing: dict = {}
-            if results_path.exists():
-                with open(results_path) as f:
-                    existing = json.load(f)
-
-            existing_records: list[dict] = existing.get("records", [])
-            done_ids = {r["sample_id"] for r in existing_records}
-            remaining = [item for item in dataset if item["sample_id"] not in done_ids]
-
-            if not remaining:
-                print(f"\n[{model_name}] all {len(dataset)} samples already done, skipping")
-                continue
 
             if done_ids:
                 print(f"\n[{model_name}] resuming: {len(done_ids)} done, {len(remaining)} remaining")
