@@ -9,6 +9,7 @@ class PredictionResult:
     predicted_unanswerable: bool    # True = model says unanswerable
     confidence: float               # 0.0–1.0 if available, else -1
     raw_response: str
+    inference_time_s: float = 0.0
 
 
 class BaseVisionModel(ABC):
@@ -27,3 +28,12 @@ class BaseVisionModel(ABC):
     @abstractmethod
     def name(self) -> str:
         ...
+
+    def generate(
+        self,
+        document_path: str,
+        prompt: str,
+        page_indices: list[int] | None = None,
+        max_tokens: int = 1024,
+    ) -> str:
+        raise NotImplementedError(f"{self.name()} does not support generate()")
