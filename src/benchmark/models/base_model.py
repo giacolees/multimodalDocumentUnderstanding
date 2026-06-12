@@ -33,7 +33,7 @@ class BaseVisionModel(ABC):
         self,
         document_path: str,
         prompt: str,
-        page_indices: list[int] | None = None,
+        page_index: int | None = None,
         max_tokens: int = 1024,
     ) -> str:
         raise NotImplementedError(f"{self.name()} does not support generate()")

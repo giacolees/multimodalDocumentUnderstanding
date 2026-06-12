@@ -16,7 +16,6 @@ Config example (benchmark_config.yaml):
 from __future__ import annotations
 
 import base64
-import re
 from pathlib import Path
 
 from .base_model import BaseVisionModel, PredictionResult
@@ -139,10 +138,10 @@ class VllmModel(BaseVisionModel):
         self,
         document_path: str,
         prompt: str,
-        page_indices: list[int] | None = None,
+        page_index: int | None = None,
         max_tokens: int = 1024,
     ) -> str:
-        page = (page_indices or [0])[0]
+        page = page_index if page_index is not None else 0
         image_b64 = _load_image_b64(document_path, page_index=page,
                                     max_pixels=self._max_image_pixels)
         content: list[dict] = [
