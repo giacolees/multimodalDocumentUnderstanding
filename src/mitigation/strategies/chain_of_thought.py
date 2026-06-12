@@ -18,3 +18,16 @@ Reasoning:"""
 
 def build_cot_prompt(question: str) -> str:
     return _COT_TEMPLATE.format(question=question)
+
+
+from .base import MitigationStrategy
+
+
+class ChainOfThoughtStrategy(MitigationStrategy):
+    name = "chain_of_thought"
+
+    def __init__(self, config: dict) -> None:
+        pass
+
+    def build_prompt(self, item: dict, model) -> str:
+        return build_cot_prompt(item["corrupted_question"])

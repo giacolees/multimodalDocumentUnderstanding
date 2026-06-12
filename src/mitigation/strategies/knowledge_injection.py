@@ -31,3 +31,16 @@ def build_knowledge_injection_prompt(
     )
     lines.append(f"\nQuestion: {question}")
     return "\n".join(lines)
+
+
+from .base import MitigationStrategy
+
+
+class KnowledgeInjectionStrategy(MitigationStrategy):
+    name = "knowledge_injection"
+
+    def __init__(self, config: dict) -> None:
+        pass
+
+    def build_prompt(self, item: dict, model) -> str:
+        return build_knowledge_injection_prompt(item["corrupted_question"], DocumentMetadata())

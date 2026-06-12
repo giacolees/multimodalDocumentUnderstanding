@@ -19,3 +19,30 @@ def test_concrete_strategy_prepare_is_noop():
 
     s = Concrete()
     s.prepare([], None)  # must not raise
+
+
+def test_few_shot_strategy_builds_prompt():
+    from src.mitigation.strategies.few_shot import FewShotStrategy
+    s = FewShotStrategy({"k": 2})
+    item = {"corrupted_question": "What year?"}
+    prompt = s.build_prompt(item, model=None)
+    assert "UNANSWERABLE" in prompt
+    assert "What year?" in prompt
+
+
+def test_cot_strategy_builds_prompt():
+    from src.mitigation.strategies.chain_of_thought import ChainOfThoughtStrategy
+    s = ChainOfThoughtStrategy({})
+    item = {"corrupted_question": "Where is Table 5?"}
+    prompt = s.build_prompt(item, model=None)
+    assert "step by step" in prompt.lower()
+    assert "Where is Table 5?" in prompt
+
+
+def test_knowledge_injection_strategy_builds_prompt():
+    from src.mitigation.strategies.knowledge_injection import KnowledgeInjectionStrategy
+    s = KnowledgeInjectionStrategy({})
+    item = {"corrupted_question": "What year?"}
+    prompt = s.build_prompt(item, model=None)
+    assert "UNANSWERABLE" in prompt
+    assert "What year?" in prompt

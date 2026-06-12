@@ -50,3 +50,16 @@ def build_few_shot_prompt(
         label = "UNANSWERABLE" if ex.is_unanswerable else "ANSWERABLE"
         example_block += f"Q: {ex.question}\nA: {label} — {ex.explanation}\n\n"
     return header + example_block + f"Now answer:\nQ: {question}\nA:"
+
+
+from .base import MitigationStrategy
+
+
+class FewShotStrategy(MitigationStrategy):
+    name = "few_shot"
+
+    def __init__(self, config: dict) -> None:
+        self._k = config.get("k", 2)
+
+    def build_prompt(self, item: dict, model) -> str:
+        return build_few_shot_prompt(item["corrupted_question"], k=self._k)
