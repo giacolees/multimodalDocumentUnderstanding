@@ -98,7 +98,10 @@ def evaluate_strategy(
                 prefix=f"prompt_{strategy.name}_",
             ) as tmp:
                 tmp.write(_sample_prompt)
+            try:
                 mlflow.log_artifact(tmp.name, artifact_path="prompts")
+            finally:
+                Path(tmp.name).unlink(missing_ok=True)
 
         delta_f1 = metrics.f1 - baseline_metrics.get("f1", 0.0)
         delta_mcc = metrics.mcc - baseline_metrics.get("mcc", 0.0)
