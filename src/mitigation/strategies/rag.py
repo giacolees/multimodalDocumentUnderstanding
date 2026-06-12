@@ -121,3 +121,21 @@ class RagRetriever:
         }
         top = sorted(rrf, key=lambda i: rrf[i], reverse=True)
         return [chunk_list[i] for i in top[: self._top_k]]
+
+
+class RagStrategy(MitigationStrategy):
+    name = "rag"
+
+    def __init__(self, config: dict) -> None:
+        self.retriever = RagRetriever(
+            embed_model=config.get("embed_model", "sentence-transformers/all-MiniLM-L6-v2"),
+            top_k=config.get("top_k", 4),
+            chunk_max_chars=config.get("chunk_max_chars", 400),
+            transcribe_max_tokens=config.get("transcribe_max_tokens", 1024),
+            cache_dir=config.get("cache_dir", "data/ocr_cache"),
+        )
+
+    def build_prompt(self, item: dict, model) -> str:
+        chunks = self.retriever.retrieve(item, item["corrupted_question"], model)
+        context = "\n".join(f"- {c}" for c in chunks) if chunks else "(no passages retrieved)"
+        return _RAG_TEMPLATE.format(context=context)

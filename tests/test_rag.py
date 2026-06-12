@@ -119,3 +119,30 @@ def test_retrieve_top_k_respected():
         chunks = r.retrieve(item, "query", mock.MagicMock())
 
     assert len(chunks) == 2
+
+
+def test_rag_strategy_prompt_contains_context_and_question_placeholder():
+    from src.mitigation.strategies.rag import RagStrategy
+    strategy = RagStrategy({})
+    item = {"document_path": "doc.png", "page_index": 0, "corrupted_question": "What year?"}
+    mock_model = mock.MagicMock()
+
+    with mock.patch.object(strategy.retriever, "retrieve",
+                           return_value=["Relevant passage about 1975."]):
+        prompt = strategy.build_prompt(item, mock_model)
+
+    assert "Relevant passage about 1975." in prompt
+    assert "{question}" in prompt          # placeholder left for VllmModel.predict_unanswerable
+    assert "UNANSWERABLE" in prompt
+
+
+def test_rag_strategy_empty_retrieval_still_returns_prompt():
+    from src.mitigation.strategies.rag import RagStrategy
+    strategy = RagStrategy({})
+    item = {"document_path": "doc.png", "page_index": 0, "corrupted_question": "Anything?"}
+    mock_model = mock.MagicMock()
+
+    with mock.patch.object(strategy.retriever, "retrieve", return_value=[]):
+        prompt = strategy.build_prompt(item, mock_model)
+
+    assert "{question}" in prompt

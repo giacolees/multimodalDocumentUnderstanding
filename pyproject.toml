@@ -48,6 +48,10 @@ services = [
     "prometheus-fastapi-instrumentator>=6.1",
     "prometheus-client>=0.19",
 ]
+mitigation = [
+    "sentence-transformers>=3.0",
+    "rank-bm25>=0.2",
+]
 # GPU machine required; install unsloth separately per https://github.com/unslothai/unsloth
 finetune = [
     "trl>=0.12.0",
