@@ -1,6 +1,8 @@
 # dataset corruption settings
 
-dataset: docvqa       # docvqa | dude | mp_docvqa
+dataset: docvqa                 # docvqa | dude | mp_docvqa
+data_dir: data/raw/docvqa       # input: raw dataset directory
+output_dir: data/corrupted      # output: where corrupted JSON is written
 split: val
 
 loader:

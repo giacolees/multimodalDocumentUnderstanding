@@ -1,5 +1,14 @@
 # Part 2 – benchmarking settings
 
+# corrupted_dataset: data/final/docvqa_final.json
+# output_dir: results/benchmark_docvqa
+# mlflow_experiment: benchmark_docvqa_vllm_qwen3
+
+corrupted_dataset: data/final/mp_docvqa_final.json
+output_dir: results/benchmark_mp_docvqa
+mlflow_experiment: benchmark_mp_docvqa_vllm_gemma4
+
+
 models:
   # - backend: mistral
   #   model_id: pixtral-12b-2409          # requires MISTRAL_API_KEY
@@ -7,9 +16,24 @@ models:
   # - backend: google
   #   model_id: gemini-2.0-flash          # requires GEMINI_API_KEY
 
+  # - backend: vllm
+  #   base_url: http://localhost:8083/v1
+  #   model_id: LiquidAI/LFM2.5-VL-1.6B
+  #   image_placeholder: "<image>"         # LFM2.5-VL requires explicit <image> token in text
+  #   stop_sequences: ["<|channel>"]      # stop before LFM2.5-VL internal thought-channel loop
+
+  # - backend: vllm
+  #   base_url: http://localhost:8083/v1
+  #   model_id: openbmb/MiniCPM-V-4.6
+  #   stop_token_ids: [248044, 248046]
+
   - backend: vllm
     base_url: http://localhost:8083/v1
-    model_id: google/gemma-4-E2B-it   # set VLLM_MODEL=google/gemma-4-26b-a4b-it; needs VLLM_TP_SIZE=2 for dual-GPU
+    model_id: google/gemma-4-E2B-it
+
+  # - backend: vllm
+  #   base_url: http://localhost:8084/v1
+  #   model_id: Qwen/Qwen3-VL-4B-Instruct
 
   # - backend: openrouter
   #   model_id: google/gemma-4-26b-a4b-it:free  # requires OPENROUTER_API_KEY
@@ -30,5 +54,5 @@ models:
   #   n_gpu_layers: -1
 
 evaluation:
-  metrics: [accuracy, precision, recall, f1]
+  metrics: [accuracy, precision, recall, f1, specificity, balanced_accuracy, mcc, tp, fp, tn, fn]
   breakdown_by_corruption_type: true

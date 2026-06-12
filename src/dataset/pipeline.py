@@ -1,7 +1,4 @@
-"""Main corruption pipeline for Part 1.
-
-Orchestrated with LangChain LCEL: each processing phase is a RunnableLambda
-and samples flow through the composed chain via .invoke().
+"""Main corruption pipeline.
 
 Usage:
     python -m src.dataset.pipeline --config configs/dataset_config.yaml
@@ -21,7 +18,6 @@ import mlflow
 import yaml
 
 log = logging.getLogger(__name__)
-from langchain_core.runnables import RunnableLambda
 
 from .loaders.docvqa_loader import DocVQALoader
 from .loaders.dude_loader import DUDELoader
@@ -88,14 +84,15 @@ def _judge(state: dict) -> dict:
 
     if result.verdict != "unanswerable":
         log.info("[%s] dropped (judge: answerable)", state["sample"].sample_id)
-        return {**state, "judge_fields": None}
+        return {**state, "judge_fields": None, "judge_verdict": result.verdict, "judge_confidence": result.confidence}
 
     return {**state, "judge_fields": {
         "corrupted_question": corrupted.corrupted_question,
         "corruption_type": ctype,
         "corruption_detail": cdetail,
         "judge_verified": True,
-    }}
+        "judge_confidence": result.confidence,
+    }, "judge_verdict": result.verdict, "judge_confidence": result.confidence}
 
 
 # ---------------------------------------------------------------------------
@@ -116,17 +113,6 @@ def _build_record(state: dict) -> Optional[dict]:
         "metadata": sample.metadata,
         **state["judge_fields"],
     }
-
-
-# ---------------------------------------------------------------------------
-# Composed LCEL chain
-# ---------------------------------------------------------------------------
-
-_process_sample = (
-    RunnableLambda(_corrupt)
-    | RunnableLambda(_judge)
-    | RunnableLambda(_build_record)
-)
 
 
 # ---------------------------------------------------------------------------
@@ -181,13 +167,17 @@ def run_pipeline(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     results = []
+    judge_verdicts: list[dict] = []
     for i, sample in enumerate(all_samples):
         # Pick corruptor type by configured distribution; fall back to others on no match
         preferred = rng.choices(dist_keys, weights=dist_weights, k=1)[0]
         ordered = [preferred] + [k for k in dist_keys if k != preferred]
         shuffled = [corruptors[k] for k in ordered]
         state = {"sample": sample, "corruptors": shuffled, "judge": judge}
-        record: Optional[dict] = _process_sample.invoke(state)
+        # run steps individually to capture judge state for MLflow verdict table
+        s = _corrupt(state)
+        s = _judge(s)
+        record = _build_record(s)
         if record is not None:
             results.append(record)
             log.info("[%s] ✓ kept [%s] %r → %r (total: %d)",
@@ -198,33 +188,110 @@ def run_pipeline(
                      len(results))
             with open(output_path, "w") as f:
                 json.dump(results, f, indent=2)
+        if use_judge and s.get("judge_verdict") is not None:
+            judge_verdicts.append({
+                "sample_id": sample.sample_id,
+                "corruption_type": s["corrupted"].corruption_type.value if s.get("corrupted") else "",
+                "verdict": s["judge_verdict"],
+                "confidence": round(s["judge_confidence"], 4),
+                "kept": record is not None,
+            })
         if (i + 1) % 50 == 0:
             log.info("Progress: %d/%d processed, %d kept", i + 1, len(all_samples), len(results))
 
     log.info("Done: %d/%d samples kept → %s", len(results), len(all_samples), output_path)
 
     # --- MLflow tracking ---
+    import csv, io, tempfile
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import numpy as np
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     mlflow.set_experiment("dataset-corruption")
     with mlflow.start_run(run_name=f"{dataset}_{timestamp}"):
+        qc = config.get("quality_check", {})
+        mlflow.set_tags({
+            "dataset": dataset,
+            "use_judge": str(use_judge),
+        })
         mlflow.log_params({
             "dataset": dataset,
             "max_samples": config.get("corruption", {}).get("max_samples", -1),
             "window_size": config.get("loader", {}).get("window_size", 1),
             "corruption_types": ",".join(dist_keys),
             "use_judge": use_judge,
+            "judge_model": qc.get("judge_model", "gemini-2.0-flash") if use_judge else None,
+            "judge_confidence_threshold": qc.get("confidence_threshold", 0.5) if use_judge else None,
+            "judge_base_url": qc.get("judge_base_url") if use_judge else None,
         })
         type_counts: dict[str, int] = {}
         for r in results:
             ct = r.get("corruption_type", "unknown")
             type_counts[ct] = type_counts.get(ct, 0) + 1
+        judge_dropped = sum(1 for v in judge_verdicts if not v["kept"])
+        judge_kept = sum(1 for v in judge_verdicts if v["kept"])
+        dropped_no_match = len(all_samples) - len(results) - judge_dropped
+        yield_rate = len(results) / len(all_samples) if all_samples else 0.0
+
+        orig_lengths = [len(r.get("original_question", "")) for r in results]
+        corr_lengths = [len(r.get("corrupted_question", "")) for r in results]
+
         mlflow.log_metrics({
             "total_samples": len(all_samples),
             "total_kept": len(results),
+            "dropped_no_corruptor_match": dropped_no_match,
+            "yield_rate": yield_rate,
             **{f"{ct}_count": cnt for ct, cnt in type_counts.items()},
+            **({"judge_kept": judge_kept, "judge_dropped": judge_dropped,
+                "judge_acceptance_rate": judge_kept / len(judge_verdicts) if judge_verdicts else 0.0,
+                "judge_avg_confidence": sum(v["confidence"] for v in judge_verdicts) / len(judge_verdicts) if judge_verdicts else 0.0,
+                "judge_min_confidence": min(v["confidence"] for v in judge_verdicts) if judge_verdicts else 0.0,
+                "judge_max_confidence": max(v["confidence"] for v in judge_verdicts) if judge_verdicts else 0.0,
+               } if use_judge else {}),
+            **({"question_length_orig_mean": float(np.mean(orig_lengths)),
+                "question_length_corr_mean": float(np.mean(corr_lengths)),
+                "question_length_delta_mean": float(np.mean(corr_lengths)) - float(np.mean(orig_lengths)),
+               } if orig_lengths else {}),
         })
+
+        # corruption type distribution bar chart
+        if type_counts:
+            fig_bar, ax_bar = plt.subplots(figsize=(max(4, len(type_counts) * 1.5), 4))
+            bars = ax_bar.bar(list(type_counts.keys()), list(type_counts.values()), color="steelblue")
+            ax_bar.bar_label(bars, padding=3)
+            ax_bar.set_ylabel("Count")
+            ax_bar.set_title(f"Corruption type distribution — {dataset}")
+            plt.tight_layout()
+            mlflow.log_figure(fig_bar, "corruption_type_distribution.png")
+            plt.close(fig_bar)
+
+        # judge confidence histogram
+        if use_judge and judge_verdicts:
+            confidences = [v["confidence"] for v in judge_verdicts]
+            fig_hist, ax_hist = plt.subplots(figsize=(6, 4))
+            ax_hist.hist(confidences, bins=20, color="steelblue", edgecolor="white")
+            ax_hist.set_xlabel("Judge confidence")
+            ax_hist.set_ylabel("Count")
+            ax_hist.set_title(f"Judge confidence distribution — {dataset}")
+            plt.tight_layout()
+            mlflow.log_figure(fig_hist, "judge_confidence_histogram.png")
+            plt.close(fig_hist)
+
+            buf = io.StringIO()
+            writer = csv.DictWriter(buf, fieldnames=["sample_id", "corruption_type", "verdict", "confidence", "kept"])
+            writer.writeheader()
+            writer.writerows(judge_verdicts)
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, prefix="judge_verdicts_") as tmp:
+                tmp.write(buf.getvalue())
+                tmp_path = tmp.name
+            mlflow.log_artifact(tmp_path, artifact_path="judge")
+
         if output_path.exists():
             mlflow.log_artifact(str(output_path))
+            ds = mlflow.data.from_json(str(output_path), name=dataset, targets="corrupted_question")
+            mlflow.log_input(ds, context="output")
 
     return results
 
@@ -250,28 +317,9 @@ def main():
     )
 
 
-# ---------------------------------------------------------------------------
-# Parallel runner – all datasets at once
-# ---------------------------------------------------------------------------
-
-def _run_dataset_worker(args: tuple) -> tuple[str, int]:
-    """Top-level function so ProcessPoolExecutor can pickle it."""
-    dataset, data_dir, output_dir, config_path, use_judge, seed = args
-    logging.basicConfig(
-        level=logging.INFO,
-        format=f"%(asctime)s %(levelname)s [{dataset}] %(message)s",
-    )
-    with open(config_path) as f:
-        config = yaml.safe_load(f)
-    records = run_pipeline(dataset, data_dir, output_dir, config, use_judge, seed)
-    return dataset, len(records)
-
-
 def main_all():
-    """Run corruption pipeline for every dataset found under data_dir's parent in parallel."""
-    parser = argparse.ArgumentParser(
-        description="Corrupt all datasets under data/raw/ in parallel."
-    )
+    """Run corruption pipeline for every dataset found under data_dir's parent."""
+    parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/dataset_config.yaml")
     parser.add_argument("--no_judge", action="store_true")
     args = parser.parse_args()
@@ -282,29 +330,14 @@ def main_all():
         config = yaml.safe_load(f)
 
     base = Path(config["data_dir"]).parent
-    output_dir = config["output_dir"]
-    seed = config["corruption"]["seed"]
-    jobs = [
-        (ds, str(base / ds), output_dir, args.config, not args.no_judge, seed)
-        for ds in LOADERS
-        if (base / ds).exists()
-    ]
-    if not jobs:
+    datasets = [ds for ds in LOADERS if (base / ds).exists()]
+    if not datasets:
         log.error("No dataset directories found under %s", base)
         return
 
-    log.info("Launching %d pipelines in parallel: %s", len(jobs), [j[0] for j in jobs])
-
-    from concurrent.futures import ProcessPoolExecutor, as_completed
-    with ProcessPoolExecutor(max_workers=len(jobs)) as pool:
-        futures = {pool.submit(_run_dataset_worker, job): job[0] for job in jobs}
-        for future in as_completed(futures):
-            dataset = futures[future]
-            try:
-                _, count = future.result()
-                log.info("✓ %s finished: %d records", dataset, count)
-            except Exception as exc:
-                log.error("✗ %s failed: %s", dataset, exc)
+    for ds in datasets:
+        records = run_pipeline(ds, str(base / ds), config["output_dir"], config, not args.no_judge, config["corruption"]["seed"])
+        log.info("✓ %s finished: %d records", ds, len(records))
 
 
 if __name__ == "__main__":

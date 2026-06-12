@@ -1,4 +1,4 @@
-"""Part 2: run benchmarking experiments.
+"""Run benchmarking experiments.
 
 Usage:
     python -m src.benchmark.run_benchmark --config configs/benchmark_config.yaml
@@ -7,7 +7,11 @@ corrupted_dataset and output_dir are set in the config file.
 """
 
 import argparse
+import csv
+import io
 import json
+import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +20,7 @@ import mlflow
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 
 from .models.mistral_model import MistralModel
 from .models.openrouter_model import OpenRouterModel
@@ -61,6 +66,9 @@ def load_model(model_cfg: dict):
             model_id=model_cfg.get("model_id", "google/gemma-4-12b-it"),
             api_key=model_cfg.get("api_key", "local"),
             max_tokens=model_cfg.get("max_tokens", 256),
+            image_placeholder=model_cfg.get("image_placeholder", ""),
+            max_image_pixels=model_cfg.get("max_image_pixels", 0),
+            stop_sequences=model_cfg.get("stop_sequences"),
         )
     raise ValueError(f"Unknown backend: {backend}")
 
@@ -77,7 +85,7 @@ def run_benchmark(
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     dataset_name = Path(corrupted_dataset_path).stem
-    mlflow.set_experiment("benchmark")
+    mlflow.set_experiment(config.get("mlflow_experiment", "benchmark"))
 
     for model_cfg in config["models"]:
         model = load_model(model_cfg)
@@ -100,27 +108,41 @@ def run_benchmark(
             continue
 
         with mlflow.start_run(run_name=f"{safe_name}_{dataset_name}_{timestamp}"):
+            mlflow.set_tags({
+                "model": model_name,
+                "backend": model_cfg["backend"],
+                "dataset": dataset_name,
+            })
             mlflow.log_params({
                 "model_id": model_name,
                 "backend": model_cfg["backend"],
                 "dataset_path": corrupted_dataset_path,
                 "num_samples": len(dataset),
+                "label_unanswerable_rate": round(
+                    sum(1 for it in dataset if it.get("is_unanswerable", True)) / len(dataset), 4
+                ) if dataset else 0.0,
             })
+            import pandas as pd
+            ds = mlflow.data.from_pandas(pd.read_json(corrupted_dataset_path), name=dataset_name, targets="is_unanswerable")
+            mlflow.log_input(ds, context="benchmark")
 
             if done_ids:
                 print(f"\n[{model_name}] resuming: {len(done_ids)} done, {len(remaining)} remaining")
 
             records = list(existing_records)
-            for item in remaining:
+            _log_every = max(1, len(remaining) // 10)  # ~10 checkpoints during inference
+            for _step_i, item in enumerate(remaining):
                 # mixed benchmark datasets use "question" + "is_unanswerable";
                 # legacy corrupted-only datasets use "corrupted_question" with implied True
                 question = item["question"] if "question" in item else item["corrupted_question"]
                 label: bool = item.get("is_unanswerable", True)
+                t0 = time.perf_counter()
                 result = model.predict_unanswerable(
                     document_path=item["document_path"],
                     question=question,
                     prompt_template=prompt_template,
                 )
+                result.inference_time_s = time.perf_counter() - t0
                 result.sample_id = item["sample_id"]
                 records.append({
                     "sample_id": item["sample_id"],
@@ -128,13 +150,25 @@ def run_benchmark(
                     "label_unanswerable": label,
                     "raw_response": result.raw_response,
                     "corruption_type": item["corruption_type"],
+                    "inference_time_s": result.inference_time_s,
+                    "response_length": len(result.raw_response or ""),
                 })
                 # save after every sample so a crash loses at most one result
-                preds = [r["predicted_unanswerable"] for r in records]
-                labels = [r["label_unanswerable"] for r in records]
-                metrics = compute_metrics(labels, preds)
+                _preds = [r["predicted_unanswerable"] for r in records]
+                _labels = [r["label_unanswerable"] for r in records]
+                _m = compute_metrics(_labels, _preds)
                 with open(results_path, "w") as f:
-                    json.dump({"records": records, "metrics": metrics.__dict__}, f, indent=2)
+                    json.dump({"records": records, "metrics": _m.__dict__}, f, indent=2)
+                # log rolling metrics as steps so MLflow renders trend charts
+                if (_step_i + 1) % _log_every == 0 or _step_i + 1 == len(remaining):
+                    _global_step = len(done_ids) + _step_i + 1
+                    mlflow.log_metrics({
+                        "rolling_accuracy": _m.accuracy,
+                        "rolling_f1": _m.f1,
+                        "rolling_mcc": _m.mcc,
+                        "rolling_precision": _m.precision,
+                        "rolling_recall": _m.recall,
+                    }, step=_global_step)
 
             preds = [r["predicted_unanswerable"] for r in records]
             labels = [r["label_unanswerable"] for r in records]
@@ -144,6 +178,9 @@ def run_benchmark(
                 json.dump({"records": records, "metrics": metrics.__dict__}, f, indent=2)
             print(f"Results saved → {results_path}")
 
+            inference_times = [r["inference_time_s"] for r in records if "inference_time_s" in r]
+            response_lengths = [r["response_length"] for r in records if "response_length" in r]
+            pred_unanswerable_rate = sum(preds) / len(preds) if preds else 0.0
             mlflow.log_metrics({
                 "accuracy": metrics.accuracy,
                 "precision": metrics.precision,
@@ -156,15 +193,60 @@ def run_benchmark(
                 "specificity": metrics.specificity,
                 "balanced_accuracy": metrics.balanced_accuracy,
                 "mcc": metrics.mcc,
+                "pred_unanswerable_rate": pred_unanswerable_rate,
+                **({"inference_time_mean_s": float(np.mean(inference_times)),
+                    "inference_time_median_s": float(np.median(inference_times)),
+                    "inference_time_p95_s": float(np.percentile(inference_times, 95)),
+                    "inference_time_total_s": sum(inference_times),
+                    "inference_time_max_s": max(inference_times),
+                    "throughput_samples_per_s": len(inference_times) / sum(inference_times),
+                } if inference_times else {}),
+                **({"response_length_mean": float(np.mean(response_lengths)),
+                    "response_length_median": float(np.median(response_lengths)),
+                } if response_lengths else {}),
             })
 
             per_type = compute_per_type_metrics(records)
             for ctype, tm in per_type.items():
-                mlflow.log_metric(f"f1_{ctype}", tm.f1)
+                mlflow.log_metrics({
+                    f"f1_{ctype}": tm.f1,
+                    f"precision_{ctype}": tm.precision,
+                    f"recall_{ctype}": tm.recall,
+                    f"specificity_{ctype}": tm.specificity,
+                    f"mcc_{ctype}": tm.mcc,
+                    f"balanced_accuracy_{ctype}": tm.balanced_accuracy,
+                })
 
             fig = plot_confusion_matrix(metrics, title=model_name)
             mlflow.log_figure(fig, f"confusion_matrix_{safe_name}.png")
             plt.close(fig)
+
+            # per-type F1 bar chart
+            if per_type:
+                fig2, ax2 = plt.subplots(figsize=(max(4, len(per_type) * 1.5), 4))
+                ctypes = list(per_type.keys())
+                vals = [per_type[ct].f1 for ct in ctypes]
+                bars = ax2.bar(ctypes, vals, color="steelblue")
+                ax2.bar_label(bars, fmt="%.3f", padding=3)
+                ax2.set_ylim(0, 1.1)
+                ax2.set_ylabel("F1")
+                ax2.set_title(f"F1 by corruption type — {model_name}")
+                plt.tight_layout()
+                mlflow.log_figure(fig2, f"f1_by_type_{safe_name}.png")
+                plt.close(fig2)
+
+            # FP / FN error-analysis CSV artifacts
+            for error_type, condition in [("false_positives", lambda r: not r["label_unanswerable"] and r["predicted_unanswerable"]),
+                                          ("false_negatives", lambda r: r["label_unanswerable"] and not r["predicted_unanswerable"])]:
+                error_records = [r for r in records if condition(r)]
+                if error_records:
+                    buf = io.StringIO()
+                    writer = csv.DictWriter(buf, fieldnames=["sample_id", "corruption_type", "raw_response", "inference_time_s"])
+                    writer.writeheader()
+                    writer.writerows([{k: r.get(k, "") for k in writer.fieldnames} for r in error_records])
+                    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, prefix=f"{error_type}_") as tmp:
+                        tmp.write(buf.getvalue())
+                        mlflow.log_artifact(tmp.name, artifact_path="error_analysis")
 
             mlflow.log_artifact(str(results_path))
 

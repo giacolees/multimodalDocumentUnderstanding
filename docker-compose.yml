@@ -24,7 +24,7 @@ services:
     volumes:
       - ./models:/models:ro
     command: >
-      --model /models/${LLAMA0_MODEL_FILE:-model.gguf}
+      --model /models/${LLAMA_MODEL_FILE:-model.gguf}
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./models:/models:ro
     command: >
-      --model /models/${LLAMA1_MODEL_FILE:-model.gguf}
+      --model /models/${LLAMA_MODEL_FILE:-model.gguf}
       --host 0.0.0.0 --port 8080
       --n-gpu-layers ${GPU_LAYERS:-99}
       --ctx-size 4096
@@ -74,23 +74,21 @@ services:
       context: .
       dockerfile: services/vllm-worker/Dockerfile
     environment:
-      CUDA_VISIBLE_DEVICES: "0"
       HF_HOME: /models/hf_cache
       HF_TOKEN: ${HF_TOKEN:-}
+      FLASHINFER_DISABLE_VERSION_CHECK: ${FLASHINFER_DISABLE_VERSION_CHECK:-0}
     ports:
       - "8083:8000"
     volumes:
       - ./models:/models
       - ./services/vllm-worker/templates:/templates:ro
     command: >
-      --model ${VLLM_MODEL:-google/gemma-4-E2B-it}
+      --model ${VLLM_MODEL:-google/gemma-4-E4B-it}
       --host 0.0.0.0 --port 8000
       --dtype auto
       --max-model-len ${VLLM_MAX_LEN:-4096}
       --tensor-parallel-size ${VLLM_TP_SIZE:-1}
-      --enable-auto-tool-choice
-      --tool-call-parser gemma4
-      --chat-template /templates/tool_chat_template_gemma4.jinja
+      ${VLLM_EXTRA_ARGS:-}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 15s
@@ -110,23 +108,21 @@ services:
       context: .
       dockerfile: services/vllm-worker/Dockerfile
     environment:
-      CUDA_VISIBLE_DEVICES: "0"
       HF_HOME: /models/hf_cache
       HF_TOKEN: ${HF_TOKEN:-}
+      FLASHINFER_DISABLE_VERSION_CHECK: ${FLASHINFER_DISABLE_VERSION_CHECK:-0}
     ports:
       - "8084:8000"
     volumes:
       - ./models:/models
       - ./services/vllm-worker/templates:/templates:ro
     command: >
-      --model ${VLLM_MODEL_1:-google/gemma-4-E2B-it}
+      --model ${VLLM_MODEL:-google/gemma-4-E4B-it}
       --host 0.0.0.0 --port 8000
       --dtype auto
       --max-model-len ${VLLM_MAX_LEN:-4096}
       --tensor-parallel-size ${VLLM_TP_SIZE:-1}
-      --enable-auto-tool-choice
-      --tool-call-parser gemma4
-      --chat-template /templates/tool_chat_template_gemma4.jinja
+      ${VLLM_EXTRA_ARGS:-}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 15s

@@ -31,11 +31,14 @@ uv run python -m src.dataset.pipeline \
   --config configs/dataset_config.yaml
   [--no_judge]   # skip LLM-as-a-judge quality filter
 
-# Part 2 – benchmark Vision LLMs
-uv run python -m src.benchmark.run_benchmark \
+# Part 1b – build mixed benchmark dataset (answerable + unanswerable pairs)
+uv run prepare-benchmark \
   --corrupted_dataset data/corrupted/docvqa_corrupted.json \
-  --config configs/benchmark_config.yaml \
-  --output_dir results/benchmark
+  --output_dir data/final
+
+# Part 2 – benchmark Vision LLMs (corrupted_dataset and output_dir set in config)
+uv run python -m src.benchmark.run_benchmark \
+  --config configs/benchmark_config.yaml
 
 # Part 3 – mitigation strategies
 uv run python -m src.mitigation.run_mitigation \
@@ -45,7 +48,7 @@ uv run python -m src.mitigation.run_mitigation \
   --output_dir results/mitigation
 ```
 
-The four entry points: `uv run download-data`, `uv run corrupt-dataset`, `uv run run-benchmark`, `uv run run-mitigation`.
+The five entry points: `uv run download-data`, `uv run corrupt-dataset`, `uv run prepare-benchmark`, `uv run run-benchmark`, `uv run run-mitigation`.
 
 ## Architecture
 
@@ -57,18 +60,25 @@ data/raw/{docvqa,dude,mp_docvqa}/
         ▼  src/dataset/pipeline.py
         │  ├── loaders/  (BaseLoader → QASample stream)
         │  ├── corruption/  (BaseCorruptor → CorruptedSample)
-        │  └── quality_check/llm_judge.py  (Claude Vision rejects still-answerable questions)
+        │  └── quality_check/llm_judge.py  (vLLM/Gemma judge rejects still-answerable questions)
         ▼
 data/corrupted/{dataset}_corrupted.json   ← list[dict] with original + corrupted question
         │
+        ▼  src/dataset/prepare_benchmark.py
+        │      pairs each corrupted sample with its original (is_unanswerable=True/False)
+        ▼
+data/final/{dataset}_final.json   ← mixed answerable + unanswerable benchmark set
+        │
         ▼  src/benchmark/run_benchmark.py
         │  ├── models/  (BaseVisionModel → PredictionResult)
-        │  └── evaluation/metrics.py  (accuracy/precision/recall/F1)
+        │  ├── evaluation/metrics.py  (accuracy/precision/recall/F1/MCC + per-type)
+        │  └── MLflow experiment: "benchmark"
         ▼
-results/benchmark/benchmark_results.json
+results/benchmark_{dataset}/{model}_benchmark_result.json
         │
         ▼  src/mitigation/run_mitigation.py
-        │  └── strategies/  (few_shot | chain_of_thought | knowledge_injection)
+        │  ├── strategies/  (few_shot | chain_of_thought | knowledge_injection)
+        │  └── MLflow experiment: "mitigation"  (logs delta_f1, delta_mcc vs baseline)
         ▼
 results/mitigation/mitigation_results.json
 ```
@@ -77,10 +87,10 @@ results/mitigation/mitigation_results.json
 
 - **`QASample`** (`src/dataset/loaders/base_loader.py`) — canonical record passed between loader and pipeline; fields: `sample_id`, `document_path`, `question`, `answer`, `page_index`, `metadata`.
 - **`BaseCorruptor`** (`src/dataset/corruption/base_corruptor.py`) — `corrupt(question) → CorruptedSample | None`; returns `None` when the corruptor has nothing to match (pipeline tries next one). Three concrete implementations: `NLPEntityCorruptor`, `ElementCorruptor`, `LayoutCorruptor`. `NLPEntityCorruptor` uses spaCy NER + Wikipedia category API to find peer-entity replacements (no key needed; ~1–2 s latency per unique entity, cached per run). Pass `web_lookup=False` for offline/fast mode (static fallback pools).
-- **`BaseVisionModel`** (`src/benchmark/models/base_model.py`) — `predict_unanswerable(document_path, question, prompt_template) → PredictionResult`. Active backends: `MistralModel` (`MISTRAL_API_KEY`), `GoogleModel` (`GOOGLE_API_KEY`), `OpenRouterModel` (`OPENROUTER_API_KEY`), `LlamaCppModel` (server or direct GGUF). All pass images as base64 PNG.
+- **`BaseVisionModel`** (`src/benchmark/models/base_model.py`) — `predict_unanswerable(document_path, question, prompt_template) → PredictionResult`. Active backends: `VllmModel` (local vLLM server, primary), `MistralModel` (`MISTRAL_API_KEY`), `GoogleModel` (`GOOGLE_API_KEY`), `OpenRouterModel` (`OPENROUTER_API_KEY`), `LlamaCppModel` (server or direct GGUF). All pass images as base64 PNG.
 - **Mitigation strategies** (`src/mitigation/strategies/`) are plain functions that take a question string and return a fully-formed prompt string. The runner in `run_mitigation.py` maps strategy name → function via `_STRATEGIES` dict.
 
-### Dataset JSON schema
+### Dataset JSON schemas
 
 Each record in `data/corrupted/*.json`:
 
@@ -100,9 +110,37 @@ Each record in `data/corrupted/*.json`:
 }
 ```
 
+Each record in `data/final/*.json` (mixed benchmark, produced by `prepare_benchmark.py`):
+
+```json
+{
+  "sample_id": "...",
+  "document_path": "...",
+  "question": "...",
+  "is_unanswerable": true,
+  "original_answer": "...",
+  "corruption_type": "nlp_entity | element | layout",
+  "corruption_detail": "...",
+  "page_index": 0,
+  "metadata": {}
+}
+```
+
 ### Configuration
 
-All three stages are driven by YAML files in `configs/`. Edit `configs/dataset_config.yaml` to change corruption distribution, `max_samples`, and `window_size` (for multi-page sliding window). Edit `configs/benchmark_config.yaml` to switch between mistral/google/openrouter/llama_cpp backends.
+All three stages are driven by YAML files in `configs/`. Edit `configs/dataset_config.yaml` to change corruption distribution, `max_samples`, and `window_size` (for multi-page sliding window). Edit `configs/benchmark_config.yaml` to switch between vllm/mistral/google/openrouter/llama_cpp backends and set `corrupted_dataset`, `output_dir`, and `mlflow_experiment`.
+
+### MLflow tracking
+
+All three pipeline stages write to a local MLflow store (`mlflow.db` + `mlruns/`). View experiments with:
+
+```bash
+uv run mlflow ui   # opens http://localhost:5000
+```
+
+- Corruption pipeline → experiment `"corruption"`: logs `num_samples`, `corruption_distribution`, corruption type counts.
+- Benchmark runner → experiment `"benchmark"` (or `mlflow_experiment` from config): logs all metrics (`accuracy`, `precision`, `recall`, `f1`, `specificity`, `balanced_accuracy`, `mcc`, `tp/fp/tn/fn`) plus per-type F1 and a confusion matrix PNG artifact per model.
+- Mitigation runner → experiment `"mitigation"`: same metrics plus `delta_f1` and `delta_mcc` relative to the baseline benchmark run.
 
 ### IDE / type-checker notes
 
@@ -120,81 +158,28 @@ All three stages are driven by YAML files in `configs/`. Edit `configs/dataset_c
 2. Implement `predict_unanswerable()` and `name()`.
 3. Register the backend string in `load_model()` inside `src/benchmark/run_benchmark.py`.
 
-## Microservices layer (services/)
+## GPU worker infrastructure (docker-compose.yml)
 
-Five FastAPI services wrap the `src/` pipeline. `src/` code is NOT rewritten — services import and wrap it.
+The `docker-compose.yml` spins up local GPU inference servers. The FastAPI microservices were dropped — the deliverable is standalone Python scripts.
 
-| Service | Port | Responsibility |
+| Service | Port | Purpose |
 | --- | --- | --- |
-| `api-gateway` | 8000 | Client entry point — validates + proxies /jobs/* to job-runner |
-| `model-gateway` | 8001 | Unified inference API — GPU workers + cloud APIs, round-robin pool |
-| `document-svc` | 8002 | Chunking, embedding, Redis hybrid search (vector + BM25) for RAG |
-| `evaluation-svc` | 8003 | LLM-as-a-judge, RAG scorer, metrics |
-| `job-runner` | 8004 | Async job dispatch (corrupt/benchmark/mitigation/index job types) |
 | `llama-worker-0` | 8081 | llama.cpp server, CUDA_VISIBLE_DEVICES=0 (GGUF models) |
 | `llama-worker-1` | 8082 | llama.cpp server, CUDA_VISIBLE_DEVICES=1 (GGUF models) |
-| `vllm-worker-0` | 8083 | vLLM server, CUDA_VISIBLE_DEVICES=0 (HF safetensor models) |
-| `vllm-worker-1` | 8084 | vLLM server, CUDA_VISIBLE_DEVICES=1 (HF safetensor models) |
-| `redis-stack` | 6379 | Job state hashes + vector index for RAG |
-| `jaeger` | 16686/4317 | Distributed trace backend (UI / OTLP gRPC) |
-| `prometheus` | 9090 | Metrics scraper (scrapes all 5 app services every 15s) |
-
-### Running the stack
+| `vllm-worker-0` | 8083 | vLLM server, CUDA_VISIBLE_DEVICES=0 (HF safetensor; judge model) |
+| `vllm-worker-1` | 8084 | vLLM server, CUDA_VISIBLE_DEVICES=1 (HF safetensor; benchmark model) |
+| `redis-stack` | 6380 | Redis Stack (used by vllm workers for caching if needed) |
 
 ```bash
-docker compose up -d                               # production (needs models/ dir with GGUF files)
-docker compose -f docker-compose.test.yml up -d   # testing (stub GPU workers, no GGUF needed)
-docker compose config --quiet                      # validate compose YAML syntax (fast, no build)
+docker compose up -d vllm-worker-0 vllm-worker-1   # start only vLLM workers
+docker compose config --quiet                        # validate compose YAML syntax
 ```
 
-### Testing services
-
-Each service has `services/<name>/tests/`. Do NOT run all services together — they share flat module names (`main.py`, `state.py`, etc.) that conflict in one pytest process.
-
-```bash
-# Run per service (required):
-PYTHONPATH=. uv run pytest services/evaluation-svc/tests/ -v
-PYTHONPATH=. uv run pytest services/model-gateway/tests/ -v
-PYTHONPATH=. uv run pytest services/document-svc/tests/ -v
-PYTHONPATH=. uv run pytest services/job-runner/tests/ -v
-PYTHONPATH=. uv run pytest services/api-gateway/tests/ -v
-
-# Integration smoke tests (requires live docker-compose stack):
-uv run pytest tests/integration/ -v --timeout=120
-```
-
-`uv run pytest` (no args) only discovers `tests/` — see `[tool.pytest.ini_options]` in `pyproject.toml`.
-
-### Services dependencies
-
-```bash
-uv sync --extra services   # installs fastapi, uvicorn, httpx, redis, redisvl, sentence-transformers, fakeredis, opentelemetry-*, prometheus-*
-```
-
-### Observability
-
-- Jaeger UI: `http://localhost:16686` — distributed traces across all 5 services
-- Prometheus: `http://localhost:9090` — inference latency, pool health, job counters
-- Structured JSON logs to stdout — query with `docker compose logs <svc>`
-- Shared module: `services/shared/observability.py` — `setup_tracing(name)`, `setup_metrics(app)`, `get_logger(name)`
-- Key metrics: `inference_latency_seconds` (histogram, label: model_id), `pool_healthy_workers` (gauge, label: pool), `jobs_total` (counter, labels: job_type/status)
-
-### model-gateway pool config
-
-- `model_id: "llama"` → round-robins across `LLAMA_URLS` (comma-separated llama.cpp worker URLs)
-- `model_id: "vllm"` → round-robins across `VLLM_URLS` (comma-separated vLLM worker URLs)
-- `model_id: null` → fan-out to all models listed in `ENABLED_MODELS`
-- vLLM uses HuggingFace safetensor format — set `VLLM_MODEL` to HF model ID; `HF_TOKEN` needed for gated models
+vLLM workers load the model set via `VLLM_MODEL` env var. `HF_TOKEN` is needed for gated models. The custom `services/vllm-worker/Dockerfile` includes the Gemma 4 chat template patch.
 
 ### Known gotchas
 
-- **redisvl + redis 8.x**: `redis 8.0` dropped `redis.commands.search.indexDefinition`; `redisvl` imports it at module load. Fix: lazy-import redisvl inside function bodies (already done in `document-svc`).
-- **Docker build context**: all Dockerfiles assume repo root as build context. Use `docker compose build`, not `docker build .` from within a service directory.
-- **Redis Stack**: requires `redis/redis-stack:latest` (not plain `redis`) for RediSearch + vector support.
-- **GPU workers**: model-gateway `depends_on` llama and vllm workers with `condition: service_healthy`. llama.cpp takes 30–90 s to load a model — don't expect immediate inference on cold start.
+- **Docker build context**: Dockerfiles assume repo root as build context. Use `docker compose build`, not `docker build .` from within a service directory.
+- **GPU workers take 30–90 s to load a model** — don't expect immediate inference on cold start; the benchmark runner will retry on connection error.
 - **Nested Docker Compose var interpolation broken**: `${VAR1:-${VAR2:-default}}` is treated as a literal string. Use flat defaults or resolve in `.env`.
 - **`runtime: nvidia` + `deploy.resources` are redundant**: for GPU containers, use only `deploy.resources.reservations.devices`.
-- **pytest `sys.path` for shared module**: service test files need TWO inserts — `sys.path.insert(0, "..")` for the service dir AND `sys.path.insert(0, "../..")` for `services/` (required for `from shared.observability import ...`).
-- **prometheus_client 0.20+ strips `_total` from Counter `.name`**: `Counter("foo_total", ...)` has `.name = "foo"` in `REGISTRY.collect()` — the `_total` suffix only appears in sample names.
-- **prometheus_client `Duplicated timeseries` on module reload**: wrap module-level metric definitions in `try/except ValueError` when tests use `importlib.reload()`.
-- **OTel `DEADLINE_EXCEEDED` in tests**: harmless — `BatchSpanProcessor` silently drops spans when Jaeger is unreachable; `setup_tracing` is already wrapped in try/except.
