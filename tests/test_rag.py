@@ -54,3 +54,68 @@ def test_transcribe_cache_hit_skips_generate(tmp_path):
     r.transcribe(item, mock_model)   # second call should read cache
 
     assert mock_model.generate.call_count == 1
+
+
+def test_retrieve_rrf_ranks_relevant_chunk_first():
+    """RRF fuses BM25 + dense; the chunk winning both signals appears first."""
+    import sys
+    import numpy as np
+
+    # Mock rank_bm25 at the module level so the lazy import inside retrieve() uses it.
+    mock_bm25_module = mock.MagicMock()
+    mock_bm25_instance = mock.MagicMock()
+    mock_bm25_module.BM25Okapi.return_value = mock_bm25_instance
+    # chunk 0 = relevant, wins sparse
+    mock_bm25_instance.get_scores.return_value = np.array([10.0, 0.1])
+
+    from src.mitigation.strategies.rag import RagRetriever
+    r = RagRetriever(top_k=1, chunk_max_chars=200)
+
+    # Pre-set embedder to avoid sentence_transformers import
+    mock_embedder = mock.MagicMock()
+    # chunk 0 embedding is most similar to query (dot product: [0.9, 0.1])
+    mock_embedder.encode.side_effect = [
+        np.array([[0.9, 0.1], [0.1, 0.9]]),  # chunk embeddings (2 chunks)
+        np.array([[1.0, 0.0]]),               # query embedding — chunk 0 wins dense too
+    ]
+    r._embedder = mock_embedder
+
+    item = {"document_path": "doc.png", "page_index": 0}
+    relevant = "net profit for 1975 was high"
+    irrelevant = "company founded in 1960"
+    full_text = f"{relevant}\n\n{irrelevant}"
+
+    with mock.patch.object(r, "transcribe", return_value=full_text), \
+         mock.patch.dict(sys.modules, {"rank_bm25": mock_bm25_module}):
+        chunks = r.retrieve(item, "net profit 1975", mock.MagicMock())
+
+    assert len(chunks) == 1
+    assert chunks[0] == relevant
+
+
+def test_retrieve_top_k_respected():
+    """retrieve() returns at most top_k chunks."""
+    import sys
+    import numpy as np
+
+    mock_bm25_module = mock.MagicMock()
+    mock_bm25_instance = mock.MagicMock()
+    mock_bm25_module.BM25Okapi.return_value = mock_bm25_instance
+    mock_bm25_instance.get_scores.return_value = np.array([3.0, 2.0, 1.0])
+
+    from src.mitigation.strategies.rag import RagRetriever
+    r = RagRetriever(top_k=2, chunk_max_chars=30)
+    mock_embedder = mock.MagicMock()
+    mock_embedder.encode.side_effect = [
+        np.array([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]]),
+        np.array([[1.0, 0.0]]),
+    ]
+    r._embedder = mock_embedder
+
+    text = "Chunk A text here.\n\nChunk B text here.\n\nChunk C text here."
+    item = {"document_path": "doc.png", "page_index": 0}
+    with mock.patch.object(r, "transcribe", return_value=text), \
+         mock.patch.dict(sys.modules, {"rank_bm25": mock_bm25_module}):
+        chunks = r.retrieve(item, "query", mock.MagicMock())
+
+    assert len(chunks) == 2
