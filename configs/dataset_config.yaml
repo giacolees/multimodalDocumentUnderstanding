@@ -10,7 +10,7 @@ loader:
 
 corruption:
   seed: 42
-  max_samples: -1       # -1 = use all
+  max_samples: 1000       # -1 = use all
   # target distribution across corruption types (must sum to 1.0)
   distribution:
     nlp_entity: 0.40

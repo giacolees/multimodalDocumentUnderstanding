@@ -124,7 +124,16 @@ class VllmModel(BaseVisionModel):
         if self._stop_token_ids:
             payload["stop_token_ids"] = self._stop_token_ids
         resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
-        resp.raise_for_status()
+        if not resp.ok:
+            detail = resp.text[:300]
+            if resp.status_code == 400 and "exceeds" in detail and "context" in detail:
+                return PredictionResult(
+                    sample_id="",
+                    predicted_unanswerable=False,
+                    confidence=0.0,
+                    raw_response=f"[SKIPPED: context too long] {detail}",
+                )
+            resp.raise_for_status()
         raw = resp.json()["choices"][0]["message"]["content"]
         predicted, confidence = _parse_unanswerable(raw)
         return PredictionResult(
@@ -156,5 +165,9 @@ class VllmModel(BaseVisionModel):
             "temperature": 0.0,
         }
         resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
-        resp.raise_for_status()
+        if not resp.ok:
+            detail = resp.text[:300]
+            if resp.status_code == 400 and "exceeds" in detail and "context" in detail:
+                return f"[SKIPPED: context too long] {detail}"
+            resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]

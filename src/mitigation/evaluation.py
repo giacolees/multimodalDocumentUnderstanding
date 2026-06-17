@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import tempfile
 import time
 from datetime import datetime
@@ -14,6 +15,7 @@ import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 from ..benchmark.evaluation.metrics import (
     compute_metrics,
@@ -21,9 +23,20 @@ from ..benchmark.evaluation.metrics import (
     plot_confusion_matrix,
 )
 
+from .strategies.base import get_question
+
 if TYPE_CHECKING:
     from .strategies.base import MitigationStrategy
     from ..benchmark.models.base_model import BaseVisionModel
+
+
+_LOG_EVERY = 10  # log running metrics to MLflow every N samples
+
+
+def _flush_checkpoint(path: Path, records: list[dict]) -> None:
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps({"records": records}, indent=2))
+    tmp.replace(path)
 
 
 def evaluate_strategy(
@@ -33,6 +46,7 @@ def evaluate_strategy(
     baseline_metrics: dict,
     model_id: str,
     corrupted_dataset_path: str,
+    checkpoint_path: "Path | None" = None,
 ) -> dict:
     """Run the per-item inference loop, compute metrics, log to MLflow, return results dict."""
     preds: list[bool] = []
@@ -40,33 +54,6 @@ def evaluate_strategy(
     records: list[dict] = []
     inference_times: list[float] = []
     _sample_prompt: str = ""
-
-    for item in dataset:
-        prompt = strategy.build_prompt(item, model)
-        if not _sample_prompt:
-            _sample_prompt = prompt
-        t0 = time.perf_counter()
-        result = model.predict_unanswerable(
-            document_path=item["document_path"],
-            question=item["corrupted_question"],
-            prompt_template=prompt,
-        )
-        elapsed = time.perf_counter() - t0
-        inference_times.append(elapsed)
-        preds.append(result.predicted_unanswerable)
-        labels.append(True)
-        records.append({
-            "sample_id": item["sample_id"],
-            "strategy": strategy.name,
-            "predicted_unanswerable": result.predicted_unanswerable,
-            "label_unanswerable": True,
-            "raw_response": result.raw_response,
-            "corruption_type": item.get("corruption_type", "unknown"),
-            "inference_time_s": elapsed,
-        })
-
-    metrics = compute_metrics(labels, preds)
-    print(f"\n[{strategy.name}] {metrics}")
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_model = model_id.replace("/", "_")
@@ -91,6 +78,63 @@ def evaluate_strategy(
             targets=_targets,
         )
         mlflow.log_input(ds, context="evaluation")
+
+        bar = tqdm(
+            dataset,
+            desc=f"[{strategy.name}]",
+            unit="sample",
+            dynamic_ncols=True,
+        )
+        for step, item in enumerate(bar, start=1):
+            prompt = strategy.build_prompt(item, model)
+            if not _sample_prompt:
+                _sample_prompt = prompt
+            label = bool(item.get("is_unanswerable", True))
+            t0 = time.perf_counter()
+            result = model.predict_unanswerable(
+                document_path=item["document_path"],
+                question=get_question(item),
+                prompt_template=prompt,
+            )
+            elapsed = time.perf_counter() - t0
+            if result.raw_response.startswith("[SKIPPED:"):
+                bar.write(f"  ⚠ skipped {item['sample_id']}: {result.raw_response[:120]}")
+            inference_times.append(elapsed)
+            preds.append(result.predicted_unanswerable)
+            labels.append(label)
+            records.append({
+                "sample_id": item["sample_id"],
+                "strategy": strategy.name,
+                "predicted_unanswerable": result.predicted_unanswerable,
+                "label_unanswerable": label,
+                "raw_response": result.raw_response,
+                "corruption_type": item.get("corruption_type", "unknown"),
+                "inference_time_s": elapsed,
+            })
+
+            # Update tqdm postfix with running accuracy.
+            correct = sum(p == l for p, l in zip(preds, labels))
+            bar.set_postfix(acc=f"{correct/step:.3f}", t=f"{elapsed:.1f}s")
+
+            # Flush records to disk and log running metrics every _LOG_EVERY steps.
+            if step % _LOG_EVERY == 0 or step == len(dataset):
+                if checkpoint_path is not None:
+                    _flush_checkpoint(checkpoint_path, records)
+                running = compute_metrics(labels, preds)
+                mlflow.log_metrics(
+                    {
+                        "running_accuracy": running.accuracy,
+                        "running_f1": running.f1,
+                        "running_precision": running.precision,
+                        "running_recall": running.recall,
+                        "running_mcc": running.mcc,
+                        "running_inference_time_mean_s": float(np.mean(inference_times)),
+                    },
+                    step=step,
+                )
+
+        metrics = compute_metrics(labels, preds)
+        print(f"\n[{strategy.name}] {metrics}")
 
         if _sample_prompt:
             with tempfile.NamedTemporaryFile(

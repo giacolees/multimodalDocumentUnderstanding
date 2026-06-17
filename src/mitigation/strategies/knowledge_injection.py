@@ -33,7 +33,7 @@ def build_knowledge_injection_prompt(
     return "\n".join(lines)
 
 
-from .base import MitigationStrategy
+from .base import MitigationStrategy, get_question
 
 
 class KnowledgeInjectionStrategy(MitigationStrategy):
@@ -43,4 +43,4 @@ class KnowledgeInjectionStrategy(MitigationStrategy):
         pass
 
     def build_prompt(self, item: dict, model) -> str:
-        return build_knowledge_injection_prompt(item["corrupted_question"], DocumentMetadata())
+        return build_knowledge_injection_prompt(get_question(item), DocumentMetadata())

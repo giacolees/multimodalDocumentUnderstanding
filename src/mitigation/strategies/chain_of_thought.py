@@ -20,7 +20,7 @@ def build_cot_prompt(question: str) -> str:
     return _COT_TEMPLATE.format(question=question)
 
 
-from .base import MitigationStrategy
+from .base import MitigationStrategy, get_question
 
 
 class ChainOfThoughtStrategy(MitigationStrategy):
@@ -30,4 +30,4 @@ class ChainOfThoughtStrategy(MitigationStrategy):
         pass
 
     def build_prompt(self, item: dict, model) -> str:
-        return build_cot_prompt(item["corrupted_question"])
+        return build_cot_prompt(get_question(item))

@@ -22,6 +22,9 @@ _RAG_TEMPLATE = (
 )
 
 
+_RETRIEVAL_MODES = {"dense", "bm25", "hybrid"}
+
+
 class RagRetriever:
     def __init__(
         self,
@@ -30,12 +33,16 @@ class RagRetriever:
         chunk_max_chars: int = 400,
         transcribe_max_tokens: int = 1024,
         cache_dir: str = "data/ocr_cache",
+        retrieval_mode: str = "hybrid",
     ) -> None:
+        if retrieval_mode not in _RETRIEVAL_MODES:
+            raise ValueError(f"retrieval_mode must be one of {_RETRIEVAL_MODES}, got {retrieval_mode!r}")
         self._embed_model_name = embed_model
         self._top_k = top_k
         self._chunk_max_chars = chunk_max_chars
         self._transcribe_max_tokens = transcribe_max_tokens
         self._cache_dir = Path(cache_dir)
+        self._retrieval_mode = retrieval_mode
         self._embedder = None  # lazy-loaded SentenceTransformer
 
     def _cache_key(self, item: dict) -> str:
@@ -85,41 +92,47 @@ class RagRetriever:
             return [stripped[: self._chunk_max_chars]] if stripped else []
         return result
 
+    def _bm25_ranks(self, chunk_list: list[str], question: str) -> dict[int, int]:
+        from rank_bm25 import BM25Okapi
+        tokenized = [c.lower().split() for c in chunk_list]
+        bm25 = BM25Okapi(tokenized)
+        scores = bm25.get_scores(question.lower().split())
+        order = sorted(range(len(chunk_list)), key=lambda i: scores[i], reverse=True)
+        return {idx: rank for rank, idx in enumerate(order)}
+
+    def _dense_ranks(self, chunk_list: list[str], question: str) -> dict[int, int]:
+        if self._embedder is None:
+            from sentence_transformers import SentenceTransformer
+            self._embedder = SentenceTransformer(self._embed_model_name, device="cpu")
+        embeddings = self._embedder.encode(chunk_list, normalize_embeddings=True)
+        q_emb = self._embedder.encode([question], normalize_embeddings=True)[0]
+        scores = embeddings @ q_emb
+        order = sorted(range(len(chunk_list)), key=lambda i: float(scores[i]), reverse=True)
+        return {idx: rank for rank, idx in enumerate(order)}
+
     def retrieve(self, item: dict, question: str, model) -> list[str]:
-        """Hybrid BM25 + dense retrieval with RRF fusion."""
+        """Retrieve top-k chunks using the configured retrieval_mode (dense | bm25 | hybrid)."""
         text = self.transcribe(item, model)
         chunk_list = self.chunks(text)
         if not chunk_list:
             return []
 
-        # Sparse ranking (BM25)
-        from rank_bm25 import BM25Okapi
-        tokenized = [c.lower().split() for c in chunk_list]
-        bm25 = BM25Okapi(tokenized)
-        sparse_scores = bm25.get_scores(question.lower().split())
-        sparse_order = sorted(range(len(chunk_list)),
-                              key=lambda i: sparse_scores[i], reverse=True)
-        sparse_ranks: dict[int, int] = {idx: rank for rank, idx in enumerate(sparse_order)}
+        if self._retrieval_mode == "bm25":
+            ranks = self._bm25_ranks(chunk_list, question)
+            top = sorted(ranks, key=lambda i: ranks[i])
+        elif self._retrieval_mode == "dense":
+            ranks = self._dense_ranks(chunk_list, question)
+            top = sorted(ranks, key=lambda i: ranks[i])
+        else:  # hybrid — RRF fusion (k=60)
+            sparse_ranks = self._bm25_ranks(chunk_list, question)
+            dense_ranks = self._dense_ranks(chunk_list, question)
+            k = 60
+            rrf = {
+                i: 1.0 / (k + sparse_ranks[i]) + 1.0 / (k + dense_ranks[i])
+                for i in range(len(chunk_list))
+            }
+            top = sorted(rrf, key=lambda i: rrf[i], reverse=True)
 
-        # Dense ranking (SentenceTransformer)
-        if self._embedder is None:
-            from sentence_transformers import SentenceTransformer
-            self._embedder = SentenceTransformer(self._embed_model_name)
-        import numpy as np
-        embeddings = self._embedder.encode(chunk_list, normalize_embeddings=True)
-        q_emb = self._embedder.encode([question], normalize_embeddings=True)[0]
-        dense_scores_arr = embeddings @ q_emb
-        dense_order = sorted(range(len(chunk_list)),
-                             key=lambda i: float(dense_scores_arr[i]), reverse=True)
-        dense_ranks: dict[int, int] = {idx: rank for rank, idx in enumerate(dense_order)}
-
-        # RRF fusion (k=60, parameter-free)
-        k = 60
-        rrf = {
-            i: 1.0 / (k + sparse_ranks[i]) + 1.0 / (k + dense_ranks[i])
-            for i in range(len(chunk_list))
-        }
-        top = sorted(rrf, key=lambda i: rrf[i], reverse=True)
         return [chunk_list[i] for i in top[: self._top_k]]
 
 
@@ -133,9 +146,11 @@ class RagStrategy(MitigationStrategy):
             chunk_max_chars=config.get("chunk_max_chars", 400),
             transcribe_max_tokens=config.get("transcribe_max_tokens", 1024),
             cache_dir=config.get("cache_dir", "data/ocr_cache"),
+            retrieval_mode=config.get("retrieval_mode", "hybrid"),
         )
 
     def build_prompt(self, item: dict, model) -> str:
-        chunks = self.retriever.retrieve(item, item["corrupted_question"], model)
+        from .base import get_question
+        chunks = self.retriever.retrieve(item, get_question(item), model)
         context = "\n".join(f"- {c}" for c in chunks) if chunks else "(no passages retrieved)"
         return _RAG_TEMPLATE.format(context=context)

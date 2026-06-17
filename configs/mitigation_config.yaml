@@ -1,14 +1,24 @@
-# Part 3 – mitigation strategies
+# Part 3 – mitigation settings
+
+corrupted_dataset: data/final/mp_docvqa_final.json
+baseline_results: results/benchmark_mp_docvqa/vllm:Qwen_Qwen3-VL-2B-Instruct-GGUF_benchmark_result.json
+output_dir: results/mitigation_mp_docvqa_Qwen3-VL
+mlflow_experiment: mitigation_fs_mp_docvqa_qwen3-VL
+
+max_samples: 1000    # number of samples from the dataset to run mitigation on (null = all)
+subset_ids: results/mitigation_mp_docvqa/mitigation_subset_ids.json         # path to a JSON file with a list of sample_id strings to run on (overrides max_samples)
+  # Example: results/mitigation_mp_docvqa_rag_Qwen3-VL/mitigation_subset_ids.json
 
 model:
-  backend: google          # mistral | google | openrouter | llama_cpp | vllm
-  model_id: gemini-2.0-flash
+  backend: vllm          # mistral | google | openrouter | llama_cpp | vllm
+  base_url: http://localhost:8084/v1   # vllm-worker-0
+  model_id: Qwen/Qwen3-VL-2B-Instruct-GGUF
 
 strategies:
   - few_shot
-  - chain_of_thought
-  - knowledge_injection
-  - rag
+  # - chain_of_thought
+  # - knowledge_injection
+  # - rag
   # Uncomment to include fine-tuning (requires GPU + unsloth):
   # - finetuning
 
@@ -19,6 +29,10 @@ knowledge_injection:
   extract_metadata_automatically: false   # set true to run OCR-based metadata extraction
 
 rag:
+  retrieval_mode:           # list → runs one experiment per mode; single string → runs just that mode
+    - dense
+    - bm25
+    - hybrid
   embed_model: sentence-transformers/all-MiniLM-L6-v2
   top_k: 4
   chunk_max_chars: 400

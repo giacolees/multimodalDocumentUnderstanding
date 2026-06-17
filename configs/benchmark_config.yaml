@@ -4,9 +4,9 @@
 # output_dir: results/benchmark_docvqa
 # mlflow_experiment: benchmark_docvqa_vllm_qwen3
 
-corrupted_dataset: data/final/mp_docvqa_final.json
-output_dir: results/benchmark_mp_docvqa
-mlflow_experiment: benchmark_mp_docvqa_vllm_gemma4
+corrupted_dataset: data/final/docvqa_final.json
+output_dir: results/benchmark_docvqa_2
+mlflow_experiment: benchmark_docvqa_vllm_gemma4-e2b
 
 
 models:

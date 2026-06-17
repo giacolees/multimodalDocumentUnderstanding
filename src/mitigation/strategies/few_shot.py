@@ -52,7 +52,7 @@ def build_few_shot_prompt(
     return header + example_block + f"Now answer:\nQ: {question}\nA:"
 
 
-from .base import MitigationStrategy
+from .base import MitigationStrategy, get_question
 
 
 class FewShotStrategy(MitigationStrategy):
@@ -62,4 +62,4 @@ class FewShotStrategy(MitigationStrategy):
         self._k = config.get("k", 2)
 
     def build_prompt(self, item: dict, model) -> str:
-        return build_few_shot_prompt(item["corrupted_question"], k=self._k)
+        return build_few_shot_prompt(get_question(item), k=self._k)

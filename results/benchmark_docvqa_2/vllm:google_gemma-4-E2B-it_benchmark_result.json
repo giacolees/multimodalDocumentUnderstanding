@@ -1,0 +1,5381 @@
+{
+  "records": [
+    {
+      "sample_id": "822",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.3035241019679233,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43122",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "16,947",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.26180127006955445,
+      "response_length": 6
+    },
+    {
+      "sample_id": "56464",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.621196418069303,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57815",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Managing Director",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2710701560135931,
+      "response_length": 17
+    },
+    {
+      "sample_id": "58622",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25110866909381,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61929",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "183,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7466012039221823,
+      "response_length": 7
+    },
+    {
+      "sample_id": "65311",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1/ In March of 1961 the American Can Company announced its plans to establish a factory for the production of cans in Barranquilla.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.9830671189120039,
+      "response_length": 131
+    },
+    {
+      "sample_id": "55110",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "122.21",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2944364259019494,
+      "response_length": 6
+    },
+    {
+      "sample_id": "45090",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3264653589576483,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61756",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "C",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5210145430173725,
+      "response_length": 1
+    },
+    {
+      "sample_id": "25739",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "January 1974",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6146944550564513,
+      "response_length": 12
+    },
+    {
+      "sample_id": "25386",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "five",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5807746279751882,
+      "response_length": 4
+    },
+    {
+      "sample_id": "38902",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6796752420486882,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57529",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document mentions \"Liquid Crystal Freezing Technology\" in relation to the product \"Fiama Di Wills\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.43202923494391143,
+      "response_length": 103
+    },
+    {
+      "sample_id": "60809",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6601938169915229,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45076",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "THE NATIONAL SUGAR REFINING COMPANY",
+      "corruption_type": "layout",
+      "inference_time_s": 0.27550689096096903,
+      "response_length": 35
+    },
+    {
+      "sample_id": "52465",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "3",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21670034399721771,
+      "response_length": 1
+    },
+    {
+      "sample_id": "47077",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7999348640441895,
+      "response_length": 12
+    },
+    {
+      "sample_id": "55335",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6014601910719648,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5598",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "August 1998",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.28542933193966746,
+      "response_length": 11
+    },
+    {
+      "sample_id": "57989",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document does not explicitly state the name of a \"Board\" stamped on the notice. It is a notice from \"THE EMPLOYER COVA\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8530138010391966,
+      "response_length": 124
+    },
+    {
+      "sample_id": "40795",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "22 3235",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8773788550170138,
+      "response_length": 7
+    },
+    {
+      "sample_id": "65308",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "1",
+      "corruption_type": "element",
+      "inference_time_s": 0.6383447709959,
+      "response_length": 1
+    },
+    {
+      "sample_id": "46431",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Mr. William B. Benton",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22613744798582047,
+      "response_length": 21
+    },
+    {
+      "sample_id": "42041",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "80,954",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2619412400526926,
+      "response_length": 6
+    },
+    {
+      "sample_id": "61393",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7132761580869555,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61927",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$50,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6370809969957918,
+      "response_length": 7
+    },
+    {
+      "sample_id": "61764",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$811",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6621931109111756,
+      "response_length": 4
+    },
+    {
+      "sample_id": "2175",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.3229549650568515,
+      "response_length": 12
+    },
+    {
+      "sample_id": "38869",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "31.7",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5976463439874351,
+      "response_length": 4
+    },
+    {
+      "sample_id": "889",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "PepsiCo's diverse portfolio of products offers great value and great taste.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.38347791496198624,
+      "response_length": 75
+    },
+    {
+      "sample_id": "37227",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6913820509798825,
+      "response_length": 12
+    },
+    {
+      "sample_id": "49395",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "8:15 to 8:56 a.m.",
+      "corruption_type": "element",
+      "inference_time_s": 0.39328907104209065,
+      "response_length": 17
+    },
+    {
+      "sample_id": "5566",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "For Industry Groups",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2571143090026453,
+      "response_length": 19
+    },
+    {
+      "sample_id": "62768",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "30 Minutes From Tampa International Airport",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4095125930616632,
+      "response_length": 43
+    },
+    {
+      "sample_id": "2186",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Beet Grower Director",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.271152499015443,
+      "response_length": 20
+    },
+    {
+      "sample_id": "55272",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.5104648820124567,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45009",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$42,000.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3043947219848633,
+      "response_length": 10
+    },
+    {
+      "sample_id": "58586",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document provided does not contain a visible footnote labeled \"1\". It contains a section labeled \"TABLE 3\" and text that refers to figures and other concepts, but no numbered footnotes are visible in the provided image.",
+      "corruption_type": "element",
+      "inference_time_s": 0.7583043850027025,
+      "response_length": 223
+    },
+    {
+      "sample_id": "1193",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "This teleconference was held as a follow-up on July 31, 2002.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3953734689857811,
+      "response_length": 61
+    },
+    {
+      "sample_id": "61931",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$323,850",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6476851550396532,
+      "response_length": 8
+    },
+    {
+      "sample_id": "56462",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "MEDICAL CENTER",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5372994990320876,
+      "response_length": 14
+    },
+    {
+      "sample_id": "1986",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.22907791601028293,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56541",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.228620397974737,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64697",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "31",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6148073200602084,
+      "response_length": 2
+    },
+    {
+      "sample_id": "45722",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.23446053790394217,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59420",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Wayne State University",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.32608711696229875,
+      "response_length": 22
+    },
+    {
+      "sample_id": "58558",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "40,000 rural women",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3240504860877991,
+      "response_length": 18
+    },
+    {
+      "sample_id": "37447",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "TABLE 3",
+      "corruption_type": "element",
+      "inference_time_s": 0.5485171700129285,
+      "response_length": 7
+    },
+    {
+      "sample_id": "8072",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2491033129626885,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58445",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Since 1906",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6783645319519565,
+      "response_length": 10
+    },
+    {
+      "sample_id": "2208",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6234849189640954,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63899",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6762240310199559,
+      "response_length": 12
+    },
+    {
+      "sample_id": "21700",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$123,110",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30328464007470757,
+      "response_length": 8
+    },
+    {
+      "sample_id": "4957",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "January 1, 2001 \u2014 December 31, 2001",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.41977299901191145,
+      "response_length": 35
+    },
+    {
+      "sample_id": "61394",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions \"lunch daily from 11 a.m.\" but does not mention \"GlobalTech\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7994588009314612,
+      "response_length": 83
+    },
+    {
+      "sample_id": "57476",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.35772694007027894,
+      "response_length": 12
+    },
+    {
+      "sample_id": "49151",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Based on the provided graph, to find the 'actual' value per 1000 during the year 1970, we need to look at the line labeled \"ACTUAL\" (the solid line) at the x-axis position for 1970.\n\n1. **Locate 1970** on the horizontal axis (x-axis).\n2. **Find the corresponding point** on the \"ACTUAL\" line.\n3. **Read the value** on the vertical axis (y-axis, labeled \"PER 1000\").\n\nAt the year 1970, the solid line (ACTUAL) is slightly below the 0.28 mark, appearing to be around 0.275 or slightly higher.\n\nLooking closely at the points around 1970:\n* The point for 1970 seems to be slightly below the peak around 1968/1969.\n* The value is clearly above 0.24 and below 0.28. It appears to be approximately **0.27**.\n\n(Note: Without exact data points, this is an estimation from the visual representation.)\n\n",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.765651157940738,
+      "response_length": 792
+    },
+    {
+      "sample_id": "55459",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1,000,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3091299070511013,
+      "response_length": 9
+    },
+    {
+      "sample_id": "59538",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "GLENNA MEGINIS",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5034938079770654,
+      "response_length": 14
+    },
+    {
+      "sample_id": "52460",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "December",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.11716076999437064,
+      "response_length": 8
+    },
+    {
+      "sample_id": "6969",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Yes",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21301319997292012,
+      "response_length": 3
+    },
+    {
+      "sample_id": "47043",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "24,000.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7183792430441827,
+      "response_length": 9
+    },
+    {
+      "sample_id": "65150",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "standard error.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5106123769655824,
+      "response_length": 15
+    },
+    {
+      "sample_id": "826",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.18699949199799448,
+      "response_length": 12
+    },
+    {
+      "sample_id": "36275",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "TABLE 35",
+      "corruption_type": "element",
+      "inference_time_s": 0.9359090430662036,
+      "response_length": 8
+    },
+    {
+      "sample_id": "47606",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2797786219744012,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64212",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "15. Bad Debt Provision: $122,668",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6331689880462363,
+      "response_length": 32
+    },
+    {
+      "sample_id": "55952",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23455012100748718,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56275",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2126218390185386,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47449",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "FIRST AMERICAN NATIONAL BANK",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.260574807994999,
+      "response_length": 28
+    },
+    {
+      "sample_id": "4525",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "14,500",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2500165960518643,
+      "response_length": 6
+    },
+    {
+      "sample_id": "57311",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The transaction with Dewas Soya Ltd. is listed under the \"Description of Transaction\" column as \"Dividend received\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4046539911068976,
+      "response_length": 116
+    },
+    {
+      "sample_id": "61937",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "30,850",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6271404459839687,
+      "response_length": 6
+    },
+    {
+      "sample_id": "432",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2279336249921471,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64216",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.452960122958757,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47702",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "FEB. 1, 1981",
+      "corruption_type": "layout",
+      "inference_time_s": 0.8091469330247492,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64898",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document contains two main tables of data. The first table is titled \"Hemoglobin data - Massachusetts\" and the second is titled \"Hematocrit data - Massachusetts\".\n\nThe question asks about the \"second Figure\". Assuming \"Figure\" refers to the second data table presented in the document, which is the \"Hematocrit data - Massachusetts\" table:\n\nThe second table shows data for Males and Females, categorized by Age groups (0-5 yr, 6-12, 13-16, 17-59, 60+). For each group, it provides values for \"Def.\" (Deficiency), \"Low,\" and \"Total Unsatisfactory\".\n\nIf the question is asking what *levels* are indicated, it refers to the values listed in the table.\n\nFor **Males (Hematocrit data)**:\n*   **0-5 yr:** Def. 4.4, Low 4.0, Total Unsatisfactory 8.4\n*   **6-12:** Def. 0.0, Low 3.9, Total Unsatisfactory 3.9\n*   **13-16:** Def. 1.2, Low 15.",
+      "corruption_type": "element",
+      "inference_time_s": 2.710014329990372,
+      "response_length": 837
+    },
+    {
+      "sample_id": "53992",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document mentions \"RJRT\" in the context of agreements and fixtures, but it does not explicitly state the location (state) of RJRT.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.48143796995282173,
+      "response_length": 134
+    },
+    {
+      "sample_id": "61611",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "12",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6154530940111727,
+      "response_length": 2
+    },
+    {
+      "sample_id": "46513",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "65.58",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2534856538986787,
+      "response_length": 5
+    },
+    {
+      "sample_id": "53602",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "March 23 \u2013 24, 2006",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.34992947906721383,
+      "response_length": 19
+    },
+    {
+      "sample_id": "11320",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.2639816860901192,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56530",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22546331700868905,
+      "response_length": 12
+    },
+    {
+      "sample_id": "15385",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20818798802793026,
+      "response_length": 12
+    },
+    {
+      "sample_id": "37333",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document states: \"The Academy is established by Act of Congress in 1863, the Academy is a private non-profit organization of scientists dedicated to the furtherance of science and to its use for the general welfare. Pursuant to a request made by President Wilson in 1916, the Academy organized the National Research Council.\"\n\nTherefore, the National Research Council was organized in 1916.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.195285774068907,
+      "response_length": 394
+    },
+    {
+      "sample_id": "64941",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6042473319685087,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4527",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$14,500",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20080027997028083,
+      "response_length": 7
+    },
+    {
+      "sample_id": "597",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.31758865097071975,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61757",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3189051910303533,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57145",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The second table is the one with the columns \"For the year ended March 31, 2011\" and \"For the year ended March 31, 2010\".\n\nSection II of this table lists the following items:\nI. Production, Turnover, Raw Material and Packing Material consumption\nII. Unit of Quantity\n\nThere are two main sections listed under the main heading \"I. Production, Turnover, Raw Material and Packing Material consumption\" and \"II. Unit of Quantity\".\n\nIf \"points\" refers to the numbered items within the table structure, there are two main Roman numeral sections (I and II).\n\nIf \"points\" refers to the rows under section II, there is only one row listed: \"Unit of Quantity\".\n\nGiven the structure, the most logical interpretation of \"points in section II\" refers to the items listed under the heading \"II. Unit of Quantity\". There is one item listed under this heading.\n\nHowever, if the question is interpreted as asking for the number of main sections labeled with Roman numerals in the table, there are two (I and II).\n\nLet's re-examine the table structure:\nThe table has a main heading: \"I. Production, Turnover, Raw",
+      "corruption_type": "element",
+      "inference_time_s": 2.3296521520242095,
+      "response_length": 1094
+    },
+    {
+      "sample_id": "64983",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Based on the provided image, the data is presented in a bar chart format across different conditions (BASELINE and REVERSAL) for various parameters (17-HYDROXY STEROIDS, NITROGEN, INORGANIC SULFATE, NITROGEN SULFUR RATIO, and NITROGEN BALANCE).\n\nTo determine which patient has the lowest Nitrogen balance, we need to look at the \"NITROGEN BALANCE (MEAN % ABSORPTION)\" section.\n\nThe chart shows two sets of bars for Nitrogen Balance:\n1. **BASELINE**\n2. **REVERSAL**\n\nAssuming the bars within each group represent different patients or conditions, we need to find the lowest bar in the entire \"NITROGEN BALANCE\" section.\n\nLooking at the \"NITROGEN BALANCE\" section:\n* **BASELINE:** The bars are around 1.0, 1.5, 2.0, 2.5, 3.0.\n* **REVERSAL:** The bars are around 1.0, 1.5, 2.0, 2.5, 3.0.\n\nIf we interpret the question as asking for the lowest value observed across all measured Nitrogen Balances shown in the chart, the lowest bar appears",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.5959729239111766,
+      "response_length": 935
+    },
+    {
+      "sample_id": "61611",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "12\n",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.523128611035645,
+      "response_length": 3
+    },
+    {
+      "sample_id": "62533",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Sharke",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6176007710164413,
+      "response_length": 6
+    },
+    {
+      "sample_id": "38880",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "39.6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5945149400504306,
+      "response_length": 4
+    },
+    {
+      "sample_id": "410",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "4881",
+      "corruption_type": "layout",
+      "inference_time_s": 0.25259723397903144,
+      "response_length": 4
+    },
+    {
+      "sample_id": "38039",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The text just underneath \"Sodium\" with an underline is \"mg/100g.\"",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8431957359425724,
+      "response_length": 65
+    },
+    {
+      "sample_id": "61642",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "ADVERTISING is organized under the EDITORIAL AND REDACTORY SERVICES department in the second exhibit.",
+      "corruption_type": "element",
+      "inference_time_s": 0.7916884400183335,
+      "response_length": 101
+    },
+    {
+      "sample_id": "61108",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "5\u00a2",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2496888309251517,
+      "response_length": 2
+    },
+    {
+      "sample_id": "32872",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "25",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6749075880507007,
+      "response_length": 2
+    },
+    {
+      "sample_id": "59930",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7557878829538822,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63859",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.6629024379653856,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59431",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "(03) 341 5664",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30507333495188504,
+      "response_length": 13
+    },
+    {
+      "sample_id": "25711",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5586342879105359,
+      "response_length": 12
+    },
+    {
+      "sample_id": "36499",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Officer",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.711260195937939,
+      "response_length": 7
+    },
+    {
+      "sample_id": "55132",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "American Board of Surgery, February 14, 1961. No. 10083",
+      "corruption_type": "layout",
+      "inference_time_s": 0.42177922697737813,
+      "response_length": 55
+    },
+    {
+      "sample_id": "2203",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "AF 015",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5408263929421082,
+      "response_length": 6
+    },
+    {
+      "sample_id": "457",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions: \"Preliminary efforts are underway to develop a new blend using combinations of the current ART blend, 215-ET and all or part of the current B&H blend.\" and \"An RTD study to evaluate the MUL blend with 50% expanded at RTD levels of approximately 75, 100 and 130 mm was completed.\"\n\nTherefore, the study done to evaluate the MUL blend with 50% expanded was an **RTD study**.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.0869284279178828,
+      "response_length": 395
+    },
+    {
+      "sample_id": "58788",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6880167489871383,
+      "response_length": 12
+    },
+    {
+      "sample_id": "39063",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.29465688904747367,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45625",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.5726356159429997,
+      "response_length": 12
+    },
+    {
+      "sample_id": "6813",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "August 26-27:Final 1998 CAMEL Plan Presentation to RJR Execs.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.40074813505634665,
+      "response_length": 61
+    },
+    {
+      "sample_id": "64888",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "22",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5903603410115466,
+      "response_length": 2
+    },
+    {
+      "sample_id": "46431",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.12398941197898239,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59850",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Anne is going with Dr. Allen to San Diego.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.810360386967659,
+      "response_length": 42
+    },
+    {
+      "sample_id": "58268",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "3,39,119",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3089127050479874,
+      "response_length": 8
+    },
+    {
+      "sample_id": "57845",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24249795905780047,
+      "response_length": 12
+    },
+    {
+      "sample_id": "51753",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.753677471075207,
+      "response_length": 12
+    },
+    {
+      "sample_id": "24113",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "7.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.245787876076065,
+      "response_length": 4
+    },
+    {
+      "sample_id": "50312",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "604",
+      "corruption_type": "layout",
+      "inference_time_s": 0.2960553359007463,
+      "response_length": 3
+    },
+    {
+      "sample_id": "50717",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "NMD1 = STH Replacement, GC-MSD",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3223386720055714,
+      "response_length": 30
+    },
+    {
+      "sample_id": "46633",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20288852299563587,
+      "response_length": 12
+    },
+    {
+      "sample_id": "450",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Page Callahan",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20848421496339142,
+      "response_length": 13
+    },
+    {
+      "sample_id": "62389",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "WILLIAM A. JACK AGENCY",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.630329928942956,
+      "response_length": 22
+    },
+    {
+      "sample_id": "56606",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20262465893756598,
+      "response_length": 12
+    },
+    {
+      "sample_id": "49629",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "JAN.",
+      "corruption_type": "layout",
+      "inference_time_s": 0.2759559570113197,
+      "response_length": 4
+    },
+    {
+      "sample_id": "57415",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3180517629953101,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56465",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "No",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5223330090520903,
+      "response_length": 2
+    },
+    {
+      "sample_id": "51252",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.260360263986513,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57371",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2203168369596824,
+      "response_length": 1
+    },
+    {
+      "sample_id": "61388",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6052723539760336,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43255",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2562428959645331,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58349",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.928534934995696,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62000",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8219072630163282,
+      "response_length": 12
+    },
+    {
+      "sample_id": "39063",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "20038",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23272173490840942,
+      "response_length": 5
+    },
+    {
+      "sample_id": "65168",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5136501130182296,
+      "response_length": 12
+    },
+    {
+      "sample_id": "50877",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Two Hundred and Eighty Two Pounds",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22323885408695787,
+      "response_length": 33
+    },
+    {
+      "sample_id": "49147",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "FIGURE C.2.",
+      "corruption_type": "element",
+      "inference_time_s": 0.592246473999694,
+      "response_length": 11
+    },
+    {
+      "sample_id": "45625",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "STEP 2",
+      "corruption_type": "element",
+      "inference_time_s": 0.47890291700605303,
+      "response_length": 6
+    },
+    {
+      "sample_id": "5604",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Effective Date: 3-26-01",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.31431827298365533,
+      "response_length": 23
+    },
+    {
+      "sample_id": "40795",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "22 3235",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7865781680447981,
+      "response_length": 7
+    },
+    {
+      "sample_id": "57784",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "-31%",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30011192499659956,
+      "response_length": 4
+    },
+    {
+      "sample_id": "25714",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Ralph C. Kuhli, M.P.H.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7618199639255181,
+      "response_length": 22
+    },
+    {
+      "sample_id": "64329",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document does not specify when the local IRB meeting is scheduled.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.34958881000056863,
+      "response_length": 70
+    },
+    {
+      "sample_id": "1954",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Professor",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23906202299986035,
+      "response_length": 9
+    },
+    {
+      "sample_id": "61615",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "100",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5164989900076762,
+      "response_length": 3
+    },
+    {
+      "sample_id": "8044",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The company name at the bottom of the page is not explicitly stated. The document contains a logo for \"RP Reynolds\" and a source link at the very bottom, but no distinct company name at the bottom of the page itself.",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6008131609996781,
+      "response_length": 216
+    },
+    {
+      "sample_id": "58748",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "30",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.273261341964826,
+      "response_length": 2
+    },
+    {
+      "sample_id": "15133",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "2011",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3199854359263554,
+      "response_length": 4
+    },
+    {
+      "sample_id": "5786",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24102529603987932,
+      "response_length": 12
+    },
+    {
+      "sample_id": "1953",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1597946899710223,
+      "response_length": 12
+    },
+    {
+      "sample_id": "6991",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2566085229627788,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60817",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "12",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5635461090132594,
+      "response_length": 2
+    },
+    {
+      "sample_id": "56854",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$400.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7529985479777679,
+      "response_length": 7
+    },
+    {
+      "sample_id": "60786",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5982435339828953,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5445",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "43",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.41963865200523287,
+      "response_length": 2
+    },
+    {
+      "sample_id": "57803",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.27210447599645704,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45110",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "7,521,100",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3375703199999407,
+      "response_length": 9
+    },
+    {
+      "sample_id": "39006",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6557333519449458,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64168",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.9567750769201666,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62508",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Michigan",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2596806150395423,
+      "response_length": 8
+    },
+    {
+      "sample_id": "18516",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "DABT stands for Diplomat American Board of Toxicology.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3126172620104626,
+      "response_length": 54
+    },
+    {
+      "sample_id": "61130",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.33235374896321446,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52515",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "R. J. REYNOLDS",
+      "corruption_type": "layout",
+      "inference_time_s": 0.2863685500342399,
+      "response_length": 14
+    },
+    {
+      "sample_id": "410",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The code number mentioned at the bottom of the page is \"EI25 26015\".\n\nIn reverse manner, this is: \"51062 521EI\".",
+      "corruption_type": "layout",
+      "inference_time_s": 0.47978456190321594,
+      "response_length": 112
+    },
+    {
+      "sample_id": "60808",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5681897689355537,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59438",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.140463529038243,
+      "response_length": 12
+    },
+    {
+      "sample_id": "20111",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Wyeth",
+      "corruption_type": "layout",
+      "inference_time_s": 0.24399343004915863,
+      "response_length": 5
+    },
+    {
+      "sample_id": "36501",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Immediate Past President",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6222722770180553,
+      "response_length": 24
+    },
+    {
+      "sample_id": "15041",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Trimegestone \u2013 Publication and Abstract Tracking Report",
+      "corruption_type": "element",
+      "inference_time_s": 0.30295881594065577,
+      "response_length": 55
+    },
+    {
+      "sample_id": "15117",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions: \"During the year, your Company launched 'Sunfest' noodles in the fast growing 'instant noodles' segment.\"\n\nHowever, it does not specify the name of the noodles launched by NovaSystems.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.670089325052686,
+      "response_length": 221
+    },
+    {
+      "sample_id": "63688",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.544597623986192,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62944",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "28.39",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2718582520028576,
+      "response_length": 5
+    },
+    {
+      "sample_id": "54910",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "8.5%",
+      "corruption_type": "element",
+      "inference_time_s": 0.25777086906600744,
+      "response_length": 4
+    },
+    {
+      "sample_id": "61393",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "CLOSED TUESDAYS",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6508210289757699,
+      "response_length": 15
+    },
+    {
+      "sample_id": "59836",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25313419103622437,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63638",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "ASPEN",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.28159824397880584,
+      "response_length": 5
+    },
+    {
+      "sample_id": "55369",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21618582995142788,
+      "response_length": 12
+    },
+    {
+      "sample_id": "20111",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Wyeth",
+      "corruption_type": "layout",
+      "inference_time_s": 0.1484784339554608,
+      "response_length": 5
+    },
+    {
+      "sample_id": "63109",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The dates written near L.A. are 30-1-2 Aug.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8149822429986671,
+      "response_length": 43
+    },
+    {
+      "sample_id": "15161",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25813516101334244,
+      "response_length": 12
+    },
+    {
+      "sample_id": "40587",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "2124779170",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6072276589693502,
+      "response_length": 10
+    },
+    {
+      "sample_id": "64985",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4154006149619818,
+      "response_length": 12
+    },
+    {
+      "sample_id": "65150",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4491952359676361,
+      "response_length": 12
+    },
+    {
+      "sample_id": "53603",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Winston-Salem, NC 27101",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23030888009816408,
+      "response_length": 23
+    },
+    {
+      "sample_id": "12548",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2261038200231269,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60785",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5073872959474102,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46509",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Endocrine Society \u2013 ENDO 2004",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.31152256403584033,
+      "response_length": 29
+    },
+    {
+      "sample_id": "57905",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1/12/04",
+      "corruption_type": "layout",
+      "inference_time_s": 0.26748713897541165,
+      "response_length": 7
+    },
+    {
+      "sample_id": "5464",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "CEI stands for COMPETITIVE ENTERPRISE INSTITUTE.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.35345530591439456,
+      "response_length": 48
+    },
+    {
+      "sample_id": "42040",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "80,954",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20015134499408305,
+      "response_length": 6
+    },
+    {
+      "sample_id": "62340",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6179357989458367,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63767",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6769372660201043,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57414",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22208498790860176,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46749",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "14 issues/yr, peer-rev.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2945312230149284,
+      "response_length": 23
+    },
+    {
+      "sample_id": "55212",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "0.0 - 32.1",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3712220180314034,
+      "response_length": 10
+    },
+    {
+      "sample_id": "58832",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Table 2: Demographic data on the adult subjects",
+      "corruption_type": "element",
+      "inference_time_s": 0.6089181209681556,
+      "response_length": 47
+    },
+    {
+      "sample_id": "21067",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "John and Vanessa",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6145989870419726,
+      "response_length": 16
+    },
+    {
+      "sample_id": "5253",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "97.6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3395302469143644,
+      "response_length": 4
+    },
+    {
+      "sample_id": "59834",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "The document provided shows estimated expenditures for 1988, not 1954.\n\nLooking at the \"VANTAGE GOLF OPERATIONS - 1988 Estimated Expenditures (000's)\" table:\nThe expenditure for \"Rig painting\" is $30 (in 000's).\n\nSince the question asks for the 1954 estimated expenditure, and the document only provides 1988 estimates, the specific answer for 1954 cannot be found.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.0533061439637095,
+      "response_length": 379
+    },
+    {
+      "sample_id": "8048",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "20",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1269890769617632,
+      "response_length": 2
+    },
+    {
+      "sample_id": "64731",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "18487",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5431399929802865,
+      "response_length": 5
+    },
+    {
+      "sample_id": "64744",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6198641010560095,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5590",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions a study for \"Labor Unions\" and another for \"Charles River Associates.\" It does not mention a study of \"NovaSystems and Poor'sDRI.\"\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.47001968102995306,
+      "response_length": 166
+    },
+    {
+      "sample_id": "15234",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "52118",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.26260777993593365,
+      "response_length": 5
+    },
+    {
+      "sample_id": "57308",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Based on the document, the following individuals are associated with Vanderbilt University:\n\n* **Frank Chytil** (listed under \"Retinoid-Binding Proteins and Cancer\")\n\nTherefore, Frank Chytil is from Vanderbilt University according to this document.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.15618953097146,
+      "response_length": 248
+    },
+    {
+      "sample_id": "58322",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "4 Review Articles/Clinical Trial Manuscripts",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25196502602193505,
+      "response_length": 44
+    },
+    {
+      "sample_id": "64464",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "621",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.27670195302926004,
+      "response_length": 3
+    },
+    {
+      "sample_id": "1832",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "William Kovacs, vice president of the Chambers environment, technology & regulatory affairs division.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.37040300900116563,
+      "response_length": 101
+    },
+    {
+      "sample_id": "65335",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6684126150794327,
+      "response_length": 12
+    },
+    {
+      "sample_id": "15321",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2868495039874688,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60144",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25058211106806993,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5175",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "GODCHAUX-HENDERSON SUGAR CO., INC.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6063619860215113,
+      "response_length": 34
+    },
+    {
+      "sample_id": "60804",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6371985709993169,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4978",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2558043859899044,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64707",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6095129440072924,
+      "response_length": 12
+    },
+    {
+      "sample_id": "3156",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4491601239424199,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43144",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$42,795",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1720591050107032,
+      "response_length": 7
+    },
+    {
+      "sample_id": "64486",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "5,484,948",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2764982549706474,
+      "response_length": 9
+    },
+    {
+      "sample_id": "17147",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "512-478-3117",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.29700593499001116,
+      "response_length": 12
+    },
+    {
+      "sample_id": "12547",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.13842519000172615,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62391",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "PR 2215",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5729808559408411,
+      "response_length": 7
+    },
+    {
+      "sample_id": "59803",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5953467590734363,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63109",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Tamis, Tamias",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6364368790527806,
+      "response_length": 13
+    },
+    {
+      "sample_id": "10292",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21936313598416746,
+      "response_length": 12
+    },
+    {
+      "sample_id": "51223",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Environmental Protection Agency",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25892155698966235,
+      "response_length": 31
+    },
+    {
+      "sample_id": "7016",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2705207889666781,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5824",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "401",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14047258999198675,
+      "response_length": 3
+    },
+    {
+      "sample_id": "46228",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Status",
+      "corruption_type": "element",
+      "inference_time_s": 0.23941971408203244,
+      "response_length": 6
+    },
+    {
+      "sample_id": "19252",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "OLIVS020-007893",
+      "corruption_type": "element",
+      "inference_time_s": 0.22823109501041472,
+      "response_length": 15
+    },
+    {
+      "sample_id": "40799",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7396479330491275,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4915",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "3/23/01",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2914756729733199,
+      "response_length": 7
+    },
+    {
+      "sample_id": "21212",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.511533520068042,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5442",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "air and water pollution",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3389531150460243,
+      "response_length": 23
+    },
+    {
+      "sample_id": "64154",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Table 4",
+      "corruption_type": "element",
+      "inference_time_s": 0.44312870199792087,
+      "response_length": 7
+    },
+    {
+      "sample_id": "36936",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Relationship to Member: Self",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6287205839762464,
+      "response_length": 28
+    },
+    {
+      "sample_id": "56937",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23930063308216631,
+      "response_length": 12
+    },
+    {
+      "sample_id": "6399",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "4.4200",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25793376204092056,
+      "response_length": 6
+    },
+    {
+      "sample_id": "46511",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$69.48",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16061455197632313,
+      "response_length": 6
+    },
+    {
+      "sample_id": "57973",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2322400159901008,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63861",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5709889340214431,
+      "response_length": 12
+    },
+    {
+      "sample_id": "26659",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Contracts Accountant",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.456504100933671,
+      "response_length": 20
+    },
+    {
+      "sample_id": "61618",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "1. **Locate the section for \"Man-70 kg\" and \"Physically active\".**\n2. **Find the row corresponding to \"Physically active\" under the \"Man-70 kg\" section.**\n3. **Look across this row to the column labeled \"Vitamin A\" and then the sub-column \"IU\".**\n\nFrom the table:\n* Man-70 kg, Physically active: Vitamin A (IU) is **1.8**.\n\nTherefore, the Crestwood Group of Vitamin A for a physically active man is 1.8 IU.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.5108003170462325,
+      "response_length": 406
+    },
+    {
+      "sample_id": "64681",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.0508552199462429,
+      "response_length": 12
+    },
+    {
+      "sample_id": "19251",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "3",
+      "corruption_type": "layout",
+      "inference_time_s": 0.1290666660061106,
+      "response_length": 1
+    },
+    {
+      "sample_id": "63285",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3979373660404235,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56971",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Tonne",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25524483004119247,
+      "response_length": 5
+    },
+    {
+      "sample_id": "42121",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23706583201419562,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5865",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24732025293633342,
+      "response_length": 12
+    },
+    {
+      "sample_id": "21070",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Patricia Allison",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5382255370495841,
+      "response_length": 16
+    },
+    {
+      "sample_id": "39201",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30332324805203825,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56033",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1825",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25688374403398484,
+      "response_length": 4
+    },
+    {
+      "sample_id": "38883",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Based on the table provided, here are the Onion percentages for each Army location listed:\n\n*   **Lahore Med:** 24.8%\n*   **Lahore Inf.3:** 34.4%\n*   **Quetta 3/:** 18.0%\n*   **Bahawalpur 3/:** 35.0%\n*   **Muzaffarabad 3/27.6:** 34.4%\n*   **Comilla, E.:** 31.7%\n*   **Bengal 4/:** - (No value listed)\n\nComparing these values, the highest percentage requirement for Onion is **35.0%** at **Bahawalpur 3/**.\n\nTherefore, the Army location with the highest percentage requirement of Onion is **Bahawalpur 3/**.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.0793278369819745,
+      "response_length": 506
+    },
+    {
+      "sample_id": "59820",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.44667197996750474,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58334",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "51136 5931",
+      "corruption_type": "layout",
+      "inference_time_s": 0.30668800394050777,
+      "response_length": 10
+    },
+    {
+      "sample_id": "60434",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$115 MM",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23954239999875426,
+      "response_length": 7
+    },
+    {
+      "sample_id": "36929",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Patient's Name: Jerry Joseph",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5671619049971923,
+      "response_length": 28
+    },
+    {
+      "sample_id": "39055",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "NATIONAL SOFT DRINK ASSOCIATION",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2319959270535037,
+      "response_length": 31
+    },
+    {
+      "sample_id": "55208",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2911390030058101,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59883",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "ASBC",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.604358367039822,
+      "response_length": 4
+    },
+    {
+      "sample_id": "61235",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.37161133997142315,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47756",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "WORKING GROUP I",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6063032479723915,
+      "response_length": 15
+    },
+    {
+      "sample_id": "7405",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2602466280804947,
+      "response_length": 12
+    },
+    {
+      "sample_id": "32889",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1,423",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.49386975495144725,
+      "response_length": 5
+    },
+    {
+      "sample_id": "58555",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "4 million farmers",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1847931439988315,
+      "response_length": 17
+    },
+    {
+      "sample_id": "64753",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "The document provided is a table titled \"TABLE I TEST-RETEST AND INTEROBSERVER RELIABILITY OF PSYCHOLOGICAL TEST MEASURES\".\n\nI need to look for \"Meridian Industries span\" in the table and find the corresponding \"Test-retest\" value.\n\nScanning the table, I see rows for:\n* Composite Infant Scale\n* 6 months mental\n* 6 months motor\n* 15 months mental\n* 15 months motor\n* 24 months mental\n* 24 months motor\n* Preschool Battery (36 months)\n* Cognitive Composite\n* Embedded Figures Test Sum\n* Embedded Figures Test Time\n* Embedded Figures Test Adaptability\n* Diatit Span\n* Sentence Span\n* Reversal Discrimination Learning Sum\n* Reversal Discrimination Learning Time\n* Naming\n* Recognition\n* Verbal Inferences\n* Line Velocity\n* Rompecabezas\n\nThe term \"Meridian Industries span\" does not appear in the table.\n\nTherefore, the question cannot be answered from the document.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.5114659490063787,
+      "response_length": 877
+    },
+    {
+      "sample_id": "55287",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "The document states: \"Number of Board Meetings held during the year ended 31st March, 2004 and Dates of the meetings.\"\n\nHowever, the text provided does not specify the *number* of board meetings held during that year. It only indicates that the dates of the meetings are listed.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7929685009876266,
+      "response_length": 292
+    },
+    {
+      "sample_id": "64506",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "E",
+      "corruption_type": "layout",
+      "inference_time_s": 0.2058573729591444,
+      "response_length": 1
+    },
+    {
+      "sample_id": "44141",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "75",
+      "corruption_type": "layout",
+      "inference_time_s": 0.19870603294111788,
+      "response_length": 2
+    },
+    {
+      "sample_id": "57881",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Robert A. Good",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7746846849331632,
+      "response_length": 14
+    },
+    {
+      "sample_id": "64898",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The second table is titled \"Hematocrit data - Massachusetts\". It indicates the following levels for Males and Females:\n\n**Males:**\n*   **Def.** (Deficiency)\n*   **Low**\n*   **Total Unsatisfactory**\n\n**Females:**\n*   **Def.** (Deficiency)\n*   **Low**\n*   **Total Unsatisfactory**",
+      "corruption_type": "element",
+      "inference_time_s": 1.1748672599205747,
+      "response_length": 278
+    },
+    {
+      "sample_id": "48178",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Urlich Mohr",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7179435150464997,
+      "response_length": 11
+    },
+    {
+      "sample_id": "62924",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4666944850469008,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57198",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document mentions: \"In addition to the 43.6 MW wind power projects and a 90 TPH biomass fired Boiler already in operation for over a year, it has installed additional 13.8 MW wind energy units in Maharashtra and Tamil Nadu. These investments and better utilization of biomass in the Paperboards and Specialty Papers business ensured that 38.5% of the Company's total energy consumption arose from renewable sources, which is a remarkable achievement.\"\n\nHowever, the document does not provide a specific figure for the *total energy consumed by ITC during 2011-12*.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.3335308519890532,
+      "response_length": 568
+    },
+    {
+      "sample_id": "8050",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$14.00/6M Case*",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21659075701609254,
+      "response_length": 15
+    },
+    {
+      "sample_id": "61601",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3120229699416086,
+      "response_length": 12
+    },
+    {
+      "sample_id": "39079",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2092448630137369,
+      "response_length": 12
+    },
+    {
+      "sample_id": "48151",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Suite 600",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6361358920112252,
+      "response_length": 9
+    },
+    {
+      "sample_id": "50773",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "14",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4201682909624651,
+      "response_length": 2
+    },
+    {
+      "sample_id": "46580",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Prem TMG Meetings",
+      "corruption_type": "element",
+      "inference_time_s": 0.23523417103569955,
+      "response_length": 17
+    },
+    {
+      "sample_id": "59623",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "SUBJECT",
+      "corruption_type": "layout",
+      "inference_time_s": 0.20321790501475334,
+      "response_length": 7
+    },
+    {
+      "sample_id": "61235",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "New Haven, CONNECTICUT",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.31958563800435513,
+      "response_length": 22
+    },
+    {
+      "sample_id": "57372",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17147614993155003,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57529",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.18023988301865757,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5776",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "66,755",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2633906990522519,
+      "response_length": 6
+    },
+    {
+      "sample_id": "1843",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1554372040554881,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61225",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Jean Dargis",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.42001689691096544,
+      "response_length": 11
+    },
+    {
+      "sample_id": "15277",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2554721120977774,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63688",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "0",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4216906609944999,
+      "response_length": 1
+    },
+    {
+      "sample_id": "59538",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "GLENNA MEGINIS",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4472580950241536,
+      "response_length": 14
+    },
+    {
+      "sample_id": "61398",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "monday to saturday",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7143271960085258,
+      "response_length": 18
+    },
+    {
+      "sample_id": "46511",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$69.48",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17382602102588862,
+      "response_length": 6
+    },
+    {
+      "sample_id": "60498",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The y-axis of the first bar graph (Figure 41) is labeled \"WEIGHT\".",
+      "corruption_type": "element",
+      "inference_time_s": 0.9095968500478193,
+      "response_length": 66
+    },
+    {
+      "sample_id": "51244",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "GLENN",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15060247492510825,
+      "response_length": 5
+    },
+    {
+      "sample_id": "49126",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "5.75",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6848233110504225,
+      "response_length": 4
+    },
+    {
+      "sample_id": "64413",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2539149390067905,
+      "response_length": 12
+    },
+    {
+      "sample_id": "36507",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Executive Vice President",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6133934389799833,
+      "response_length": 24
+    },
+    {
+      "sample_id": "5705",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2749152339529246,
+      "response_length": 12
+    },
+    {
+      "sample_id": "65024",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "December 1954",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5668583719525486,
+      "response_length": 13
+    },
+    {
+      "sample_id": "5660",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23797924304381013,
+      "response_length": 12
+    },
+    {
+      "sample_id": "32152",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5990994260646403,
+      "response_length": 12
+    },
+    {
+      "sample_id": "40158",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1. **Locate the table:** The image contains a table titled \"Table 1.--Nutrient Content of the Supplements per Cup\".\n2. **Identify the relevant row:** Find the row for \"Thiamine (mg)\".\n3. **Identify the relevant column:** Find the column corresponding to the time period \"October 1, 1971 to February 28, 1977\" and the \"Atole\" supplement type.\n4. **Find the intersection:** Look at the cell where the \"Thiamine (mg)\" row intersects with the \"October 1, 1971 to February 28, 1977\" column under the \"Atole\" heading.\n\nThe value at this intersection is **1.1**.\n\n",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.9053762269904837,
+      "response_length": 557
+    },
+    {
+      "sample_id": "41691",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "A 54 mm trial shell is 54 mm in diameter.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3377786240307614,
+      "response_length": 41
+    },
+    {
+      "sample_id": "55250",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "3.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2624520509270951,
+      "response_length": 4
+    },
+    {
+      "sample_id": "18521",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1973",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17452571808826178,
+      "response_length": 4
+    },
+    {
+      "sample_id": "58375",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "DWRITE 065775",
+      "corruption_type": "layout",
+      "inference_time_s": 0.3094593139830977,
+      "response_length": 13
+    },
+    {
+      "sample_id": "61634",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "NOVEMBER, 1971",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6168346849735826,
+      "response_length": 14
+    },
+    {
+      "sample_id": "42039",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17041187908034772,
+      "response_length": 12
+    },
+    {
+      "sample_id": "49392",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "IARW Chairman: Charles D. Nesbit",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2963192459428683,
+      "response_length": 32
+    },
+    {
+      "sample_id": "55110",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "122.21",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20312216004822403,
+      "response_length": 6
+    },
+    {
+      "sample_id": "65311",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6422970229759812,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63155",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "750,026",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5192481380654499,
+      "response_length": 7
+    },
+    {
+      "sample_id": "50208",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.42193194408901036,
+      "response_length": 12
+    },
+    {
+      "sample_id": "3835",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5113118960289285,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59487",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document states under the \"Board of Members\" section: \"The Board of Members elects the Board of Trustees and develops program guidelines for the operation of Technical and Expert Committees.\"\n\nTherefore, the Board of Members elects the Board of Trustees.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.1839677660027519,
+      "response_length": 258
+    },
+    {
+      "sample_id": "32885",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "34,400",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4253028950188309,
+      "response_length": 6
+    },
+    {
+      "sample_id": "51133",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25637754995841533,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46584",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "NADMS \u2013 15th Annual Meeting",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2136300679994747,
+      "response_length": 27
+    },
+    {
+      "sample_id": "40714",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Assistant Director",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.46971313504036516,
+      "response_length": 18
+    },
+    {
+      "sample_id": "1891",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "(202) 249-6130",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.29449309303890914,
+      "response_length": 14
+    },
+    {
+      "sample_id": "597",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20986332499887794,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45079",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$1,472.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2529315840220079,
+      "response_length": 7
+    },
+    {
+      "sample_id": "54912",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "0.6%",
+      "corruption_type": "element",
+      "inference_time_s": 0.14717296394519508,
+      "response_length": 4
+    },
+    {
+      "sample_id": "58269",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16664854902774096,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62280",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2399688420118764,
+      "response_length": 12
+    },
+    {
+      "sample_id": "458",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document states: \"Monadic Menthol POL-0637 cigarettes (1% CR-2898 by weight on cigarette wrapper) have been made and shipment is scheduled for the week of May 28.\"\n\nTherefore, the shipment is scheduled for the week of May 28.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6556231880094856,
+      "response_length": 229
+    },
+    {
+      "sample_id": "57222",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7139889819081873,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57417",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20341661991551518,
+      "response_length": 12
+    },
+    {
+      "sample_id": "892",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20212608703877777,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57373",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "2",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16459133196622133,
+      "response_length": 1
+    },
+    {
+      "sample_id": "8560",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.19975348992738873,
+      "response_length": 12
+    },
+    {
+      "sample_id": "36941",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "62035",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5542155599687248,
+      "response_length": 5
+    },
+    {
+      "sample_id": "49111",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Dr. Maurice E. Shils will be there representing the Foundation.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5977549609960988,
+      "response_length": 63
+    },
+    {
+      "sample_id": "36943",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "887",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5409614809323102,
+      "response_length": 3
+    },
+    {
+      "sample_id": "56528",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "INDEX 109",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14618631300982088,
+      "response_length": 9
+    },
+    {
+      "sample_id": "56408",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Based on the provided image, the graph shows the \"Cumulative increase in weight in grams\" over \"Weeks\" for three groups: Group A (4.2% Powder), Group B (21% Powder), and Group C (Control).\n\nThe question asks for the week *before week 4* where the cumulative increase in weight is the highest for \"GlobalTech\". Since the groups are labeled A, B, and C, and the question mentions \"GlobalTech\" without explicitly linking it to a specific group, I will analyze the data for all groups before week 4 (i.e., weeks 0, 1, 2, and 3).\n\nLet's estimate the values for each group at weeks 0, 1, 2, and 3:\n\n**Group A (Solid line with circles):**\n*   Week 0: ~0\n*   Week 1: ~50\n*   Week 2: ~100\n*   Week 3: ~350\n\n**Group B (Dashed line with squares):**\n*   Week 0: ~0\n*   Week 1: ~100\n*   Week 2: ~300",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.880332954111509,
+      "response_length": 786
+    },
+    {
+      "sample_id": "5169",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4893852500244975,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60965",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2590595380170271,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56033",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "1825",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17870545201003551,
+      "response_length": 4
+    },
+    {
+      "sample_id": "62358",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "DAVID P. WONL JR. MEMORIAL",
+      "corruption_type": "layout",
+      "inference_time_s": 0.5941810029326007,
+      "response_length": 26
+    },
+    {
+      "sample_id": "6969",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16379211388994008,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57138",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "2008",
+      "corruption_type": "layout",
+      "inference_time_s": 0.31405570602510124,
+      "response_length": 4
+    },
+    {
+      "sample_id": "65361",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "10",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6333005729829893,
+      "response_length": 2
+    },
+    {
+      "sample_id": "15352",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The title mentioned in the footer of this document is \"Design Write, Inc.\".",
+      "corruption_type": "layout",
+      "inference_time_s": 0.367589128902182,
+      "response_length": 75
+    },
+    {
+      "sample_id": "59615",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Fundamentals of Biostatistics M-T-Th-F",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6769753539701924,
+      "response_length": 38
+    },
+    {
+      "sample_id": "1022",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2595594369340688,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63837",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "68% decrease",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23127664299681783,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52289",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Mr. Charles A. Blxt",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2578659480204806,
+      "response_length": 19
+    },
+    {
+      "sample_id": "60454",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.36545970698352903,
+      "response_length": 12
+    },
+    {
+      "sample_id": "8570",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20354612392839044,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57255",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "McDonald's",
+      "corruption_type": "layout",
+      "inference_time_s": 0.22190535895060748,
+      "response_length": 10
+    },
+    {
+      "sample_id": "18956",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24138795293401927,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4417",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Moderate share growth",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3084435750497505,
+      "response_length": 21
+    },
+    {
+      "sample_id": "32984",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5731160329887643,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58748",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "30",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17275008605793118,
+      "response_length": 2
+    },
+    {
+      "sample_id": "46120",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "6/7",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.9124372299993411,
+      "response_length": 3
+    },
+    {
+      "sample_id": "60811",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5733476609457284,
+      "response_length": 12
+    },
+    {
+      "sample_id": "50771",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "layout",
+      "inference_time_s": 0.36468217603396624,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5950",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Doral Frontline Supermarket Test",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2815104789333418,
+      "response_length": 32
+    },
+    {
+      "sample_id": "18612",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2427026389632374,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62923",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4079618250252679,
+      "response_length": 12
+    },
+    {
+      "sample_id": "55953",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17633318295702338,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60791",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "72.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6402917020022869,
+      "response_length": 5
+    },
+    {
+      "sample_id": "65032",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4346722849877551,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46309",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23017219093162566,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52467",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Mon",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1305368789471686,
+      "response_length": 3
+    },
+    {
+      "sample_id": "45416",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Department of Obstetrics and Gynecology",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24292482994496822,
+      "response_length": 39
+    },
+    {
+      "sample_id": "47571",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "VII. Future Plans - Dr. U. Mohr",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6991142398910597,
+      "response_length": 31
+    },
+    {
+      "sample_id": "40587",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "2124779170",
+      "corruption_type": "layout",
+      "inference_time_s": 0.5269109039800242,
+      "response_length": 10
+    },
+    {
+      "sample_id": "45110",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21175728098023683,
+      "response_length": 12
+    },
+    {
+      "sample_id": "30048",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "9:00 A.M.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5577021649805829,
+      "response_length": 9
+    },
+    {
+      "sample_id": "63030",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Relative vs. Absolute Risk in Breast Cancer",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.28649645298719406,
+      "response_length": 43
+    },
+    {
+      "sample_id": "38869",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "39.6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.590507568907924,
+      "response_length": 4
+    },
+    {
+      "sample_id": "65381",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "FIGURE 1 FOOD CONSUMED",
+      "corruption_type": "element",
+      "inference_time_s": 0.5358769299928099,
+      "response_length": 22
+    },
+    {
+      "sample_id": "2189",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Manager A.S.C. Office",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2265346801141277,
+      "response_length": 21
+    },
+    {
+      "sample_id": "36775",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "WASHINGTON, D.C.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6672927909530699,
+      "response_length": 16
+    },
+    {
+      "sample_id": "58530",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3524593149777502,
+      "response_length": 12
+    },
+    {
+      "sample_id": "15325",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "MANGALDEEP",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.28262355097103864,
+      "response_length": 10
+    },
+    {
+      "sample_id": "5811",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1725 St. Mary St.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2837617750046775,
+      "response_length": 17
+    },
+    {
+      "sample_id": "57255",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "32",
+      "corruption_type": "layout",
+      "inference_time_s": 0.12211105704773217,
+      "response_length": 2
+    },
+    {
+      "sample_id": "36936",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The relationship between Sweden and Member is \"Self\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.590404334012419,
+      "response_length": 53
+    },
+    {
+      "sample_id": "2008",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "February 23, 1968",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.37534225394483656,
+      "response_length": 17
+    },
+    {
+      "sample_id": "15041",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.13632948405575007,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58536",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22178225999232382,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5866",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "DTS Date 1/15/01",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3079434720566496,
+      "response_length": 16
+    },
+    {
+      "sample_id": "32994",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.48141795897390693,
+      "response_length": 12
+    },
+    {
+      "sample_id": "6805",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22427206789143384,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56797",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "C. Yr. 10,80,000/-",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.31693354004528373,
+      "response_length": 18
+    },
+    {
+      "sample_id": "47074",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The list is read from bottom center.\nThe name \"Aziz, F.M.\" is found in the right column.\nReading the list from bottom center, the names following \"Aziz, F.M.\" are:\n*   Arkelayan, A.O. -896\n*   Arimoto, Y. -317\n*   Armstrong, D.L. -265\n*   Arny, D.C. -661\n*   Asher, K.R. -824\n*   Ashall, C. -744\n*   Ashbaugh, M. -645\n*   Ashworth, J.H. -121\n*   Ashworth, W.E. -83\n*   Ashworth, L.J. -142\n*   Asker, N. -496\n*   Assam, M.A. -490, 921\n*   Asshauer, J. -493\n*   Athow, K.L. -151\n*   Ausher, R. -178\n*   Ayanru",
+      "corruption_type": "layout",
+      "inference_time_s": 2.437260410981253,
+      "response_length": 507
+    },
+    {
+      "sample_id": "47548",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$447,002.*",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8426602659747005,
+      "response_length": 10
+    },
+    {
+      "sample_id": "24500",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2572229610523209,
+      "response_length": 12
+    },
+    {
+      "sample_id": "54350",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Program Evaluator",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20776192797347903,
+      "response_length": 17
+    },
+    {
+      "sample_id": "39061",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "NSDA",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1932842651149258,
+      "response_length": 4
+    },
+    {
+      "sample_id": "57533",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Dark Fantasy",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3125025829067454,
+      "response_length": 12
+    },
+    {
+      "sample_id": "37467",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "15.0",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4470046400092542,
+      "response_length": 4
+    },
+    {
+      "sample_id": "7014",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "2/29/04 9435",
+      "corruption_type": "layout",
+      "inference_time_s": 0.22133223700802773,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64216",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "| Income Category | Budget 1982 |\n|---|---|\n| Home Visits | $996,292 |\n| Medicare Allowance | $158,091 |\n| Bad Debt Provision | $1,667 |\n| Equipment Rental | $122,668 |\n| Less: Equipment Rental | $103,750 |\n| Miscellaneous | $1,000 |\n| **TOTAL INCOME** | **$837,534** |\n\nComparing the budgets for the income categories in 1982:\n* Home Visits: $996,292\n* Medicare Allowance: $158,091\n* Bad Debt Provision: $1,667\n* Equipment Rental: $122,668\n* Less: Equipment Rental: $103,750\n* Miscellaneous: $1,000\n\nThe lowest budget in 1982 is $1,000, which corresponds to the \"Miscellaneous\" income category.\n\n",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.370145794004202,
+      "response_length": 597
+    },
+    {
+      "sample_id": "2209",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5281685430090874,
+      "response_length": 12
+    },
+    {
+      "sample_id": "51226",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "layout",
+      "inference_time_s": 0.25976124790031463,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61397",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "monday to saturday 9-6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6473040389828384,
+      "response_length": 22
+    },
+    {
+      "sample_id": "57321",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Based on the table \"Segment accounting policies\" for the year ended March 31, 2008:\n\n| Segment | Segment assets |\n|---|---|\n| a) Segment assets | 442,835.31 |\n| b) Segment liabilities | 182,846.85 |\n\nThe question asks to compare the 'segment assets' for the year ended 31/03/1958. However, the provided table shows data for the year ended **March 31, 2008**.\n\nAssuming the question intended to ask about the data present in the table (for the year ended March 31, 2008):\n*   Segment assets (a): 442,835.31\n\nSince there is only one line item explicitly labeled \"Segment assets\" (item a), and no other segment assets are listed for comparison, it is not possible to determine which segment has a *higher* 'segment assets' between different segments based on this specific row.\n\nIf the question is interpreted as comparing the value of 'Segment assets' (row a) against 'Segment liabilities' (row b), then Segment",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.3235992119880393,
+      "response_length": 909
+    },
+    {
+      "sample_id": "5172",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1.9",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.40618516597896814,
+      "response_length": 3
+    },
+    {
+      "sample_id": "38928",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5699525499949232,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52183",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "6I/6",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21382316702511162,
+      "response_length": 4
+    },
+    {
+      "sample_id": "43761",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.21876138995867223,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4953",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "KBA",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16519805800635368,
+      "response_length": 3
+    },
+    {
+      "sample_id": "57287",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Phone: 033-2288 2358",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.34610651002731174,
+      "response_length": 20
+    },
+    {
+      "sample_id": "59603",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "The document states: \"In Misamis Oriental, Iloilo and Capiz Provinces, HKI workers have journeyed from one outlying village to the next to conduct programs tailored to the needs of each blind person.\"\n\nIt mentions these three provinces, but it does not specify the total number of regions the rehabilitation projects have expanded to.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.8090770600829273,
+      "response_length": 348
+    },
+    {
+      "sample_id": "8050",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$14.00/6M Case*",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17521825898438692,
+      "response_length": 15
+    },
+    {
+      "sample_id": "6783",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "As previously presented, I would like to include WINSTON and DORAL in your July Electronic Coupon Program.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.35823056497611105,
+      "response_length": 106
+    },
+    {
+      "sample_id": "50467",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Figure 2",
+      "corruption_type": "element",
+      "inference_time_s": 0.6073380499146879,
+      "response_length": 8
+    },
+    {
+      "sample_id": "55463",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "SURGEON GENERAL'S WARNING: Cigarette Smoke Contains Carbon Monoxide.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.33041123708244413,
+      "response_length": 68
+    },
+    {
+      "sample_id": "1954",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.11813522304873914,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62916",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Howard C. Hunter",
+      "corruption_type": "layout",
+      "inference_time_s": 0.37386462499853224,
+      "response_length": 16
+    },
+    {
+      "sample_id": "52178",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "RIP-6",
+      "corruption_type": "element",
+      "inference_time_s": 0.09982940799091011,
+      "response_length": 5
+    },
+    {
+      "sample_id": "32548",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4612985469866544,
+      "response_length": 12
+    },
+    {
+      "sample_id": "42027",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17369130405131727,
+      "response_length": 12
+    },
+    {
+      "sample_id": "5173",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Cl",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.39084816398099065,
+      "response_length": 2
+    },
+    {
+      "sample_id": "265",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "94.7680",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.25262402708176523,
+      "response_length": 7
+    },
+    {
+      "sample_id": "47552",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "563,209",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7246972899883986,
+      "response_length": 7
+    },
+    {
+      "sample_id": "8075",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "012300-26065 7",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20613697706721723,
+      "response_length": 14
+    },
+    {
+      "sample_id": "56912",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.18802689795847982,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60864",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Mr. John Green",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5502658099867404,
+      "response_length": 14
+    },
+    {
+      "sample_id": "55388",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "8638.41",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2593269780045375,
+      "response_length": 7
+    },
+    {
+      "sample_id": "60976",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23130658699665219,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46506",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.10469256609212607,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58915",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "President, Philip Handler",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6460732850246131,
+      "response_length": 25
+    },
+    {
+      "sample_id": "32555",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "21.5",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5845203120261431,
+      "response_length": 4
+    },
+    {
+      "sample_id": "56300",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "SURGEON GENERAL'S WARNING. Smoking Causes Lung Cancer, Heart Disease, Emphysema\u2014And May Complicate Pregnancy.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.414977208012715,
+      "response_length": 109
+    },
+    {
+      "sample_id": "61274",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Box 619",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5042449680622667,
+      "response_length": 7
+    },
+    {
+      "sample_id": "53538",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22434744494967163,
+      "response_length": 12
+    },
+    {
+      "sample_id": "7624",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23084925906732678,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57767",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions \"Agarbatti Value Chain\" but does not specify Meridian Industries's brand of Agarbatti.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4707762619946152,
+      "response_length": 108
+    },
+    {
+      "sample_id": "56799",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "01/04/2012 to 31/03/2013",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.293855436029844,
+      "response_length": 24
+    },
+    {
+      "sample_id": "6981",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22151669894810766,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43322",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "10/21 0.5 hours telecom with Fujimoto",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.33009987499099225,
+      "response_length": 37
+    },
+    {
+      "sample_id": "33923",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Table 1",
+      "corruption_type": "element",
+      "inference_time_s": 0.48373724496923387,
+      "response_length": 7
+    },
+    {
+      "sample_id": "18625",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "11 Feb. 86",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2854741659248248,
+      "response_length": 10
+    },
+    {
+      "sample_id": "36685",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Figure V-9",
+      "corruption_type": "element",
+      "inference_time_s": 0.586400183965452,
+      "response_length": 10
+    },
+    {
+      "sample_id": "6812",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14135940291453153,
+      "response_length": 12
+    },
+    {
+      "sample_id": "582",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23816026805434376,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47756",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "WORKING GROUP I",
+      "corruption_type": "layout",
+      "inference_time_s": 0.5395227660192177,
+      "response_length": 15
+    },
+    {
+      "sample_id": "59833",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$540",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15643241605721414,
+      "response_length": 4
+    },
+    {
+      "sample_id": "2177",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.2417300509987399,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57305",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6790909019764513,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57143",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15499313396867365,
+      "response_length": 12
+    },
+    {
+      "sample_id": "61788",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "71-014-A",
+      "corruption_type": "layout",
+      "inference_time_s": 0.4773214580491185,
+      "response_length": 8
+    },
+    {
+      "sample_id": "25711",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "President-Elect",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4630252020433545,
+      "response_length": 15
+    },
+    {
+      "sample_id": "6997",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1683791980613023,
+      "response_length": 12
+    },
+    {
+      "sample_id": "38941",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Men of Age 25 and Over",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6228838089155033,
+      "response_length": 22
+    },
+    {
+      "sample_id": "46119",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "6/7",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.662716803024523,
+      "response_length": 3
+    },
+    {
+      "sample_id": "43766",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "86.5",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14128003001678735,
+      "response_length": 4
+    },
+    {
+      "sample_id": "54862",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "MB denotes \"SEND TO MAILBOX\".",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2517366009997204,
+      "response_length": 29
+    },
+    {
+      "sample_id": "56275",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "VANTAGE PERFORMING WELL (AVG. 110)",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.21947247500065714,
+      "response_length": 34
+    },
+    {
+      "sample_id": "62342",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Professor and Director of the Program in Occupational Therapy",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5753625420620665,
+      "response_length": 61
+    },
+    {
+      "sample_id": "57475",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "BINGO!",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2312886150320992,
+      "response_length": 6
+    },
+    {
+      "sample_id": "39193",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "CRC",
+      "corruption_type": "layout",
+      "inference_time_s": 0.18323282909113914,
+      "response_length": 3
+    },
+    {
+      "sample_id": "46667",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.20960145199205726,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56469",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "872-5745",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5103255619760603,
+      "response_length": 8
+    },
+    {
+      "sample_id": "51224",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Source: https://www.industrydocuments.ucsf.edu/docs/ngcn0226",
+      "corruption_type": "layout",
+      "inference_time_s": 0.3152556970017031,
+      "response_length": 60
+    },
+    {
+      "sample_id": "8044",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "RP Reynolds",
+      "corruption_type": "layout",
+      "inference_time_s": 0.12502612406387925,
+      "response_length": 11
+    },
+    {
+      "sample_id": "57891",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Late 1999/Early 2000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3437847669702023,
+      "response_length": 20
+    },
+    {
+      "sample_id": "64484",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "A",
+      "corruption_type": "layout",
+      "inference_time_s": 0.14863036503084004,
+      "response_length": 1
+    },
+    {
+      "sample_id": "61761",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Page 10 January, 1980",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6349275839747861,
+      "response_length": 21
+    },
+    {
+      "sample_id": "62501",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5409937479998916,
+      "response_length": 12
+    },
+    {
+      "sample_id": "55272",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "TABLE 1: CANCER MORTALITY, ENGLAND AND WALES (Males)",
+      "corruption_type": "element",
+      "inference_time_s": 0.6156197199597955,
+      "response_length": 52
+    },
+    {
+      "sample_id": "55252",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "3.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15572073694784194,
+      "response_length": 4
+    },
+    {
+      "sample_id": "3204",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3620714870048687,
+      "response_length": 12
+    },
+    {
+      "sample_id": "7236",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2202278230106458,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64682",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "66-129",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.9977203550515696,
+      "response_length": 6
+    },
+    {
+      "sample_id": "61245",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "T. T. Sterling Evans is the National Foundation State Representative for Northern West Virginia.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4969696719199419,
+      "response_length": 96
+    },
+    {
+      "sample_id": "57251",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.27978994604200125,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56970",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1785318780457601,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43322",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1362493080087006,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62501",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "600.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4841211800230667,
+      "response_length": 6
+    },
+    {
+      "sample_id": "62079",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7852555610006675,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4954",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Sole Proprietorship",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17805166693869978,
+      "response_length": 19
+    },
+    {
+      "sample_id": "42301",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.23892477806657553,
+      "response_length": 12
+    },
+    {
+      "sample_id": "4971",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$15,000.00",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3318336990196258,
+      "response_length": 10
+    },
+    {
+      "sample_id": "46620",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "27",
+      "corruption_type": "layout",
+      "inference_time_s": 0.15673335397150367,
+      "response_length": 2
+    },
+    {
+      "sample_id": "42036",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "9,719",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1789226729888469,
+      "response_length": 5
+    },
+    {
+      "sample_id": "59471",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Chemistry",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6114326299866661,
+      "response_length": 9
+    },
+    {
+      "sample_id": "50748",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2851604860043153,
+      "response_length": 12
+    },
+    {
+      "sample_id": "25736",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.48222088906913996,
+      "response_length": 12
+    },
+    {
+      "sample_id": "49257",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "RICHARD NELSON Vice President of Container Services",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7157589440466836,
+      "response_length": 51
+    },
+    {
+      "sample_id": "64699",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5304475059965625,
+      "response_length": 12
+    },
+    {
+      "sample_id": "3847",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1977",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3075875239446759,
+      "response_length": 4
+    },
+    {
+      "sample_id": "57314",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "| Year | Nominal value of Shares |\n|---|---|\n| March 31, 2011 | 11.33 |\n| March 31, 2010 | 10 |",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5393971650628373,
+      "response_length": 95
+    },
+    {
+      "sample_id": "17144",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "696-524-2368",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22123351506888866,
+      "response_length": 12
+    },
+    {
+      "sample_id": "58445",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "1906",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5613949949620292,
+      "response_length": 4
+    },
+    {
+      "sample_id": "6937",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Date: June 23, 1997",
+      "corruption_type": "layout",
+      "inference_time_s": 0.3162280860124156,
+      "response_length": 19
+    },
+    {
+      "sample_id": "5824",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14964438695460558,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59471",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5478170310379937,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56648",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "George L. Shipley*",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24191998690366745,
+      "response_length": 18
+    },
+    {
+      "sample_id": "53438",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "46",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24208295706193894,
+      "response_length": 2
+    },
+    {
+      "sample_id": "53602",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15721400501206517,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60006",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "NL denotes Cable Night Letter.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.27783438796177506,
+      "response_length": 30
+    },
+    {
+      "sample_id": "61247",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3096588820917532,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56800",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "CEEJAY TOBACCO LIMITED",
+      "corruption_type": "layout",
+      "inference_time_s": 0.1841832910431549,
+      "response_length": 22
+    },
+    {
+      "sample_id": "6971",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15717041201423854,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62507",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Ohio",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20146841800305992,
+      "response_length": 4
+    },
+    {
+      "sample_id": "17003",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Tel: 201-677-0498",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.35099303792230785,
+      "response_length": 17
+    },
+    {
+      "sample_id": "8049",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document does not mention \"Apex Dynamics\" or provide information about their promotional packaging.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2637022639391944,
+      "response_length": 103
+    },
+    {
+      "sample_id": "26304",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Editor",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.38614856300409883,
+      "response_length": 6
+    },
+    {
+      "sample_id": "64688",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.634319340926595,
+      "response_length": 12
+    },
+    {
+      "sample_id": "62778",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Box 1027/St. Petersburg, Florida 33731",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.41980429692193866,
+      "response_length": 38
+    },
+    {
+      "sample_id": "57311",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1742937460076064,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59496",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6331698090070859,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64696",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "Table 7",
+      "corruption_type": "element",
+      "inference_time_s": 0.5485987369902432,
+      "response_length": 7
+    },
+    {
+      "sample_id": "60962",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "63110",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24729624297469854,
+      "response_length": 5
+    },
+    {
+      "sample_id": "51220",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "The document mentions that the approach to \"reasonably foreseen\" includes considering \"information\" and \"conditions of use.\" However, it does not specify what *type* of information Crestwood Group should use to identify conditions of use for inclusion in scoping.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5763979710172862,
+      "response_length": 277
+    },
+    {
+      "sample_id": "64928",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.664609307073988,
+      "response_length": 12
+    },
+    {
+      "sample_id": "3846",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "BIERMAN, E.L.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2709251430351287,
+      "response_length": 13
+    },
+    {
+      "sample_id": "5615",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16647093591745943,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63680",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.47727470099925995,
+      "response_length": 12
+    },
+    {
+      "sample_id": "56972",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.18248806498013437,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47043",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5972948740236461,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45764",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$10,000-$15,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3123324230546132,
+      "response_length": 15
+    },
+    {
+      "sample_id": "42295",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.13390471099410206,
+      "response_length": 12
+    },
+    {
+      "sample_id": "55430",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.27348375401925296,
+      "response_length": 12
+    },
+    {
+      "sample_id": "50536",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "499150499",
+      "corruption_type": "layout",
+      "inference_time_s": 0.28069962898734957,
+      "response_length": 9
+    },
+    {
+      "sample_id": "32871",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "58.5",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5867419670103118,
+      "response_length": 4
+    },
+    {
+      "sample_id": "4928",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "(336) 741-7805",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3279087310656905,
+      "response_length": 14
+    },
+    {
+      "sample_id": "56270",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "2599.70",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2721267859451473,
+      "response_length": 7
+    },
+    {
+      "sample_id": "52467",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.12193046696484089,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59498",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Mr. McDermott joined Kelco in 1958.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6086142039857805,
+      "response_length": 35
+    },
+    {
+      "sample_id": "63118",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6683136929059401,
+      "response_length": 12
+    },
+    {
+      "sample_id": "42028",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15324747492559254,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64635",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "layout",
+      "inference_time_s": 0.5575547049520537,
+      "response_length": 12
+    },
+    {
+      "sample_id": "16424",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "As competitor's joined the price war, Taco Bell's strong consumer base decreased.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.34174316993448883,
+      "response_length": 81
+    },
+    {
+      "sample_id": "38039",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6066648239502683,
+      "response_length": 12
+    },
+    {
+      "sample_id": "60789",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5335210219491273,
+      "response_length": 12
+    },
+    {
+      "sample_id": "64381",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22454983496572822,
+      "response_length": 12
+    },
+    {
+      "sample_id": "46280",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "COBBP007-000018",
+      "corruption_type": "layout",
+      "inference_time_s": 1.1313715310534462,
+      "response_length": 15
+    },
+    {
+      "sample_id": "5556",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17693987803068012,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47716",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "(312) 751-6566",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7572285349015146,
+      "response_length": 14
+    },
+    {
+      "sample_id": "44792",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "layout",
+      "inference_time_s": 0.22009497904218733,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63826",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.4998792939586565,
+      "response_length": 12
+    },
+    {
+      "sample_id": "54440",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Attachment 1 Page 1 of 2",
+      "corruption_type": "layout",
+      "inference_time_s": 0.26059215201530606,
+      "response_length": 24
+    },
+    {
+      "sample_id": "21702",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "18,559",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.16670236503705382,
+      "response_length": 6
+    },
+    {
+      "sample_id": "59377",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "TRUSTEES",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6200386979617178,
+      "response_length": 8
+    },
+    {
+      "sample_id": "47519",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6239950369345024,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63763",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7001234400086105,
+      "response_length": 12
+    },
+    {
+      "sample_id": "45638",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "STEP 3",
+      "corruption_type": "element",
+      "inference_time_s": 0.48031514696776867,
+      "response_length": 6
+    },
+    {
+      "sample_id": "29760",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "$88,900",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.48180542804766446,
+      "response_length": 7
+    },
+    {
+      "sample_id": "64985",
+      "predicted_unanswerable": true,
+      "label_unanswerable": false,
+      "raw_response": "Based on the provided image, the data is presented in a bar chart format with different measurements (17-HYDROXY STEROIDS, NITROGEN, INORGANIC SULFATE, NITROGEN SULFUR RATIO, and NITROGEN BALANCE) plotted against different conditions (BASELINE and REVERSAL).\n\nHowever, the chart **does not explicitly label which set of data corresponds to which specific patient**. It only shows the trends for the measured parameters over time or condition.\n\nTherefore, I cannot determine which patient has the lowest 17-Hydroxy steroids.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.3332512710476294,
+      "response_length": 537
+    },
+    {
+      "sample_id": "32984",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "19,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5161504440475255,
+      "response_length": 6
+    },
+    {
+      "sample_id": "6944",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14790092303883284,
+      "response_length": 12
+    },
+    {
+      "sample_id": "55212",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "0.0 - 32.1",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30129431595560163,
+      "response_length": 10
+    },
+    {
+      "sample_id": "64706",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1978",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5396131459856406,
+      "response_length": 4
+    },
+    {
+      "sample_id": "64357",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Former Director of the Framingham Heart Study",
+      "corruption_type": "layout",
+      "inference_time_s": 0.1856003690045327,
+      "response_length": 45
+    },
+    {
+      "sample_id": "64687",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5400456730276346,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52487",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.22041760804131627,
+      "response_length": 12
+    },
+    {
+      "sample_id": "47544",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "DePuy",
+      "corruption_type": "layout",
+      "inference_time_s": 0.2489380189217627,
+      "response_length": 5
+    },
+    {
+      "sample_id": "46396",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "% of subjects",
+      "corruption_type": "element",
+      "inference_time_s": 0.22388262301683426,
+      "response_length": 13
+    },
+    {
+      "sample_id": "57287",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15585918398573995,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59492",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6380021600052714,
+      "response_length": 12
+    },
+    {
+      "sample_id": "65308",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "FIGURE 3",
+      "corruption_type": "element",
+      "inference_time_s": 0.6502466360107064,
+      "response_length": 8
+    },
+    {
+      "sample_id": "46749",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14462114998605102,
+      "response_length": 12
+    },
+    {
+      "sample_id": "42037",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "13,976",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.17520786100067198,
+      "response_length": 6
+    },
+    {
+      "sample_id": "2203",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5121628610650077,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59839",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Director",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5297531599644572,
+      "response_length": 8
+    },
+    {
+      "sample_id": "7590",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "6801 Lake Plaza Dr. A-103",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24127601296640933,
+      "response_length": 25
+    },
+    {
+      "sample_id": "59617",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "March 13, 1975",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5708348959451541,
+      "response_length": 14
+    },
+    {
+      "sample_id": "63751",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6453034980222583,
+      "response_length": 12
+    },
+    {
+      "sample_id": "6997",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "MULTI-BRAND",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.15608430502470583,
+      "response_length": 11
+    },
+    {
+      "sample_id": "59803",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document mentions USAID in the context of international development, but it does not explicitly state what the acronym stands for.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6731052639661357,
+      "response_length": 134
+    },
+    {
+      "sample_id": "63553",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Ozark County has the highest population in the Ozark region with a population of 6,000.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.7749682270223275,
+      "response_length": 87
+    },
+    {
+      "sample_id": "5667",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "4/29/2005",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.28407606994733214,
+      "response_length": 9
+    },
+    {
+      "sample_id": "4957",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1764581510797143,
+      "response_length": 12
+    },
+    {
+      "sample_id": "59345",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "MA 1253 AG",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2458001479972154,
+      "response_length": 10
+    },
+    {
+      "sample_id": "49263",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "The document states that United States Cold Storage of California, a division of American Consumer Industries, has named C. RICHARD NELSON Vice President of Container Services which provides LTL service for frozen shipments from the west coast to Hawaii.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.9297588199842721,
+      "response_length": 254
+    },
+    {
+      "sample_id": "57515",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24154697405174375,
+      "response_length": 12
+    },
+    {
+      "sample_id": "50320",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.6213656789623201,
+      "response_length": 12
+    },
+    {
+      "sample_id": "39193",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "\u00a91970 by The Chemical Rubber Co.",
+      "corruption_type": "layout",
+      "inference_time_s": 0.27051040902733803,
+      "response_length": 32
+    },
+    {
+      "sample_id": "51220",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "EPA should use **High Quality, Best Available Information to Identify Conditions of Use for Inclusion in Scoping.**",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3155356349889189,
+      "response_length": 115
+    },
+    {
+      "sample_id": "55363",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Annual Financial Statement 2011",
+      "corruption_type": "element",
+      "inference_time_s": 0.18981449701823294,
+      "response_length": 31
+    },
+    {
+      "sample_id": "50452",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "element",
+      "inference_time_s": 0.238912764005363,
+      "response_length": 12
+    },
+    {
+      "sample_id": "63709",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.5528050980065018,
+      "response_length": 12
+    },
+    {
+      "sample_id": "57226",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "13",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.632660883013159,
+      "response_length": 2
+    },
+    {
+      "sample_id": "5507",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Jane Shaw is working in PERC.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.36283071292564273,
+      "response_length": 29
+    },
+    {
+      "sample_id": "21710",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "9,154",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1661628020228818,
+      "response_length": 5
+    },
+    {
+      "sample_id": "55245",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.14813780202530324,
+      "response_length": 12
+    },
+    {
+      "sample_id": "43261",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "$675,000",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.20476468000561,
+      "response_length": 8
+    },
+    {
+      "sample_id": "5468",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Virginia",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.24373864301014692,
+      "response_length": 8
+    },
+    {
+      "sample_id": "57283",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Anup Singh, Krishnamoorthy Vadhyanath",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.228084820904769,
+      "response_length": 37
+    },
+    {
+      "sample_id": "57439",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "UNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.30948202800936997,
+      "response_length": 12
+    },
+    {
+      "sample_id": "52217",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "High School - Bethany Academy",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.577516769990325,
+      "response_length": 29
+    },
+    {
+      "sample_id": "15753",
+      "predicted_unanswerable": true,
+      "label_unanswerable": true,
+      "raw_response": "Based on the document, there is a poster listed for \"P2(1) Poster 1\" presented at Yokohama. However, the document does not explicitly state that this poster will be presented at \"Apex Dynamics\" in October 1999. It only indicates the location as Yokohama.\n\nTherefore, the exact number of posters presented at Apex Dynamics in Yokohama in October 1999 cannot be determined from the provided image.\n\nUNANSWERABLE",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 1.0276739469263703,
+      "response_length": 409
+    },
+    {
+      "sample_id": "56816",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "13.43",
+      "corruption_type": "layout",
+      "inference_time_s": 0.6213958519510925,
+      "response_length": 5
+    },
+    {
+      "sample_id": "6812",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "7413",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.1462384150363505,
+      "response_length": 4
+    },
+    {
+      "sample_id": "58270",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Based on the table \"ITC Employee Stock Option Scheme\" under the section \"Total\", the total of all options granted from 2001 to 2006 is **1,085,36,696**.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.556984598049894,
+      "response_length": 152
+    },
+    {
+      "sample_id": "397",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "0.57%",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.2522830859525129,
+      "response_length": 5
+    },
+    {
+      "sample_id": "55953",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "Three focus groups will be conducted in Miami and four in San Antonio among 8-10 Hispanic smokers selected to meet these specifications.",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.3696554860798642,
+      "response_length": 136
+    },
+    {
+      "sample_id": "64420",
+      "predicted_unanswerable": false,
+      "label_unanswerable": false,
+      "raw_response": "1,200",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 0.18311453296337277,
+      "response_length": 5
+    },
+    {
+      "sample_id": "57061",
+      "predicted_unanswerable": false,
+      "label_unanswerable": true,
+      "raw_response": "The document provided is a \"REPORT ON CORPORATE GOVERNANCE FOR THE YEAR 2004-2005\" and contains a table detailing directors and their positions.\n\nI need to find the row for \"Shri R.R. Kumar\" and look at the column for \"Number of Directorships in Other Companies\".\n\nLooking at the table:\n| Name of the Directors | Category | No of Board meetings attended out of 5 | Whether attended AGM held on 24.09.2004 | Number of Directorships in Other Companies * | No. of Committee positions held in other Companies * |\n|---|---|---|---|---|---|\n| Shri R.R. Kumar | Non-executive, Independent | 5 | Yes | - | - |\n\nThe value in the \"Number of Directorships in Other Companies *\" column for Shri R.R. Kumar is a dash (-), which typically indicates zero or not applicable in this context, but it is not explicitly a number.\n\nHowever, the question asks \"how many membership does Crestwood Group kumar has in other companies?\". The table lists \"Number of Directorships in Other Companies *\".\n\nBased strictly on the provided table, the number",
+      "corruption_type": "nlp_entity",
+      "inference_time_s": 2.3479951709741727,
+      "response_length": 1025
+    }
+  ],
+  "metrics": {
+    "accuracy": 0.8271812080536913,
+    "precision": 0.9506726457399103,
+    "recall": 0.6973684210526315,
+    "f1": 0.8045540796963947,
+    "tp": 212,
+    "fp": 11,
+    "tn": 281,
+    "fn": 92,
+    "specificity": 0.9623287671232876,
+    "balanced_accuracy": 0.8298485940879596,
+    "mcc": 0.6815002242759105
+  }
+}
