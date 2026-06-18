@@ -3515,6 +3515,11 @@ services = [
     { name = "sentence-transformers" },
     { name = "uvicorn", extra = ["standard"] },
 ]
+vit-classifier = [
+    { name = "scikit-learn" },
+    { name = "torch" },
+    { name = "transformers" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -3555,14 +3560,17 @@ requires-dist = [
     { name = "redis", extras = ["hiredis"], marker = "extra == 'services'", specifier = ">=5.0" },
     { name = "redisvl", marker = "extra == 'services'", specifier = ">=0.2" },
     { name = "requests", specifier = ">=2.31.0" },
+    { name = "scikit-learn", marker = "extra == 'vit-classifier'", specifier = ">=1.4" },
     { name = "sentence-transformers", marker = "extra == 'mitigation'", specifier = ">=3.0" },
     { name = "sentence-transformers", marker = "extra == 'services'", specifier = ">=3.0" },
     { name = "spacy", marker = "extra == 'dev'", specifier = ">=3.7" },
     { name = "spacy", marker = "extra == 'nlp'", specifier = ">=3.7" },
+    { name = "torch", marker = "extra == 'vit-classifier'", specifier = ">=2.2" },
+    { name = "transformers", marker = "extra == 'vit-classifier'", specifier = ">=4.40" },
     { name = "trl", marker = "extra == 'finetune'", specifier = ">=0.12.0" },
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'services'", specifier = ">=0.29" },
 ]
-provides-extras = ["nlp", "notebooks", "dev", "services", "mitigation", "finetune"]
+provides-extras = ["nlp", "notebooks", "dev", "services", "mitigation", "vit-classifier", "finetune"]
 
 [package.metadata.requires-dev]
 dev = [

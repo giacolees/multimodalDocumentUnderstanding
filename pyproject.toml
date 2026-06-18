@@ -52,6 +52,11 @@ mitigation = [
     "sentence-transformers>=3.0",
     "rank-bm25>=0.2",
 ]
+vit-classifier = [
+    "torch>=2.2",
+    "transformers>=4.40",
+    "scikit-learn>=1.4",
+]
 # GPU machine required; install unsloth separately per https://github.com/unslothai/unsloth
 finetune = [
     "trl>=0.12.0",
