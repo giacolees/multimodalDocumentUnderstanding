@@ -1,6 +1,5 @@
 dataset_paths:
-  - data/final/docvqa_final.json
-  - data/final/mp_docvqa_final.json
+  - data/final/merged_final_explored.json
 
 split_path: data/cache/siglip_classifier_split.json
 cache_path: data/cache/siglip_embeddings.pt
