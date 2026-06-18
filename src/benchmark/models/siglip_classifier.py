@@ -130,7 +130,9 @@ class PretrainedEncoders:
     def encode_image(self, image_path: str) -> torch.Tensor:
         image = self._Image.open(image_path).convert("RGB")
         inputs = self._processor(images=image, return_tensors="pt").to(self._device)
-        return self._siglip.get_image_features(**inputs).squeeze(0)
+        output = self._siglip.get_image_features(**inputs)
+        pooled = output.pooler_output if hasattr(output, "pooler_output") else output
+        return pooled.squeeze(0)
 
     @torch.no_grad()
     def encode_text(self, text: str) -> torch.Tensor:
