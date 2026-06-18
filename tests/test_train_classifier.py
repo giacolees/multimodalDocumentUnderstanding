@@ -118,8 +118,8 @@ def test_build_embedding_cache_single_page(tmp_path):
 
 def test_build_embedding_cache_multi_page_window(tmp_path):
     records = [
-        {"sample_id": "s1", "document_path": "p1.png", "question": "q1",
-         "is_unanswerable": False, "metadata": {"window_pages": ["p1.png", "p2.png"]}},
+        {"sample_id": "s1", "document_path": "docs/p1.png", "question": "q1",
+         "is_unanswerable": False, "metadata": {"window_pages": ["p1", "p2"]}},
     ]
     encoders = _FakeEncoders()
     cache_path = str(tmp_path / "cache.pt")
@@ -127,7 +127,7 @@ def test_build_embedding_cache_multi_page_window(tmp_path):
 
     cache = build_embedding_cache(records, encoders, cache_path, key)
 
-    assert encoders.window_calls == [["p1.png", "p2.png"]]
+    assert encoders.window_calls == [["docs/p1.png", "docs/p2.png"]]
 
 
 def test_build_embedding_cache_reuses_matching_cache(tmp_path):
@@ -161,7 +161,54 @@ def test_build_embedding_cache_rebuilds_on_key_mismatch(tmp_path):
     second_encoders = _FakeEncoders()
     build_embedding_cache(records, second_encoders, cache_path, compute_cache_key(records, "siglip-2", "minilm-1"))
 
-    assert second_encoders.image_calls == ["doc1.png"]
+
+class _FlakyEncoders(_FakeEncoders):
+    def encode_image(self, path: str) -> torch.Tensor:
+        if path == "bad.png":
+            raise FileNotFoundError(path)
+        return super().encode_image(path)
+
+
+def test_build_embedding_cache_skips_record_on_encoder_error(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "doc1.png", "question": "q1",
+         "is_unanswerable": True, "metadata": {}},
+        {"sample_id": "bad", "document_path": "bad.png", "question": "q2",
+         "is_unanswerable": False, "metadata": {}},
+    ]
+    encoders = _FlakyEncoders()
+    cache_path = str(tmp_path / "cache.pt")
+    key = compute_cache_key(records, "siglip-1", "minilm-1")
+
+    cache = build_embedding_cache(records, encoders, cache_path, key)
+
+    assert set(cache.keys()) == {"s1"}
+
+
+def test_build_embedding_cache_resumes_partial_progress(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "doc1.png", "question": "q1",
+         "is_unanswerable": True, "metadata": {}},
+        {"sample_id": "s2", "document_path": "doc2.png", "question": "q2",
+         "is_unanswerable": False, "metadata": {}},
+    ]
+    cache_path = str(tmp_path / "cache.pt")
+    key = compute_cache_key(records, "siglip-1", "minilm-1")
+
+    # Pre-seed the cache file with only the first record already encoded,
+    # simulating an interrupted run that saved incrementally.
+    torch.save(
+        {"cache_key": key, "embeddings": {
+            "s1": {"image_embed": torch.ones(4), "text_embed": torch.ones(3), "label": True},
+        }},
+        cache_path,
+    )
+
+    encoders = _FakeEncoders()
+    cache = build_embedding_cache(records, encoders, cache_path, key)
+
+    assert set(cache.keys()) == {"s1", "s2"}
+    assert encoders.image_calls == ["doc2.png"]
 
 
 from src.benchmark.train_classifier import evaluate_head, train_head

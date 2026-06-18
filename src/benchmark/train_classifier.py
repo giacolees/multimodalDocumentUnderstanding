@@ -87,26 +87,41 @@ def build_embedding_cache(
         dict[str, dict]: {sample_id: {"image_embed": Tensor, "text_embed": Tensor, "label": bool}}
     """
     path = Path(cache_path)
+    embeddings: dict[str, dict] = {}
     if path.exists():
         stored = torch.load(path, map_location="cpu")
         if stored.get("cache_key") == cache_key:
-            return stored["embeddings"]
+            embeddings = stored["embeddings"]
+            if all(r["sample_id"] in embeddings for r in records):
+                return embeddings
 
-    embeddings: dict[str, dict] = {}
-    for record in tqdm(records, desc="Encoding embeddings", unit="sample"):
-        window_pages = record.get("metadata", {}).get("window_pages") or []
-        if window_pages and hasattr(encoders, "encode_image_window"):
-            image_embed = encoders.encode_image_window(window_pages)
-        else:
-            image_embed = encoders.encode_image(record["document_path"])
-        text_embed = encoders.encode_text(record["question"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    save_every = 100
+    progress = tqdm(records, desc="Encoding embeddings", unit="sample")
+    for i, record in enumerate(progress):
+        if record["sample_id"] in embeddings:
+            continue
+        try:
+            document_dir = Path(record["document_path"]).parent
+            suffix = Path(record["document_path"]).suffix
+            window_pages = record.get("metadata", {}).get("window_pages") or []
+            if window_pages and hasattr(encoders, "encode_image_window"):
+                window_paths = [str(document_dir / f"{page_id}{suffix}") for page_id in window_pages]
+                image_embed = encoders.encode_image_window(window_paths)
+            else:
+                image_embed = encoders.encode_image(record["document_path"])
+            text_embed = encoders.encode_text(record["question"])
+        except Exception as exc:
+            progress.write(f"Skipping {record['sample_id']}: {exc}")
+            continue
         embeddings[record["sample_id"]] = {
             "image_embed": image_embed,
             "text_embed": text_embed,
             "label": bool(record["is_unanswerable"]),
         }
+        if (i + 1) % save_every == 0:
+            torch.save({"cache_key": cache_key, "embeddings": embeddings}, path)
 
-    path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"cache_key": cache_key, "embeddings": embeddings}, path)
     return embeddings
 
