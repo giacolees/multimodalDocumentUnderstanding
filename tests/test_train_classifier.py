@@ -1,6 +1,14 @@
 import json
 
-from src.benchmark.train_classifier import load_split, save_split, stratified_split
+import torch
+
+from src.benchmark.train_classifier import (
+    build_embedding_cache,
+    compute_cache_key,
+    load_split,
+    save_split,
+    stratified_split,
+)
 
 
 def _make_records(n_unanswerable: int, n_answerable: int) -> list[dict]:
@@ -58,3 +66,99 @@ def test_save_and_load_split_roundtrip(tmp_path):
     loaded = load_split(str(path), records)
     assert [r["sample_id"] for r in loaded["train"]] == [r["sample_id"] for r in split["train"]]
     assert [r["sample_id"] for r in loaded["test"]] == [r["sample_id"] for r in split["test"]]
+
+
+class _FakeEncoders:
+    def __init__(self):
+        self.image_calls: list[str] = []
+        self.window_calls: list[list[str]] = []
+        self.text_calls: list[str] = []
+
+    def encode_image(self, path: str) -> torch.Tensor:
+        self.image_calls.append(path)
+        return torch.ones(4) * len(path)
+
+    def encode_image_window(self, paths: list[str]) -> torch.Tensor:
+        self.window_calls.append(paths)
+        return torch.stack([self.encode_image(p) for p in paths]).mean(dim=0)
+
+    def encode_text(self, text: str) -> torch.Tensor:
+        self.text_calls.append(text)
+        return torch.ones(3) * len(text)
+
+
+def test_compute_cache_key_changes_with_inputs():
+    records = [{"sample_id": "a"}, {"sample_id": "b"}]
+    key_a = compute_cache_key(records, "siglip-1", "minilm-1")
+    key_b = compute_cache_key(records, "siglip-2", "minilm-1")
+    key_c = compute_cache_key([{"sample_id": "a"}], "siglip-1", "minilm-1")
+
+    assert key_a != key_b
+    assert key_a != key_c
+    assert key_a == compute_cache_key(records, "siglip-1", "minilm-1")
+
+
+def test_build_embedding_cache_single_page(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "doc1.png", "question": "q1",
+         "is_unanswerable": True, "metadata": {}},
+    ]
+    encoders = _FakeEncoders()
+    cache_path = str(tmp_path / "cache.pt")
+    key = compute_cache_key(records, "siglip-1", "minilm-1")
+
+    cache = build_embedding_cache(records, encoders, cache_path, key)
+
+    assert set(cache.keys()) == {"s1"}
+    assert torch.equal(cache["s1"]["image_embed"], torch.ones(4) * len("doc1.png"))
+    assert cache["s1"]["label"] is True
+    assert encoders.image_calls == ["doc1.png"]
+    assert encoders.window_calls == []
+
+
+def test_build_embedding_cache_multi_page_window(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "p1.png", "question": "q1",
+         "is_unanswerable": False, "metadata": {"window_pages": ["p1.png", "p2.png"]}},
+    ]
+    encoders = _FakeEncoders()
+    cache_path = str(tmp_path / "cache.pt")
+    key = compute_cache_key(records, "siglip-1", "minilm-1")
+
+    cache = build_embedding_cache(records, encoders, cache_path, key)
+
+    assert encoders.window_calls == [["p1.png", "p2.png"]]
+
+
+def test_build_embedding_cache_reuses_matching_cache(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "doc1.png", "question": "q1",
+         "is_unanswerable": True, "metadata": {}},
+    ]
+    cache_path = str(tmp_path / "cache.pt")
+    key = compute_cache_key(records, "siglip-1", "minilm-1")
+
+    first_encoders = _FakeEncoders()
+    build_embedding_cache(records, first_encoders, cache_path, key)
+
+    second_encoders = _FakeEncoders()
+    build_embedding_cache(records, second_encoders, cache_path, key)
+
+    assert second_encoders.image_calls == []
+    assert second_encoders.text_calls == []
+
+
+def test_build_embedding_cache_rebuilds_on_key_mismatch(tmp_path):
+    records = [
+        {"sample_id": "s1", "document_path": "doc1.png", "question": "q1",
+         "is_unanswerable": True, "metadata": {}},
+    ]
+    cache_path = str(tmp_path / "cache.pt")
+
+    first_encoders = _FakeEncoders()
+    build_embedding_cache(records, first_encoders, cache_path, compute_cache_key(records, "siglip-1", "minilm-1"))
+
+    second_encoders = _FakeEncoders()
+    build_embedding_cache(records, second_encoders, cache_path, compute_cache_key(records, "siglip-2", "minilm-1"))
+
+    assert second_encoders.image_calls == ["doc1.png"]
