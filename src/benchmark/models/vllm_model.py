@@ -123,17 +123,19 @@ class VllmModel(BaseVisionModel):
             payload["stop"] = self._stop_sequences
         if self._stop_token_ids:
             payload["stop_token_ids"] = self._stop_token_ids
-        resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
-        if not resp.ok:
-            detail = resp.text[:300]
-            if resp.status_code == 400 and "exceeds" in detail and "context" in detail:
-                return PredictionResult(
-                    sample_id="",
-                    predicted_unanswerable=False,
-                    confidence=0.0,
-                    raw_response=f"[SKIPPED: context too long] {detail}",
-                )
-            resp.raise_for_status()
+        try:
+            resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
+            if not resp.ok:
+                detail = resp.text[:300]
+                raise self._requests.exceptions.HTTPError(detail, response=resp)
+        except self._requests.exceptions.RequestException as exc:
+            return PredictionResult(
+                sample_id="",
+                predicted_unanswerable=False,
+                confidence=0.0,
+                raw_response=f"[SKIPPED: request failed] {exc}",
+                skipped=True,
+            )
         raw = resp.json()["choices"][0]["message"]["content"]
         predicted, confidence = _parse_unanswerable(raw)
         return PredictionResult(
@@ -164,10 +166,11 @@ class VllmModel(BaseVisionModel):
             "max_tokens": max_tokens,
             "temperature": 0.0,
         }
-        resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
-        if not resp.ok:
-            detail = resp.text[:300]
-            if resp.status_code == 400 and "exceeds" in detail and "context" in detail:
-                return f"[SKIPPED: context too long] {detail}"
-            resp.raise_for_status()
+        try:
+            resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
+            if not resp.ok:
+                detail = resp.text[:300]
+                raise self._requests.exceptions.HTTPError(detail, response=resp)
+        except self._requests.exceptions.RequestException as exc:
+            return f"[SKIPPED: request failed] {exc}"
         return resp.json()["choices"][0]["message"]["content"]

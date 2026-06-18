@@ -53,7 +53,7 @@ def load_subset_baselines(
             data = json.load(f)
 
         records = data.get("records", [])
-        subset = [r for r in records if r["sample_id"] in sample_ids]
+        subset = [r for r in records if r["sample_id"] in sample_ids and not r.get("skipped")]
         if not subset:
             continue
 
@@ -115,11 +115,12 @@ def save_baseline_subset(
         data = json.load(f)
 
     subset_records = [r for r in data.get("records", []) if r["sample_id"] in sample_ids]
+    scored_records = [r for r in subset_records if not r.get("skipped")]
 
     from ..benchmark.evaluation.metrics import compute_metrics
-    y_true = [r["label_unanswerable"] for r in subset_records]
-    y_pred = [r["predicted_unanswerable"] for r in subset_records]
-    metrics = compute_metrics(y_true, y_pred).__dict__ if subset_records else {}
+    y_true = [r["label_unanswerable"] for r in scored_records]
+    y_pred = [r["predicted_unanswerable"] for r in scored_records]
+    metrics = compute_metrics(y_true, y_pred).__dict__ if scored_records else {}
 
     out_path = Path(output_dir) / "baseline_subset_results.json"
     with open(out_path, "w") as f:

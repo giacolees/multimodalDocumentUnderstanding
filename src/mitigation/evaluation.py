@@ -97,11 +97,12 @@ def evaluate_strategy(
                 prompt_template=prompt,
             )
             elapsed = time.perf_counter() - t0
-            if result.raw_response.startswith("[SKIPPED:"):
+            if result.skipped:
                 bar.write(f"  ⚠ skipped {item['sample_id']}: {result.raw_response[:120]}")
-            inference_times.append(elapsed)
-            preds.append(result.predicted_unanswerable)
-            labels.append(label)
+            else:
+                inference_times.append(elapsed)
+                preds.append(result.predicted_unanswerable)
+                labels.append(label)
             records.append({
                 "sample_id": item["sample_id"],
                 "strategy": strategy.name,
@@ -110,11 +111,12 @@ def evaluate_strategy(
                 "raw_response": result.raw_response,
                 "corruption_type": item.get("corruption_type", "unknown"),
                 "inference_time_s": elapsed,
+                "skipped": result.skipped,
             })
 
-            # Update tqdm postfix with running accuracy.
+            # Update tqdm postfix with running accuracy (scored samples only).
             correct = sum(p == l for p, l in zip(preds, labels))
-            bar.set_postfix(acc=f"{correct/step:.3f}", t=f"{elapsed:.1f}s")
+            bar.set_postfix(acc=f"{correct/len(preds):.3f}" if preds else "n/a", t=f"{elapsed:.1f}s")
 
             # Flush records to disk and log running metrics every _LOG_EVERY steps.
             if step % _LOG_EVERY == 0 or step == len(dataset):
@@ -128,7 +130,8 @@ def evaluate_strategy(
                         "running_precision": running.precision,
                         "running_recall": running.recall,
                         "running_mcc": running.mcc,
-                        "running_inference_time_mean_s": float(np.mean(inference_times)),
+                        **({"running_inference_time_mean_s": float(np.mean(inference_times))}
+                           if inference_times else {}),
                     },
                     step=step,
                 )
@@ -164,6 +167,7 @@ def evaluate_strategy(
             "fp": float(metrics.fp),
             "tn": float(metrics.tn),
             "fn": float(metrics.fn),
+            "n_skipped": float(sum(r["skipped"] for r in records)),
             "specificity": metrics.specificity,
             "balanced_accuracy": metrics.balanced_accuracy,
             "mcc": metrics.mcc,
@@ -186,7 +190,7 @@ def evaluate_strategy(
             ),
         })
 
-        per_type = compute_per_type_metrics(records)
+        per_type = compute_per_type_metrics([r for r in records if not r["skipped"]])
         baseline_per_type = baseline_metrics.get("per_type", {})
         for ctype, tm in per_type.items():
             base_f1 = (

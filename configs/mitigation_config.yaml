@@ -6,7 +6,7 @@ output_dir: results/mitigation_mp_docvqa_Qwen3-VL
 mlflow_experiment: mitigation_fs_mp_docvqa_qwen3-VL
 
 max_samples: 1000    # number of samples from the dataset to run mitigation on (null = all)
-subset_ids: results/mitigation_mp_docvqa/mitigation_subset_ids.json         # path to a JSON file with a list of sample_id strings to run on (overrides max_samples)
+# subset_ids: results/mitigation_mp_docvqa/mitigation_subset_ids.json         # path to a JSON file with a list of sample_id strings to run on (overrides max_samples)
   # Example: results/mitigation_mp_docvqa_rag_Qwen3-VL/mitigation_subset_ids.json
 
 model:
@@ -16,17 +16,11 @@ model:
 
 strategies:
   - few_shot
-  # - chain_of_thought
-  # - knowledge_injection
   # - rag
-  # Uncomment to include fine-tuning (requires GPU + unsloth):
   # - finetuning
 
 few_shot:
   k: 2          # number of examples to inject
-
-knowledge_injection:
-  extract_metadata_automatically: false   # set true to run OCR-based metadata extraction
 
 rag:
   retrieval_mode:           # list → runs one experiment per mode; single string → runs just that mode

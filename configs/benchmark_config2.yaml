@@ -4,9 +4,9 @@
 # output_dir: results/benchmark_docvqa
 # mlflow_experiment: benchmark_docvqa_vllm_qwen3
 
-corrupted_dataset: data/final/docvqa_final.json
-output_dir: results/benchmark_docvqa
-mlflow_experiment: benchmark_docvqa_vllm_qwen3.5
+corrupted_dataset: data/final/mp_docvqa_final.json
+output_dir: results/benchmark_mp_docvqa
+mlflow_experiment: benchmark_mp_docvqa_vllm_qwen3.5
 
 
 models:
@@ -28,7 +28,7 @@ models:
   #   stop_token_ids: [248044, 248046]
 
   - backend: vllm
-    base_url: http://localhost:8083/v1
+    base_url: http://localhost:8084/v1
     model_id: Qwen/Qwen3.5-2B
 
   # - backend: vllm

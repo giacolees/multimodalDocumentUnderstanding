@@ -152,10 +152,12 @@ def run_benchmark(
                     "corruption_type": item["corruption_type"],
                     "inference_time_s": result.inference_time_s,
                     "response_length": len(result.raw_response or ""),
+                    "skipped": result.skipped,
                 })
                 # save after every sample so a crash loses at most one result
-                _preds = [r["predicted_unanswerable"] for r in records]
-                _labels = [r["label_unanswerable"] for r in records]
+                _scored = [r for r in records if not r.get("skipped")]
+                _preds = [r["predicted_unanswerable"] for r in _scored]
+                _labels = [r["label_unanswerable"] for r in _scored]
                 _m = compute_metrics(_labels, _preds)
                 with open(results_path, "w") as f:
                     json.dump({"records": records, "metrics": _m.__dict__}, f, indent=2)
@@ -170,16 +172,18 @@ def run_benchmark(
                         "rolling_recall": _m.recall,
                     }, step=_global_step)
 
-            preds = [r["predicted_unanswerable"] for r in records]
-            labels = [r["label_unanswerable"] for r in records]
+            scored = [r for r in records if not r.get("skipped")]
+            n_skipped = len(records) - len(scored)
+            preds = [r["predicted_unanswerable"] for r in scored]
+            labels = [r["label_unanswerable"] for r in scored]
             metrics = compute_metrics(labels, preds)
-            print(f"\n[{model_name}] {metrics}")
+            print(f"\n[{model_name}] {metrics}" + (f"  ({n_skipped} skipped)" if n_skipped else ""))
             with open(results_path, "w") as f:
                 json.dump({"records": records, "metrics": metrics.__dict__}, f, indent=2)
             print(f"Results saved → {results_path}")
 
-            inference_times = [r["inference_time_s"] for r in records if "inference_time_s" in r]
-            response_lengths = [r["response_length"] for r in records if "response_length" in r]
+            inference_times = [r["inference_time_s"] for r in scored if "inference_time_s" in r]
+            response_lengths = [r["response_length"] for r in scored if "response_length" in r]
             pred_unanswerable_rate = sum(preds) / len(preds) if preds else 0.0
             mlflow.log_metrics({
                 "accuracy": metrics.accuracy,
@@ -190,6 +194,7 @@ def run_benchmark(
                 "fp": float(metrics.fp),
                 "tn": float(metrics.tn),
                 "fn": float(metrics.fn),
+                "n_skipped": float(n_skipped),
                 "specificity": metrics.specificity,
                 "balanced_accuracy": metrics.balanced_accuracy,
                 "mcc": metrics.mcc,
@@ -206,7 +211,7 @@ def run_benchmark(
                 } if response_lengths else {}),
             })
 
-            per_type = compute_per_type_metrics(records)
+            per_type = compute_per_type_metrics(scored)
             for ctype, tm in per_type.items():
                 mlflow.log_metrics({
                     f"f1_{ctype}": tm.f1,

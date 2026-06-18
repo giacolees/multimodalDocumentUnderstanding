@@ -10,6 +10,7 @@ class PredictionResult:
     confidence: float               # 0.0–1.0 if available, else -1
     raw_response: str
     inference_time_s: float = 0.0
+    skipped: bool = False           # True = inference failed; exclude from metrics
 
 
 class BaseVisionModel(ABC):

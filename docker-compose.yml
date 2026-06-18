@@ -93,8 +93,10 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 15s
       timeout: 5s
-      retries: 20
+      retries: 8
       start_period: 120s
+    labels:
+      - autoheal=true
     deploy:
       resources:
         reservations:
@@ -127,8 +129,10 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 15s
       timeout: 5s
-      retries: 20
+      retries: 8
       start_period: 120s
+    labels:
+      - autoheal=true
     deploy:
       resources:
         reservations:
@@ -136,6 +140,16 @@ services:
             - driver: nvidia
               device_ids: ["1"]
               capabilities: [gpu]
+
+  autoheal:
+    image: willfarrell/autoheal:latest
+    restart: unless-stopped
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 10
+      AUTOHEAL_START_PERIOD: 120
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   redis-data:
