@@ -70,6 +70,20 @@ def load_model(model_cfg: dict):
             max_image_pixels=model_cfg.get("max_image_pixels", 0),
             stop_sequences=model_cfg.get("stop_sequences"),
         )
+    if backend == "siglip_classifier":
+        from .models.siglip_classifier import SiglipClassifierModel
+        return SiglipClassifierModel.from_pretrained(
+            head_checkpoint_path=model_cfg.get(
+                "head_checkpoint_path", "models/siglip_classifier_head.pt"
+            ),
+            siglip_model_id=model_cfg.get(
+                "siglip_model_id", "google/siglip-so400m-patch14-384"
+            ),
+            minilm_model_id=model_cfg.get(
+                "minilm_model_id", "sentence-transformers/all-MiniLM-L6-v2"
+            ),
+            device=model_cfg.get("device", "cpu"),
+        )
     raise ValueError(f"Unknown backend: {backend}")
 
 
