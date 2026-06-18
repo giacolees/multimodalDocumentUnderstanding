@@ -10,10 +10,13 @@ import random
 from collections import defaultdict
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import torch
 import yaml
 
-from .evaluation.metrics import BenchmarkMetrics, compute_metrics
+from .evaluation.metrics import BenchmarkMetrics, compute_metrics, plot_confusion_matrix
 from .models.siglip_classifier import ClassifierHead, PretrainedEncoders
 
 
@@ -219,6 +222,9 @@ def main() -> None:
             "f1": test_metrics.f1,
             "mcc": test_metrics.mcc,
         })
+        fig = plot_confusion_matrix(test_metrics, title="SigLIP Classifier — test set")
+        mlflow.log_figure(fig, "confusion_matrix_siglip_classifier.png")
+        plt.close(fig)
 
     head_path = Path(config["head_checkpoint_path"])
     head_path.parent.mkdir(parents=True, exist_ok=True)
