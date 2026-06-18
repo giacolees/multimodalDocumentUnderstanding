@@ -162,3 +162,48 @@ def test_build_embedding_cache_rebuilds_on_key_mismatch(tmp_path):
     build_embedding_cache(records, second_encoders, cache_path, compute_cache_key(records, "siglip-2", "minilm-1"))
 
     assert second_encoders.image_calls == ["doc1.png"]
+
+
+from src.benchmark.train_classifier import evaluate_head, train_head
+from src.benchmark.models.siglip_classifier import ClassifierHead, IMAGE_EMBED_DIM, TEXT_EMBED_DIM
+
+
+def _make_linearly_separable_embeddings(n_per_class: int) -> tuple[list[dict], dict[str, dict]]:
+    records = []
+    embeddings = {}
+    for i in range(n_per_class):
+        sid = f"pos{i}"
+        records.append({"sample_id": sid, "is_unanswerable": True})
+        embeddings[sid] = {
+            "image_embed": torch.ones(IMAGE_EMBED_DIM) * 5.0,
+            "text_embed": torch.ones(TEXT_EMBED_DIM) * 5.0,
+            "label": True,
+        }
+        sid = f"neg{i}"
+        records.append({"sample_id": sid, "is_unanswerable": False})
+        embeddings[sid] = {
+            "image_embed": torch.ones(IMAGE_EMBED_DIM) * -5.0,
+            "text_embed": torch.ones(TEXT_EMBED_DIM) * -5.0,
+            "label": False,
+        }
+    return records, embeddings
+
+
+def test_train_head_separates_linearly_separable_data():
+    records, embeddings = _make_linearly_separable_embeddings(40)
+    train_records = records[:64]
+    val_records = records[64:]
+
+    head = train_head(train_records, val_records, embeddings, epochs=30, lr=1e-2, batch_size=16)
+    metrics = evaluate_head(head, val_records, embeddings)
+
+    assert metrics.f1 > 0.9
+
+
+def test_evaluate_head_returns_benchmark_metrics():
+    records, embeddings = _make_linearly_separable_embeddings(10)
+    head = ClassifierHead()
+    metrics = evaluate_head(head, records, embeddings)
+
+    assert hasattr(metrics, "f1")
+    assert hasattr(metrics, "mcc")

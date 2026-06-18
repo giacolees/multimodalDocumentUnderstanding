@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import argparse
+import copy
 import hashlib
 import json
 import random
@@ -9,6 +11,10 @@ from collections import defaultdict
 from pathlib import Path
 
 import torch
+import yaml
+
+from .evaluation.metrics import BenchmarkMetrics, compute_metrics
+from .models.siglip_classifier import ClassifierHead, PretrainedEncoders
 
 
 def stratified_split(
@@ -99,3 +105,127 @@ def build_embedding_cache(
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"cache_key": cache_key, "embeddings": embeddings}, path)
     return embeddings
+
+
+def _batch_tensors(records: list[dict], embeddings: dict[str, dict]):
+    image_embeds = torch.stack([embeddings[r["sample_id"]]["image_embed"] for r in records])
+    text_embeds = torch.stack([embeddings[r["sample_id"]]["text_embed"] for r in records])
+    labels = torch.tensor([float(embeddings[r["sample_id"]]["label"]) for r in records])
+    return image_embeds, text_embeds, labels
+
+
+def train_head(
+    train_records: list[dict],
+    val_records: list[dict],
+    embeddings: dict[str, dict],
+    epochs: int = 20,
+    lr: float = 1e-3,
+    batch_size: int = 64,
+) -> ClassifierHead:
+    head = ClassifierHead()
+    optimizer = torch.optim.Adam(head.parameters(), lr=lr)
+    loss_fn = torch.nn.BCEWithLogitsLoss()
+
+    best_f1 = -1.0
+    best_state = copy.deepcopy(head.state_dict())
+
+    for _epoch in range(epochs):
+        head.train()
+        order = list(range(len(train_records)))
+        random.Random(_epoch).shuffle(order)
+        for start in range(0, len(order), batch_size):
+            batch_idx = order[start:start + batch_size]
+            batch_records = [train_records[i] for i in batch_idx]
+            image_embeds, text_embeds, labels = _batch_tensors(batch_records, embeddings)
+            optimizer.zero_grad()
+            logits = head(image_embeds, text_embeds)
+            loss = loss_fn(logits, labels)
+            loss.backward()
+            optimizer.step()
+
+        val_metrics = evaluate_head(head, val_records, embeddings)
+        if val_metrics.f1 > best_f1:
+            best_f1 = val_metrics.f1
+            best_state = copy.deepcopy(head.state_dict())
+
+    best_head = ClassifierHead()
+    best_head.load_state_dict(best_state)
+    return best_head
+
+
+def evaluate_head(
+    head: ClassifierHead,
+    records: list[dict],
+    embeddings: dict[str, dict],
+) -> BenchmarkMetrics:
+    head.eval()
+    image_embeds, text_embeds, labels = _batch_tensors(records, embeddings)
+    with torch.no_grad():
+        probs = torch.sigmoid(head(image_embeds, text_embeds))
+    preds = (probs >= 0.5).tolist()
+    y_true = [bool(v) for v in labels.tolist()]
+    return compute_metrics(y_true, preds)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", required=True)
+    args = parser.parse_args()
+
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
+
+    records: list[dict] = []
+    for path in config["dataset_paths"]:
+        with open(path) as f:
+            records.extend(json.load(f))
+
+    split_path = config["split_path"]
+    if Path(split_path).exists():
+        split = load_split(split_path, records)
+    else:
+        split = stratified_split(records, seed=config.get("seed", 42))
+        save_split(split, split_path)
+
+    encoders = PretrainedEncoders(
+        siglip_model_id=config["siglip_model_id"],
+        minilm_model_id=config["minilm_model_id"],
+        device=config.get("device", "cpu"),
+    )
+    cache_key = compute_cache_key(records, config["siglip_model_id"], config["minilm_model_id"])
+    embeddings = build_embedding_cache(records, encoders, config["cache_path"], cache_key)
+
+    import mlflow
+    mlflow.set_experiment("siglip_classifier")
+    with mlflow.start_run():
+        mlflow.log_params({
+            "siglip_model_id": config["siglip_model_id"],
+            "minilm_model_id": config["minilm_model_id"],
+            "epochs": config.get("epochs", 20),
+            "lr": config.get("lr", 1e-3),
+            "batch_size": config.get("batch_size", 64),
+        })
+        head = train_head(
+            split["train"], split["val"], embeddings,
+            epochs=config.get("epochs", 20),
+            lr=config.get("lr", 1e-3),
+            batch_size=config.get("batch_size", 64),
+        )
+        test_metrics = evaluate_head(head, split["test"], embeddings)
+        mlflow.log_metrics({
+            "accuracy": test_metrics.accuracy,
+            "precision": test_metrics.precision,
+            "recall": test_metrics.recall,
+            "f1": test_metrics.f1,
+            "mcc": test_metrics.mcc,
+        })
+
+    head_path = Path(config["head_checkpoint_path"])
+    head_path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(head.state_dict(), head_path)
+    print(f"Saved head to {head_path}")
+    print(test_metrics)
+
+
+if __name__ == "__main__":
+    main()

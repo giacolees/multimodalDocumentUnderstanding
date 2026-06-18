@@ -1,0 +1,16 @@
+dataset_paths:
+  - data/final/docvqa_final.json
+  - data/final/mp_docvqa_final.json
+
+split_path: data/cache/siglip_classifier_split.json
+cache_path: data/cache/siglip_embeddings.pt
+head_checkpoint_path: models/siglip_classifier_head.pt
+
+siglip_model_id: google/siglip-so400m-patch14-384
+minilm_model_id: sentence-transformers/all-MiniLM-L6-v2
+device: cpu
+
+seed: 42
+epochs: 20
+lr: 0.001
+batch_size: 64
