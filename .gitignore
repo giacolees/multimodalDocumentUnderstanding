@@ -19,3 +19,4 @@ CLAUDE.md
 models/
 mlruns/
 mlartifacts/
+.worktrees/
