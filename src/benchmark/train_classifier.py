@@ -15,6 +15,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
 import yaml
+from tqdm import tqdm
 
 from .evaluation.metrics import BenchmarkMetrics, compute_metrics, plot_confusion_matrix
 from .models.siglip_classifier import ClassifierHead, PretrainedEncoders
@@ -92,7 +93,7 @@ def build_embedding_cache(
             return stored["embeddings"]
 
     embeddings: dict[str, dict] = {}
-    for record in records:
+    for record in tqdm(records, desc="Encoding embeddings", unit="sample"):
         window_pages = record.get("metadata", {}).get("window_pages") or []
         if window_pages and hasattr(encoders, "encode_image_window"):
             image_embed = encoders.encode_image_window(window_pages)
