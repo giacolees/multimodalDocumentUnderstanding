@@ -15,52 +15,12 @@ Config example (benchmark_config.yaml):
 
 from __future__ import annotations
 
-import base64
 import itertools
 import threading
-from pathlib import Path
 
 from .base_model import BaseVisionModel, PredictionResult
-
-
-def _load_image_b64(document_path: str, page_index: int = 0, max_pixels: int = 0) -> str:
-    import io
-    from PIL import Image
-    path = Path(document_path)
-    if path.suffix.lower() == ".pdf":
-        try:
-            from pdf2image import convert_from_path
-        except ImportError as exc:
-            raise ImportError("pdf2image is required for PDF documents.") from exc
-        pages = convert_from_path(str(path), first_page=page_index + 1, last_page=page_index + 1)
-        if not pages:
-            raise ValueError(f"No page {page_index} in {path}")
-        img = pages[0]
-    else:
-        img = Image.open(path)
-
-    if max_pixels > 0:
-        w, h = img.size
-        if w * h > max_pixels:
-            scale = (max_pixels / (w * h)) ** 0.5
-            img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
-
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return base64.standard_b64encode(buf.getvalue()).decode()
-
-
-def _parse_unanswerable(text: str | None) -> tuple[bool, float]:
-    if not text:
-        return False, 0.0
-    upper = text.upper()
-    if "UNANSWERABLE" in upper:
-        return True, 0.9
-    negative_phrases = ["cannot be answered", "not in the document", "no information",
-                        "not mentioned", "not found", "cannot answer", "not provided"]
-    if any(p in upper for p in (p.upper() for p in negative_phrases)):
-        return True, 0.7
-    return False, 0.1
+from .inference_utils import page_to_b64 as _load_image_b64
+from .inference_utils import parse_unanswerable as _parse_unanswerable
 
 
 class VllmModel(BaseVisionModel):

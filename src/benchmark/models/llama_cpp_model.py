@@ -28,49 +28,11 @@ Config example (benchmark_config.yaml):
 
 from __future__ import annotations
 
-import base64
-import re
 from pathlib import Path
 
 from .base_model import BaseVisionModel, PredictionResult
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _load_image_b64(document_path: str, page_index: int = 0) -> str:
-    """Return a base64-encoded PNG string for the requested page/image."""
-    path = Path(document_path)
-
-    if path.suffix.lower() == ".pdf":
-        try:
-            from pdf2image import convert_from_path
-        except ImportError as exc:
-            raise ImportError("pdf2image is required for PDF documents.") from exc
-        pages = convert_from_path(str(path), first_page=page_index + 1, last_page=page_index + 1)
-        if not pages:
-            raise ValueError(f"No page {page_index} in {path}")
-        import io
-        buf = io.BytesIO()
-        pages[0].save(buf, format="PNG")
-        raw = buf.getvalue()
-    else:
-        raw = path.read_bytes()
-
-    return base64.standard_b64encode(raw).decode()
-
-
-def _parse_unanswerable(text: str) -> tuple[bool, float]:
-    """Heuristic: detect UNANSWERABLE signal in model output."""
-    upper = text.upper()
-    if "UNANSWERABLE" in upper:
-        return True, 0.9
-    negative_phrases = ["cannot be answered", "not in the document", "no information",
-                        "not mentioned", "not found", "cannot answer", "not provided"]
-    if any(p in upper for p in (p.upper() for p in negative_phrases)):
-        return True, 0.7
-    return False, 0.1
+from .inference_utils import page_to_b64 as _load_image_b64
+from .inference_utils import parse_unanswerable as _parse_unanswerable
 
 
 # ---------------------------------------------------------------------------

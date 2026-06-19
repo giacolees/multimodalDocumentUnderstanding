@@ -19,7 +19,7 @@ import yaml
 from tqdm import tqdm
 
 from .evaluation.metrics import BenchmarkMetrics, compute_metrics, plot_confusion_matrix
-from .models.siglip_classifier import ClassifierHead, PretrainedEncoders
+from .models.siglip_classifier import HEAD_TYPES, ClassifierHead, PretrainedEncoders
 
 
 def _record_key(record: dict) -> str:
@@ -206,8 +206,9 @@ def train_head(
     epochs: int = 20,
     lr: float = 1e-3,
     batch_size: int = 64,
+    head_cls: type = ClassifierHead,
 ) -> ClassifierHead:
-    head = ClassifierHead()
+    head = head_cls()
     optimizer = torch.optim.Adam(head.parameters(), lr=lr)
     loss_fn = torch.nn.BCEWithLogitsLoss()
 
@@ -239,7 +240,7 @@ def train_head(
             best_state = copy.deepcopy(head.state_dict())
         epoch_bar.set_postfix(loss=epoch_loss / num_batches, val_f1=val_metrics.f1, best_f1=best_f1)
 
-    best_head = ClassifierHead()
+    best_head = head_cls()
     best_head.load_state_dict(best_state)
     return best_head
 
@@ -313,6 +314,9 @@ def main() -> None:
     cache_key = compute_cache_key(records, config["siglip_model_id"], config["minilm_model_id"])
     embeddings = build_embedding_cache(records, encoders, config["cache_path"], cache_key)
 
+    head_type = config.get("head_type", "concat")
+    head_cls = HEAD_TYPES[head_type]
+
     import mlflow
     mlflow.set_experiment("siglip_classifier")
     with mlflow.start_run():
@@ -322,12 +326,14 @@ def main() -> None:
             "epochs": config.get("epochs", 20),
             "lr": config.get("lr", 1e-3),
             "batch_size": config.get("batch_size", 64),
+            "head_type": head_type,
         })
         head = train_head(
             split["train"], split["val"], embeddings,
             epochs=config.get("epochs", 20),
             lr=config.get("lr", 1e-3),
             batch_size=config.get("batch_size", 64),
+            head_cls=head_cls,
         )
         test_metrics = evaluate_head(head, split["test"], embeddings)
         mlflow.log_metrics({
@@ -337,8 +343,8 @@ def main() -> None:
             "f1": test_metrics.f1,
             "mcc": test_metrics.mcc,
         })
-        fig = plot_confusion_matrix(test_metrics, title="SigLIP Classifier — test set")
-        mlflow.log_figure(fig, "confusion_matrix_siglip_classifier.png")
+        fig = plot_confusion_matrix(test_metrics, title=f"SigLIP Classifier ({head_type}) — test set")
+        mlflow.log_figure(fig, f"confusion_matrix_siglip_classifier_{head_type}.png")
         plt.close(fig)
 
     head_path = Path(config["head_checkpoint_path"])

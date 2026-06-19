@@ -1,0 +1,19 @@
+dataset_paths:
+  - data/final/merged_final_explored.json
+
+split_path: data/cache/siglip_classifier_split.json
+cache_path: data/cache/siglip_embeddings.pt
+head_checkpoint_path: data/cache/siglip_classifier_cross_attention_head.pt
+results_path: results/benchmark/siglip_classifier_cross_attention_benchmark_result.json
+
+head_type: cross_attention
+
+siglip_model_id: google/siglip-so400m-patch14-384
+minilm_model_id: sentence-transformers/all-MiniLM-L6-v2
+device: cuda
+
+seed: 42
+split_ratios: [0.4, 0.1, 0.5]  # train, val, test
+epochs: 20
+lr: 0.001
+batch_size: 64

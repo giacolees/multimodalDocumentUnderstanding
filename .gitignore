@@ -20,3 +20,10 @@ models/
 mlruns/
 mlartifacts/
 .worktrees/
+mlflow.db
+results/benchmark_docvqa/*
+results/benchmark_mp_docvqa/*
+results/mitigation_docvqa/*
+results/mitigation_mp_docvqa/*
+report.tex
+skill-lock.json

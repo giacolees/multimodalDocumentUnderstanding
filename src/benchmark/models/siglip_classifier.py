@@ -38,6 +38,57 @@ class ClassifierHead(nn.Module):
         return self.net(fused).squeeze(-1)
 
 
+class CrossAttentionHead(nn.Module):
+    """Fuses a frozen image embedding and a frozen text embedding via bidirectional
+    cross-attention instead of plain concatenation. Each embedding is projected into a
+    shared space and treated as a length-1 sequence; text attends over the image and
+    image attends over the text (each with a residual + LayerNorm, transformer-block
+    style) before the two attended vectors are concatenated and classified."""
+
+    def __init__(
+        self,
+        image_dim: int = IMAGE_EMBED_DIM,
+        text_dim: int = TEXT_EMBED_DIM,
+        proj_dim: int = 256,
+        num_heads: int = 4,
+        hidden_dims: tuple[int, int] = (256, 128),
+    ) -> None:
+        super().__init__()
+        self.image_proj = nn.Linear(image_dim, proj_dim)
+        self.text_proj = nn.Linear(text_dim, proj_dim)
+        self.text_to_image_attn = nn.MultiheadAttention(proj_dim, num_heads, batch_first=True)
+        self.image_to_text_attn = nn.MultiheadAttention(proj_dim, num_heads, batch_first=True)
+        self.norm_text = nn.LayerNorm(proj_dim)
+        self.norm_image = nn.LayerNorm(proj_dim)
+        h1, h2 = hidden_dims
+        self.classifier = nn.Sequential(
+            nn.Linear(proj_dim * 2, h1),
+            nn.ReLU(),
+            nn.Linear(h1, h2),
+            nn.ReLU(),
+            nn.Linear(h2, 1),
+        )
+
+    def forward(self, image_embed: torch.Tensor, text_embed: torch.Tensor) -> torch.Tensor:
+        img = self.image_proj(image_embed).unsqueeze(1)
+        txt = self.text_proj(text_embed).unsqueeze(1)
+
+        text_attended, _ = self.text_to_image_attn(query=txt, key=img, value=img)
+        image_attended, _ = self.image_to_text_attn(query=img, key=txt, value=txt)
+
+        text_fused = self.norm_text(txt + text_attended).squeeze(1)
+        image_fused = self.norm_image(img + image_attended).squeeze(1)
+
+        fused = torch.cat([text_fused, image_fused], dim=-1)
+        return self.classifier(fused).squeeze(-1)
+
+
+HEAD_TYPES: dict[str, type[nn.Module]] = {
+    "concat": ClassifierHead,
+    "cross_attention": CrossAttentionHead,
+}
+
+
 class ImageTextEncoder(Protocol):
     def encode_image(self, image_path: str) -> torch.Tensor: ...
     def encode_text(self, text: str) -> torch.Tensor: ...
@@ -101,15 +152,18 @@ class SiglipClassifierModel(BaseVisionModel):
         siglip_model_id: str = "google/siglip-so400m-patch14-384",
         minilm_model_id: str = "sentence-transformers/all-MiniLM-L6-v2",
         device: str = "cpu",
+        head_type: str = "concat",
+        model_id: str = "siglip_classifier",
+        threshold: float = 0.5,
     ) -> "SiglipClassifierModel":
         encoders = PretrainedEncoders(
             siglip_model_id=siglip_model_id, minilm_model_id=minilm_model_id, device=device,
         )
-        head = ClassifierHead()
+        head = HEAD_TYPES[head_type]()
         state = torch.load(head_checkpoint_path, map_location=device)
         head.load_state_dict(state)
         head.to(device)
-        return cls(encoders=encoders, head=head)
+        return cls(encoders=encoders, head=head, model_id=model_id, threshold=threshold)
 
 
 class PretrainedEncoders:

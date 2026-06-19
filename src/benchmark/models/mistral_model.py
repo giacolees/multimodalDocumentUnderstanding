@@ -12,38 +12,13 @@ Config example (benchmark_config.yaml):
 
 from __future__ import annotations
 
-import base64
-import io
 import os
-from pathlib import Path
 
 import requests
 
 from .base_model import BaseVisionModel, PredictionResult
-
-
-def _page_to_b64(document_path: str, page_index: int = 0) -> str:
-    path = Path(document_path)
-    if path.suffix.lower() == ".pdf":
-        from pdf2image import convert_from_path
-        pages = convert_from_path(str(path), first_page=page_index + 1, last_page=page_index + 1)
-        if not pages:
-            raise ValueError(f"No page {page_index} in {path}")
-        buf = io.BytesIO()
-        pages[0].save(buf, format="PNG")
-        return base64.standard_b64encode(buf.getvalue()).decode()
-    return base64.standard_b64encode(path.read_bytes()).decode()
-
-
-def _parse_unanswerable(text: str) -> tuple[bool, float]:
-    upper = text.upper()
-    if "UNANSWERABLE" in upper:
-        return True, 0.9
-    phrases = ["cannot be answered", "not in the document", "no information",
-               "not mentioned", "not found", "cannot answer", "not provided"]
-    if any(p.upper() in upper for p in phrases):
-        return True, 0.7
-    return False, 0.1
+from .inference_utils import page_to_b64 as _page_to_b64
+from .inference_utils import parse_unanswerable as _parse_unanswerable
 
 
 class MistralModel(BaseVisionModel):
