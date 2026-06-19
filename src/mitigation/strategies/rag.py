@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import threading
+from collections import defaultdict
 from pathlib import Path
 
 from .base import MitigationStrategy
@@ -44,6 +46,8 @@ class RagRetriever:
         self._cache_dir = Path(cache_dir)
         self._retrieval_mode = retrieval_mode
         self._embedder = None  # lazy-loaded SentenceTransformer
+        self._embedder_lock = threading.Lock()
+        self._transcribe_locks: dict[str, threading.Lock] = defaultdict(threading.Lock)
 
     def _cache_key(self, item: dict) -> str:
         doc = item["document_path"].replace("/", "_").replace(".", "_")
@@ -51,20 +55,31 @@ class RagRetriever:
         return f"{doc}_p{page}"
 
     def transcribe(self, item: dict, model) -> str:
-        """Return page text, using disk cache to avoid repeated model calls."""
+        """Return page text, using disk cache to avoid repeated model calls.
+
+        Locked per cache key so concurrent threads racing on the same uncached
+        document/page don't both issue the (expensive) transcription call.
+        """
         key = self._cache_key(item)
         cache_file = self._cache_dir / f"{key}.txt"
         if cache_file.exists():
             return cache_file.read_text()
-        text = model.generate(
-            item["document_path"],
-            _TRANSCRIBE_PROMPT,
-            page_index=item.get("page_index", 0),
-            max_tokens=self._transcribe_max_tokens,
-        )
-        self._cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file.write_text(text)
-        return text
+        with self._transcribe_locks[key]:
+            if cache_file.exists():
+                return cache_file.read_text()
+            text = model.generate(
+                item["document_path"],
+                _TRANSCRIBE_PROMPT,
+                page_index=item.get("page_index", 0),
+                max_tokens=self._transcribe_max_tokens,
+            )
+            if text.startswith("[SKIPPED:"):
+                # Transient failure (e.g. request timeout) — don't cache it as if it were
+                # a real transcript, so the next attempt retries instead of reusing garbage.
+                return ""
+            self._cache_dir.mkdir(parents=True, exist_ok=True)
+            cache_file.write_text(text)
+            return text
 
     def chunks(self, text: str) -> list[str]:
         """Split text into chunks of at most chunk_max_chars, preserving paragraph boundaries."""
@@ -102,10 +117,16 @@ class RagRetriever:
 
     def _dense_ranks(self, chunk_list: list[str], question: str) -> dict[int, int]:
         if self._embedder is None:
-            from sentence_transformers import SentenceTransformer
-            self._embedder = SentenceTransformer(self._embed_model_name, device="cpu")
-        embeddings = self._embedder.encode(chunk_list, normalize_embeddings=True)
-        q_emb = self._embedder.encode([question], normalize_embeddings=True)[0]
+            with self._embedder_lock:
+                if self._embedder is None:
+                    from sentence_transformers import SentenceTransformer
+                    self._embedder = SentenceTransformer(self._embed_model_name, device="cpu")
+        # encode() is not safe to call concurrently from multiple threads: the HF fast
+        # tokenizer's internal Rayon thread pool can deadlock when invoked from several
+        # Python threads at once, so all calls are serialized behind _embedder_lock.
+        with self._embedder_lock:
+            embeddings = self._embedder.encode(chunk_list, normalize_embeddings=True)
+            q_emb = self._embedder.encode([question], normalize_embeddings=True)[0]
         scores = embeddings @ q_emb
         order = sorted(range(len(chunk_list)), key=lambda i: float(scores[i]), reverse=True)
         return {idx: rank for rank, idx in enumerate(order)}
@@ -153,4 +174,8 @@ class RagStrategy(MitigationStrategy):
         from .base import get_question
         chunks = self.retriever.retrieve(item, get_question(item), model)
         context = "\n".join(f"- {c}" for c in chunks) if chunks else "(no passages retrieved)"
+        # Document text can itself contain "{"/"}" (e.g. raw JSON snippets in a scanned
+        # table). Escape them so the literal braces survive the *second* .format() call
+        # done downstream in vllm_model.py (which fills in {question} on the full prompt).
+        context = context.replace("{", "{{").replace("}", "}}")
         return _RAG_TEMPLATE.format(context=context)

@@ -16,6 +16,8 @@ Config example (benchmark_config.yaml):
 from __future__ import annotations
 
 import base64
+import itertools
+import threading
 from pathlib import Path
 
 from .base_model import BaseVisionModel, PredictionResult
@@ -62,10 +64,14 @@ def _parse_unanswerable(text: str | None) -> tuple[bool, float]:
 
 
 class VllmModel(BaseVisionModel):
-    """Vision LLM backend powered by a vLLM server.
+    """Vision LLM backend powered by one or more vLLM servers.
 
     Args:
-        base_url: vLLM server base URL (must expose /v1/chat/completions).
+        base_url: vLLM server base URL, or a list of base URLs (must each expose
+            /v1/chat/completions). When a list is given, requests are round-robined
+            across the servers — useful for spreading concurrent requests across
+            multiple single-GPU vLLM replicas (data parallelism) instead of a single
+            multi-GPU tensor-parallel instance.
         model_id: HuggingFace model ID to pass in API requests.
         api_key: Optional auth token; vLLM accepts any non-empty string locally.
         max_tokens: Maximum tokens in the completion.
@@ -73,7 +79,7 @@ class VllmModel(BaseVisionModel):
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8083/v1",
+        base_url: str | list[str] = "http://localhost:8083/v1",
         model_id: str = "google/gemma-4-12b-it",
         api_key: str = "local",
         max_tokens: int = 256,
@@ -84,7 +90,10 @@ class VllmModel(BaseVisionModel):
     ) -> None:
         import requests
         self._requests = requests
-        self._url = base_url.rstrip("/") + "/chat/completions"
+        urls = base_url if isinstance(base_url, list) else [base_url]
+        self._urls = [u.rstrip("/") + "/chat/completions" for u in urls]
+        self._url_cycle = itertools.cycle(self._urls)
+        self._url_lock = threading.Lock()
         self._model_id = model_id
         self._api_key = api_key
         self._max_tokens = max_tokens
@@ -92,6 +101,10 @@ class VllmModel(BaseVisionModel):
         self._max_image_pixels = max_image_pixels
         self._stop_sequences = stop_sequences or []
         self._stop_token_ids = stop_token_ids or []
+
+    def _next_url(self) -> str:
+        with self._url_lock:
+            return next(self._url_cycle)
 
     def name(self) -> str:
         return f"vllm:{self._model_id}"
@@ -124,7 +137,7 @@ class VllmModel(BaseVisionModel):
         if self._stop_token_ids:
             payload["stop_token_ids"] = self._stop_token_ids
         try:
-            resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
+            resp = self._requests.post(self._next_url(), json=payload, headers=headers, timeout=50)
             if not resp.ok:
                 detail = resp.text[:300]
                 raise self._requests.exceptions.HTTPError(detail, response=resp)
@@ -167,7 +180,7 @@ class VllmModel(BaseVisionModel):
             "temperature": 0.0,
         }
         try:
-            resp = self._requests.post(self._url, json=payload, headers=headers, timeout=120)
+            resp = self._requests.post(self._next_url(), json=payload, headers=headers, timeout=10)
             if not resp.ok:
                 detail = resp.text[:300]
                 raise self._requests.exceptions.HTTPError(detail, response=resp)

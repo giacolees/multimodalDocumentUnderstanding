@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import tempfile
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -47,13 +49,57 @@ def evaluate_strategy(
     model_id: str,
     corrupted_dataset_path: str,
     checkpoint_path: "Path | None" = None,
+    concurrency: int = 1,
 ) -> dict:
-    """Run the per-item inference loop, compute metrics, log to MLflow, return results dict."""
+    """Run the inference loop, compute metrics, log to MLflow, return results dict.
+
+    Samples are independent (each strategy builds a self-contained prompt per item), so
+    with concurrency > 1 requests are dispatched in parallel via a thread pool. This relies
+    on the backend (e.g. a vLLM server's continuous batching) to actually batch the work on
+    the GPU side — the chat-completions API has no client-side multi-sample batch call.
+    """
+    n = len(dataset)
+    records: list[dict | None] = [None] * n
+    inference_times: list[float] = []
     preds: list[bool] = []
     labels: list[bool] = []
-    records: list[dict] = []
-    inference_times: list[float] = []
-    _sample_prompt: str = ""
+    _sample_prompt_holder: list[str] = []
+
+    # Tracks which sample_ids are currently in flight, so the tqdm postfix can show
+    # exactly what's being processed right now (useful to spot a stuck sample).
+    in_flight: dict[int, str] = {}
+    in_flight_lock = threading.Lock()
+
+    def _run_one(i: int) -> tuple[int, dict, bool, float]:
+        item = dataset[i]
+        with in_flight_lock:
+            in_flight[i] = item["sample_id"]
+        try:
+            label = bool(item.get("is_unanswerable", True))
+            t0 = time.perf_counter()
+            prompt = strategy.build_prompt(item, model)
+            if not _sample_prompt_holder:
+                _sample_prompt_holder.append(prompt)
+            result = model.predict_unanswerable(
+                document_path=item["document_path"],
+                question=get_question(item),
+                prompt_template=prompt,
+            )
+            elapsed = time.perf_counter() - t0
+            record = {
+                "sample_id": item["sample_id"],
+                "strategy": strategy.name,
+                "predicted_unanswerable": result.predicted_unanswerable,
+                "label_unanswerable": label,
+                "raw_response": result.raw_response,
+                "corruption_type": item.get("corruption_type", "unknown"),
+                "inference_time_s": elapsed,
+                "skipped": result.skipped,
+            }
+            return i, record, label, elapsed
+        finally:
+            with in_flight_lock:
+                in_flight.pop(i, None)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_model = model_id.replace("/", "_")
@@ -80,71 +126,67 @@ def evaluate_strategy(
         mlflow.log_input(ds, context="evaluation")
 
         bar = tqdm(
-            dataset,
+            total=n,
             desc=f"[{strategy.name}]",
             unit="sample",
             dynamic_ncols=True,
         )
-        for step, item in enumerate(bar, start=1):
-            prompt = strategy.build_prompt(item, model)
-            if not _sample_prompt:
-                _sample_prompt = prompt
-            label = bool(item.get("is_unanswerable", True))
-            t0 = time.perf_counter()
-            result = model.predict_unanswerable(
-                document_path=item["document_path"],
-                question=get_question(item),
-                prompt_template=prompt,
-            )
-            elapsed = time.perf_counter() - t0
-            if result.skipped:
-                bar.write(f"  ⚠ skipped {item['sample_id']}: {result.raw_response[:120]}")
-            else:
-                inference_times.append(elapsed)
-                preds.append(result.predicted_unanswerable)
-                labels.append(label)
-            records.append({
-                "sample_id": item["sample_id"],
-                "strategy": strategy.name,
-                "predicted_unanswerable": result.predicted_unanswerable,
-                "label_unanswerable": label,
-                "raw_response": result.raw_response,
-                "corruption_type": item.get("corruption_type", "unknown"),
-                "inference_time_s": elapsed,
-                "skipped": result.skipped,
-            })
+        with ThreadPoolExecutor(max_workers=max(1, concurrency)) as executor:
+            futures = [executor.submit(_run_one, i) for i in range(n)]
+            step = 0
+            for future in as_completed(futures):
+                i, record, label, elapsed = future.result()
+                records[i] = record
+                step += 1
+                if record["skipped"]:
+                    bar.write(f"  ⚠ skipped {record['sample_id']}: {record['raw_response'][:120]}")
+                else:
+                    inference_times.append(elapsed)
+                    preds.append(record["predicted_unanswerable"])
+                    labels.append(label)
 
-            # Update tqdm postfix with running accuracy (scored samples only).
-            correct = sum(p == l for p, l in zip(preds, labels))
-            bar.set_postfix(acc=f"{correct/len(preds):.3f}" if preds else "n/a", t=f"{elapsed:.1f}s")
-
-            # Flush records to disk and log running metrics every _LOG_EVERY steps.
-            if step % _LOG_EVERY == 0 or step == len(dataset):
-                if checkpoint_path is not None:
-                    _flush_checkpoint(checkpoint_path, records)
-                running = compute_metrics(labels, preds)
-                mlflow.log_metrics(
-                    {
-                        "running_accuracy": running.accuracy,
-                        "running_f1": running.f1,
-                        "running_precision": running.precision,
-                        "running_recall": running.recall,
-                        "running_mcc": running.mcc,
-                        **({"running_inference_time_mean_s": float(np.mean(inference_times))}
-                           if inference_times else {}),
-                    },
-                    step=step,
+                # Update tqdm postfix with running accuracy and the samples currently
+                # in flight (helps spot which sample_id is stuck if progress stalls).
+                correct = sum(p == l for p, l in zip(preds, labels))
+                bar.update(1)
+                with in_flight_lock:
+                    in_flight_str = ",".join(str(v) for v in in_flight.values())
+                bar.set_postfix(
+                    acc=f"{correct/len(preds):.3f}" if preds else "n/a",
+                    t=f"{elapsed:.1f}s",
+                    last=record["sample_id"],
+                    in_flight=in_flight_str,
                 )
+
+                # Flush records to disk and log running metrics every _LOG_EVERY steps.
+                if step % _LOG_EVERY == 0 or step == n:
+                    if checkpoint_path is not None:
+                        _flush_checkpoint(checkpoint_path, [r for r in records if r is not None])
+                    running = compute_metrics(labels, preds)
+                    mlflow.log_metrics(
+                        {
+                            "running_accuracy": running.accuracy,
+                            "running_f1": running.f1,
+                            "running_precision": running.precision,
+                            "running_recall": running.recall,
+                            "running_mcc": running.mcc,
+                            **({"running_inference_time_mean_s": float(np.mean(inference_times))}
+                               if inference_times else {}),
+                        },
+                        step=step,
+                    )
+        bar.close()
+        records = [r for r in records if r is not None]
 
         metrics = compute_metrics(labels, preds)
         print(f"\n[{strategy.name}] {metrics}")
 
-        if _sample_prompt:
+        if _sample_prompt_holder:
             with tempfile.NamedTemporaryFile(
                 mode="w", suffix=".txt", delete=False,
                 prefix=f"prompt_{strategy.name}_",
             ) as tmp:
-                tmp.write(_sample_prompt)
+                tmp.write(_sample_prompt_holder[0])
             try:
                 mlflow.log_artifact(tmp.name, artifact_path="prompts")
             finally:

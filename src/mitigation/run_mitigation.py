@@ -154,6 +154,21 @@ def _expand_strategies(requested: list[str], config: dict) -> list[tuple[str, st
     return expanded
 
 
+def _load_subset_ids(subset_ids_path: str) -> list[str]:
+    """Return the list of IDs from a subset_ids file.
+
+    Supports a flat list of sample_id strings (e.g. mitigation_subset_ids.json), and the
+    {"train"/"val"/"test": [...]} split format produced by train_classifier.py, where
+    entries are composite keys "{sample_id}::{int(is_unanswerable)}" (sample_id alone is
+    not unique — answerable/unanswerable pairs share it).
+    """
+    with open(subset_ids_path) as f:
+        data = json.load(f)
+    if isinstance(data, dict):
+        return data.get("test", [])
+    return data
+
+
 def run_mitigation(
     corrupted_dataset_path: str,
     baseline_results_path: str,
@@ -167,9 +182,15 @@ def run_mitigation(
     max_samples = config.get("max_samples")
     subset_ids_path = config.get("subset_ids")
     if subset_ids_path:
-        with open(subset_ids_path) as f:
-            allowed = set(json.load(f))
-        dataset = [item for item in dataset if item["sample_id"] in allowed]
+        ids = _load_subset_ids(subset_ids_path)
+        allowed = set(ids)
+        if any("::" in i for i in ids):
+            dataset = [
+                item for item in dataset
+                if f"{item['sample_id']}::{int(bool(item.get('is_unanswerable', True)))}" in allowed
+            ]
+        else:
+            dataset = [item for item in dataset if item["sample_id"] in allowed]
         print(f"Filtered to {len(dataset)} samples from subset_ids file: {subset_ids_path}")
     elif max_samples is not None:
         dataset = dataset[:max_samples]
@@ -205,6 +226,7 @@ def run_mitigation(
     ]
     if prompt_strategy_entries:
         model = _load_model(model_cfg)
+        concurrency = model_cfg.get("concurrency", 1)
         for run_name, strategy_key, strategy_cfg in prompt_strategy_entries:
             strategy_cls = STRATEGIES[strategy_key]
             strategy = strategy_cls(strategy_cfg)
@@ -218,6 +240,7 @@ def run_mitigation(
                 model_id=model_id,
                 corrupted_dataset_path=corrupted_dataset_path,
                 checkpoint_path=out / f"{run_name}_checkpoint.json",
+                concurrency=concurrency,
             )
 
     if "finetuning" in requested:
@@ -260,6 +283,9 @@ def _load_model(model_cfg: dict):
             model_id=model_id,
             api_key=model_cfg.get("api_key", "local"),
             max_tokens=model_cfg.get("max_tokens", 256),
+            image_placeholder=model_cfg.get("image_placeholder", ""),
+            max_image_pixels=model_cfg.get("max_image_pixels", 0),
+            stop_sequences=model_cfg.get("stop_sequences"),
         )
     raise ValueError(f"Unknown benchmark model backend: '{backend}'")
 
