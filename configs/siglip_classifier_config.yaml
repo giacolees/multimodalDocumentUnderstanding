@@ -3,13 +3,14 @@ dataset_paths:
 
 split_path: data/cache/siglip_classifier_split.json
 cache_path: data/cache/siglip_embeddings.pt
-head_checkpoint_path: models/siglip_classifier_head.pt
+head_checkpoint_path: data/cache/siglip_classifier_head.pt
 
 siglip_model_id: google/siglip-so400m-patch14-384
 minilm_model_id: sentence-transformers/all-MiniLM-L6-v2
-device: cpu
+device: cuda
 
 seed: 42
+split_ratios: [0.4, 0.1, 0.5]  # train, val, test
 epochs: 20
 lr: 0.001
 batch_size: 64

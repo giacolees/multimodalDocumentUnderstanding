@@ -128,17 +128,31 @@ class PretrainedEncoders:
 
     @torch.no_grad()
     def encode_image(self, image_path: str) -> torch.Tensor:
-        image = self._Image.open(image_path).convert("RGB")
-        inputs = self._processor(images=image, return_tensors="pt").to(self._device)
-        output = self._siglip.get_image_features(**inputs)
-        pooled = output.pooler_output if hasattr(output, "pooler_output") else output
-        return pooled.squeeze(0)
+        return self.encode_images([image_path])[0]
 
     @torch.no_grad()
     def encode_text(self, text: str) -> torch.Tensor:
-        embedding = self._minilm.encode(text, convert_to_tensor=True)
-        return embedding.to(self._device)
+        return self.encode_texts([text])[0]
 
     def encode_image_window(self, image_paths: list[str]) -> torch.Tensor:
-        embeds = torch.stack([self.encode_image(p) for p in image_paths])
+        embeds = self.encode_images(image_paths)
         return embeds.mean(dim=0)
+
+    @torch.no_grad()
+    def encode_images(self, image_paths: list[str], batch_size: int = 32) -> torch.Tensor:
+        """Batched image encoding. Loads and forwards images batch_size at a time."""
+        pooled_chunks = []
+        for start in range(0, len(image_paths), batch_size):
+            chunk_paths = image_paths[start:start + batch_size]
+            images = [self._Image.open(p).convert("RGB") for p in chunk_paths]
+            inputs = self._processor(images=images, return_tensors="pt").to(self._device)
+            output = self._siglip.get_image_features(**inputs)
+            pooled = output.pooler_output if hasattr(output, "pooler_output") else output
+            pooled_chunks.append(pooled)
+        return torch.cat(pooled_chunks, dim=0)
+
+    @torch.no_grad()
+    def encode_texts(self, texts: list[str], batch_size: int = 128) -> torch.Tensor:
+        """Batched text encoding via SentenceTransformer's internal batching."""
+        embeddings = self._minilm.encode(texts, convert_to_tensor=True, batch_size=batch_size)
+        return embeddings.to(self._device)

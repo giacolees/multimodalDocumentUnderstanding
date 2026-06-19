@@ -3,6 +3,7 @@ import json
 import torch
 
 from src.benchmark.train_classifier import (
+    _record_key,
     build_embedding_cache,
     compute_cache_key,
     load_split,
@@ -86,12 +87,18 @@ class _FakeEncoders:
         self.text_calls.append(text)
         return torch.ones(3) * len(text)
 
+    def encode_images(self, paths: list[str]) -> torch.Tensor:
+        return torch.stack([self.encode_image(p) for p in paths])
+
+    def encode_texts(self, texts: list[str]) -> torch.Tensor:
+        return torch.stack([self.encode_text(t) for t in texts])
+
 
 def test_compute_cache_key_changes_with_inputs():
-    records = [{"sample_id": "a"}, {"sample_id": "b"}]
+    records = [{"sample_id": "a", "is_unanswerable": True}, {"sample_id": "b", "is_unanswerable": False}]
     key_a = compute_cache_key(records, "siglip-1", "minilm-1")
     key_b = compute_cache_key(records, "siglip-2", "minilm-1")
-    key_c = compute_cache_key([{"sample_id": "a"}], "siglip-1", "minilm-1")
+    key_c = compute_cache_key([{"sample_id": "a", "is_unanswerable": True}], "siglip-1", "minilm-1")
 
     assert key_a != key_b
     assert key_a != key_c
@@ -108,10 +115,11 @@ def test_build_embedding_cache_single_page(tmp_path):
     key = compute_cache_key(records, "siglip-1", "minilm-1")
 
     cache = build_embedding_cache(records, encoders, cache_path, key)
+    key1 = _record_key(records[0])
 
-    assert set(cache.keys()) == {"s1"}
-    assert torch.equal(cache["s1"]["image_embed"], torch.ones(4) * len("doc1.png"))
-    assert cache["s1"]["label"] is True
+    assert set(cache.keys()) == {key1}
+    assert torch.equal(cache[key1]["image_embed"], torch.ones(4) * len("doc1.png"))
+    assert cache[key1]["label"] is True
     assert encoders.image_calls == ["doc1.png"]
     assert encoders.window_calls == []
 
@@ -182,7 +190,7 @@ def test_build_embedding_cache_skips_record_on_encoder_error(tmp_path):
 
     cache = build_embedding_cache(records, encoders, cache_path, key)
 
-    assert set(cache.keys()) == {"s1"}
+    assert set(cache.keys()) == {_record_key(records[0])}
 
 
 def test_build_embedding_cache_resumes_partial_progress(tmp_path):
@@ -199,7 +207,7 @@ def test_build_embedding_cache_resumes_partial_progress(tmp_path):
     # simulating an interrupted run that saved incrementally.
     torch.save(
         {"cache_key": key, "embeddings": {
-            "s1": {"image_embed": torch.ones(4), "text_embed": torch.ones(3), "label": True},
+            _record_key(records[0]): {"image_embed": torch.ones(4), "text_embed": torch.ones(3), "label": True},
         }},
         cache_path,
     )
@@ -207,7 +215,7 @@ def test_build_embedding_cache_resumes_partial_progress(tmp_path):
     encoders = _FakeEncoders()
     cache = build_embedding_cache(records, encoders, cache_path, key)
 
-    assert set(cache.keys()) == {"s1", "s2"}
+    assert set(cache.keys()) == {_record_key(records[0]), _record_key(records[1])}
     assert encoders.image_calls == ["doc2.png"]
 
 
@@ -219,16 +227,16 @@ def _make_linearly_separable_embeddings(n_per_class: int) -> tuple[list[dict], d
     records = []
     embeddings = {}
     for i in range(n_per_class):
-        sid = f"pos{i}"
-        records.append({"sample_id": sid, "is_unanswerable": True})
-        embeddings[sid] = {
+        record = {"sample_id": f"pos{i}", "is_unanswerable": True}
+        records.append(record)
+        embeddings[_record_key(record)] = {
             "image_embed": torch.ones(IMAGE_EMBED_DIM) * 5.0,
             "text_embed": torch.ones(TEXT_EMBED_DIM) * 5.0,
             "label": True,
         }
-        sid = f"neg{i}"
-        records.append({"sample_id": sid, "is_unanswerable": False})
-        embeddings[sid] = {
+        record = {"sample_id": f"neg{i}", "is_unanswerable": False}
+        records.append(record)
+        embeddings[_record_key(record)] = {
             "image_embed": torch.ones(IMAGE_EMBED_DIM) * -5.0,
             "text_embed": torch.ones(TEXT_EMBED_DIM) * -5.0,
             "label": False,
