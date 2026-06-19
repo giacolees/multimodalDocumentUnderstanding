@@ -7,6 +7,7 @@ import copy
 import hashlib
 import json
 import random
+import time
 from collections import defaultdict
 from pathlib import Path
 
@@ -257,6 +258,32 @@ def evaluate_head(
     return compute_metrics(y_true, preds)
 
 
+def predict_records(
+    head: ClassifierHead,
+    records: list[dict],
+    embeddings: dict[str, dict],
+) -> list[dict]:
+    """Run the head over records and return per-sample dicts in the same schema
+    run_benchmark.py writes, so they can be consumed by metrics_for_subset.py."""
+    head.eval()
+    image_embeds, text_embeds, labels = _batch_tensors(records, embeddings)
+    t0 = time.perf_counter()
+    with torch.no_grad():
+        preds = (torch.sigmoid(head(image_embeds, text_embeds)) >= 0.5).tolist()
+    inference_time_s = (time.perf_counter() - t0) / len(records) if records else 0.0
+    return [
+        {
+            "sample_id": r["sample_id"],
+            "predicted_unanswerable": bool(pred),
+            "label_unanswerable": bool(r["is_unanswerable"]),
+            "corruption_type": r.get("corruption_type"),
+            "inference_time_s": inference_time_s,
+            "skipped": False,
+        }
+        for r, pred in zip(records, preds)
+    ]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
@@ -319,6 +346,16 @@ def main() -> None:
     torch.save(head.state_dict(), head_path)
     print(f"Saved head to {head_path}")
     print(test_metrics)
+
+    results_path = Path(config.get("results_path", "results/benchmark_siglip/siglip_classifier_benchmark_result.json"))
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    all_records = split["train"] + split["val"] + split["test"]
+    with open(results_path, "w") as f:
+        json.dump(
+            {"records": predict_records(head, all_records, embeddings), "metrics": test_metrics.__dict__},
+            f, indent=2,
+        )
+    print(f"Predictions saved → {results_path}")
 
 
 if __name__ == "__main__":
